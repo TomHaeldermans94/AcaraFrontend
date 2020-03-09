@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books list</title>
+</head>
+<!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
+<body th:object="${event}">
+<p th:text="'ID: ' + ${event.id}">ID</p>
+<p th:text="'Name: ' + ${event.name}">Name</p>
+<p th:text="'Description: ' + ${event.description}">Description</p>
+<p th:text="'Date: ' + ${event.eventDate}">Event date</p>
+<p th:text="'Price: ' + ${event.price}">Price</p>
+<p th:text="'Category: ' + ${event.category}">Category</p>
+<p th:text="'Location: ' + ${event.location}">Location</p>
+<img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+</body>
+</html>
