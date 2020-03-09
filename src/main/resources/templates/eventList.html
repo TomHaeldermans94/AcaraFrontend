@@ -8,9 +8,12 @@
 <h1>List of events</h1>
 <ul>
     <li th:each="event : ${events}">
+        <p th:text="'Name: ' + ${event.name}">Name</p>
+        <p th:text="'Date: ' + ${event.eventDate}">Date</p>
+        <p th:text="'Location: ' + ${event.location}">Location</p>
+        <p th:text="'Price: ' + ${event.price}">Price</p>
         <a href="/events/detail"
-           th:href="@{|events/detail/${event.id}|}"
-           th:text="${event.name}">
+           th:href="@{|events/detail/${event.id}|}">
             Detail
         </a>
     </li>

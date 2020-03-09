@@ -1,13 +1,11 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.model.Event;
+import be.acara.frontend.model.EventList;
 import be.acara.frontend.service.EventFeignClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,11 +17,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,12 +46,23 @@ class EventControllerTest {
         
         Mockito.when(eventFeignClient.getEventById(id)).thenReturn(createEvent());
     
-        this.mockMvc.perform(get(String.format("/event/%d", id)))
+        this.mockMvc.perform(get(String.format("/events/detail/%d", id)))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("event", createEvent()))
                 .andExpect(model().attribute("eventImage", compareBase64Image()));
     }
-    
+
+    @Test
+    void getAllEvents() throws Exception {
+
+        Mockito.when(eventFeignClient.getEvents()).thenReturn(createEventList());
+
+        this.mockMvc.perform(get("/events"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("events", createEventList().getEventList()));
+    }
+
+
     private Event createEvent() throws Exception {
         return Event.builder()
                 .id(1L)
@@ -65,6 +74,26 @@ class EventControllerTest {
                 .price(new BigDecimal("20.0"))
                 .image(getImageBytes("image_event_1.jpg"))
                 .build();
+    }
+
+    private Event createEvent2() throws Exception {
+        return Event.builder()
+                .id(2L)
+                .name("concert")
+                .location("genk")
+                .category("MUSIC")
+                .eventDate(LocalDateTime.of(2020,12,20,20,30,54))
+                .description("description")
+                .price(new BigDecimal("20.1"))
+                .image(getImageBytes("image_event_1.jpg"))
+                .build();
+    }
+
+    private EventList createEventList() throws Exception {
+        List<Event> events = new ArrayList<>();
+        events.add(createEvent());
+        events.add(createEvent2());
+        return new EventList(events);
     }
     
     private byte[] getImageBytes(String imageLocation) throws Exception {
