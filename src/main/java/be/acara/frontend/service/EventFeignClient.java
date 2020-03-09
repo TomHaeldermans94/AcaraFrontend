@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(value = "eventFeignClient", url = "${baseURL}/api/events")
 public interface EventFeignClient {
-    @GetMapping()
-    EventList getAll();
+
+    @GetMapping
+    EventList getEvents();
     
     @GetMapping("/{id}")
     Event getEventById(@PathVariable("id") Long id);
