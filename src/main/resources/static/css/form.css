@@ -1,0 +1,8 @@
+.errorMessage {
+    color: red;
+}
+
+.errorField {
+    border-color: red;
+    background-color: #f5c6cb;
+}
