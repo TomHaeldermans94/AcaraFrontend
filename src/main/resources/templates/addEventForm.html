@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Event</title>
-    <link href="../static/css/form.css" rel="stylesheet" th:href="@{/css/form.css}"/>
+    <link href="../static/css/form.css" rel="stylesheet" th:href="@{/static/css/form.css}"/>
 </head>
 <body>
-
+<h1>Add event</h1>
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
 <form method="post" th:object="${event}">
 
-    <div>
-        <input type="hidden" th:field="${event.id}"/>
-    </div>
+<!--    <div>-->
+<!--        <input type="hidden" th:field="${event.id}"/>-->
+<!--    </div>-->
 
     <div>
         <label th:for="name">Event name: </label>
@@ -22,7 +22,7 @@
 
     <div>
         <label th:for="eventDate">Date: </label>
-        <input type="date" th:field="${event.eventDate}"  th:errorClass="errorField"/>
+        <input type="datetime-local" th:field="${event.eventDate}"  th:errorClass="errorField"/>
         <span th:if="${#fields.hasErrors('eventDate')}" th:errors="*{eventDate}" class="errorMessage">Invalid input</span>
     </div>
 
