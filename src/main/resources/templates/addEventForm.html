@@ -40,8 +40,8 @@
     </div>
 
     <div>
-        <label th:for="category">Category: </label>
-        <select>
+        <label th:for="${#ids.next('category')}" >Category:</label>
+        <select th:field="${event.category}">
             <option th:each="category: ${categoryList}"
                     th:value="${category}"
                     th:text="${category}">

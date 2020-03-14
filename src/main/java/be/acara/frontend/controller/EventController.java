@@ -41,7 +41,7 @@ public class EventController {
 
     @GetMapping("/new")
     public String displayEventForm(Model model){
-        model.addAttribute("categoryList", eventFeignClient.getAllCategories());
+        model.addAttribute("categoryList", eventFeignClient.getAllCategories().getCategories());
         model.addAttribute("event", new Event());
         return "addEventForm";
     }
