@@ -41,7 +41,6 @@ public class Event {
     @NotBlank(message = "NotBlank.event.category")
     private String category;
 
-
     @NotNull(message = "Minimum price is 1 euro")
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
