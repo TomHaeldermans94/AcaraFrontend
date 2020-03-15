@@ -5,11 +5,12 @@ import be.acara.frontend.model.EventList;
 import be.acara.frontend.service.EventFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Base64;
 
 @Controller
@@ -36,5 +37,21 @@ public class EventController {
         EventList eventList = eventFeignClient.getEvents();
         model.addAttribute("events", eventList.getEventList());
         return "eventList";
+    }
+
+    @GetMapping("/new")
+    public String displayEventForm(Model model){
+        model.addAttribute("categoryList", eventFeignClient.getAllCategories().getCategories());
+        model.addAttribute("event", new Event());
+        return "addEventForm";
+    }
+
+    @PostMapping("/new")
+    public String handleForm(@Valid @ModelAttribute("event") Event event, BindingResult br) {
+        if (br.hasErrors()){
+            return "addEventForm";
+        }
+        eventFeignClient.addEvent(event);
+        return "redirect:/events";
     }
 }

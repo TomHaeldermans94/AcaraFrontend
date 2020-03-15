@@ -12,7 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
@@ -22,13 +27,14 @@ import java.util.Base64;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class EventControllerTest {
+class EventControllerTestIT {
     
     @Autowired
     private MockMvc mockMvc;
@@ -62,6 +68,15 @@ class EventControllerTest {
                 .andExpect(model().attribute("events", createEventList().getEventList()));
     }
 
+    @Test
+    void addEvent() throws Exception {
+        Mockito.doNothing().when(eventFeignClient).addEvent(createEvent());
+        ResultMatcher view = MockMvcResultMatchers.view().name("addEventForm");
+        this.mockMvc.perform(post("/events/new"))
+                .andExpect(status().isOk())
+                .andExpect(view)
+                .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));
+    }
 
     private Event createEvent() throws Exception {
         return Event.builder()
