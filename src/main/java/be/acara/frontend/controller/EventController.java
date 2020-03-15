@@ -52,6 +52,6 @@ public class EventController {
             return "addEventForm";
         }
         eventFeignClient.addEvent(event);
-        return "redirect:";
+        return "redirect:/events";
     }
 }
