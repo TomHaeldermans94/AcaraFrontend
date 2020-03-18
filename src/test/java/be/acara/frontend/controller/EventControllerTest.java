@@ -35,7 +35,7 @@ class EventControllerTest {
     
     @MockBean
     private EventFeignClient eventFeignClient;
-    
+
     @BeforeEach
     void setUp() {
     }
