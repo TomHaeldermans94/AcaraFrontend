@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{'/css/bootstrap.css'}"
+          media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/form.css" th:href="@{'/css/form.css'}"/>
+    <title>Edit event</title>
+</head>
+<body>
+<h1>Edit event</h1>
+<form th:insert="eventForm :: eventForm" method="post" class="mt-3 ml-4 w-50"></form>
+</body>
+</html>

@@ -20,6 +20,9 @@ public interface EventFeignClient {
     @GetMapping("/categories")
     CategoriesList getAllCategories();
 
-    @PostMapping
+    @PostMapping("/new-event")
     void addEvent(Event event);
+
+    @PostMapping("/edit-event/{id}")
+    void editEvent(@PathVariable("id") Long id, Event event);
 }
