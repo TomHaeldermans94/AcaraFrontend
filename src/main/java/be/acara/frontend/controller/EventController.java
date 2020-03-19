@@ -28,7 +28,9 @@ public class EventController {
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
         Event event = eventFeignClient.getEventById(id);
         model.addAttribute("event", event);
-        model.addAttribute("eventImage", Base64.getEncoder().encodeToString(event.getImage()));
+        if(event.getImage() != null) {
+            model.addAttribute("eventImage", Base64.getEncoder().encodeToString(event.getImage()));
+        }
         return "eventDetails";
     }
 
@@ -63,7 +65,7 @@ public class EventController {
         return "editEvent";
     }
 
-    @PutMapping("/{id}")
+    @PostMapping("/{id}")
     public String handleEditEventForm(@Valid @ModelAttribute("event") Event event, BindingResult br) {
         if (br.hasErrors()){
             return "editEvent";

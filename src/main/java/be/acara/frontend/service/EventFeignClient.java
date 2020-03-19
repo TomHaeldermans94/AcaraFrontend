@@ -21,7 +21,7 @@ public interface EventFeignClient {
     @GetMapping("/categories")
     CategoriesList getAllCategories();
 
-    @PostMapping("/new")
+    @PostMapping
     void addEvent(Event event);
 
     @PutMapping("/{id}")
