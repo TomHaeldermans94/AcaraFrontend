@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{'/css/bootstrap.css'}"
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"
           media="screen,projection"/>
-    <link rel="stylesheet" type="text/css" href="../static/css/form.css" th:href="@{'/css/form.css'}"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/form.css" th:href="@{/css/form.css}"/>
     <title>Edit event</title>
 </head>
 <body>
 <h1>Edit event</h1>
-<form th:insert="eventForm :: eventForm" method="post" class="mt-3 ml-4 w-50"></form>
+<form th:insert="eventForm :: eventForm" th:method="post"></form>
 </body>
 </html>

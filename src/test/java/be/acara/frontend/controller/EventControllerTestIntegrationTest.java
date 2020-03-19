@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,7 +68,7 @@ class EventControllerTestIntegrationTest {
     void addEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).addEvent(createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("addEvent");
-        this.mockMvc.perform(post("/events/new-event"))
+        this.mockMvc.perform(post("/events/new"))
                 .andExpect(status().isOk())
                 .andExpect(view)
                 .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));
@@ -79,7 +78,7 @@ class EventControllerTestIntegrationTest {
     void editEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).editEvent(createEvent().getId(),createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("editEvent");
-        this.mockMvc.perform(post("/events/edit-event/1"))
+        this.mockMvc.perform(put("/events/1"))
                 .andExpect(status().isOk())
                 .andExpect(view)
                 .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));

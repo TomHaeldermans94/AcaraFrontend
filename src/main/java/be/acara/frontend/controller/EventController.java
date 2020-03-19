@@ -39,14 +39,14 @@ public class EventController {
         return "eventList";
     }
 
-    @GetMapping("/new-event")
+    @GetMapping("/new")
     public String displayAddEventForm(Model model){
         model.addAttribute("categoryList", eventFeignClient.getAllCategories().getCategories());
         model.addAttribute("event", new Event());
         return "addEvent";
     }
 
-    @PostMapping("/new-event")
+    @PostMapping("/new")
     public String handleAddEventForm(@Valid @ModelAttribute("event") Event event, BindingResult br) {
         if (br.hasErrors()){
             return "addEvent";
@@ -55,7 +55,7 @@ public class EventController {
         return "redirect:/events";
     }
 
-    @GetMapping("/edit-event/{id}")
+    @GetMapping("/{id}")
     public String displayEditEventForm(@PathVariable("id") long id, Model model){
         Event event = eventFeignClient.getEventById(id);
         model.addAttribute("categoryList", eventFeignClient.getAllCategories().getCategories());
@@ -63,7 +63,7 @@ public class EventController {
         return "editEvent";
     }
 
-    @PostMapping("/edit-event/{id}")
+    @PutMapping("/{id}")
     public String handleEditEventForm(@Valid @ModelAttribute("event") Event event, BindingResult br) {
         if (br.hasErrors()){
             return "editEvent";
