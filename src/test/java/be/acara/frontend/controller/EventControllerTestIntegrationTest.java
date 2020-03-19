@@ -38,7 +38,7 @@ class EventControllerTestIntegrationTest {
     
     @MockBean
     private EventFeignClient eventFeignClient;
-    
+
     @BeforeEach
     void setUp() {
     }
@@ -68,8 +68,18 @@ class EventControllerTestIntegrationTest {
     @Test
     void addEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).addEvent(createEvent());
-        ResultMatcher view = MockMvcResultMatchers.view().name("addEventForm");
+        ResultMatcher view = MockMvcResultMatchers.view().name("addEvent");
         this.mockMvc.perform(post("/events/new"))
+                .andExpect(status().isOk())
+                .andExpect(view)
+                .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));
+    }
+
+    @Test
+    void editEvent() throws Exception {
+        Mockito.doNothing().when(eventFeignClient).editEvent(createEvent().getId(),createEvent());
+        ResultMatcher view = MockMvcResultMatchers.view().name("editEvent");
+        this.mockMvc.perform(post("/events/1"))
                 .andExpect(status().isOk())
                 .andExpect(view)
                 .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));

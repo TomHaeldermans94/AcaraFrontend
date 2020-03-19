@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @FeignClient(value = "eventFeignClient", url = "${baseURL}/api/events")
 public interface EventFeignClient {
@@ -22,4 +23,7 @@ public interface EventFeignClient {
 
     @PostMapping
     void addEvent(Event event);
+
+    @PutMapping("/{id}")
+    void editEvent(@PathVariable("id") Long id, Event event);
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{/css/bootstrap.css}"
+          media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/form.css" th:href="@{'/css/form.css'}"/>
+</head>
+<body>
+<!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
+<form modelAttribute="event" th:object="${event}" th:fragment="eventForm">
+
+    <div class="form-group">
+        <label for="eventName" th:for="${#ids.next('name')}">Event name: </label>
+        <input type="text" id="eventName" placeholder="Event name..."
+               th:field="${event.name}" th:errorClass="errorField"/>
+        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="errorMessage">Event name is required</span>
+    </div>
+
+    <div class="form-group">
+        <label for="eventDate" th:for="${#ids.next('eventDate')}">Date: </label>
+        <input type="datetime-local" id="eventDate" placeholder="Event date..." th:field="${event.eventDate}" th:errorClass="errorField"/>
+        <span th:if="${#fields.hasErrors('eventDate')}" th:errors="*{eventDate}"
+              class="errorMessage">Event date is required</span>
+    </div>
+
+    <div class="form-group">
+        <label for="eventDescription" th:for="${#ids.next('description')}">Description: </label>
+        <input type="text" id="eventDescription" placeholder="Description..." th:field="${event.description}" th:errorClass="errorField"/>
+        <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
+              class="errorMessage">Event description is required</span>
+    </div>
+
+    <div class="form-group">
+        <label for="eventLocation" th:for="${#ids.next('location')}">Location: </label>
+        <input type="text" id="eventLocation" placeholder="Event location..." th:field="${event.location}" th:errorClass="errorField"/>
+        <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="errorMessage">Event location is required</span>
+
+    </div>
+
+    <div class="form-group">
+        <label for="eventCategory" th:for="${#ids.next('category')}">Category:</label>
+        <select th:field="${event.category}" id="eventCategory">
+            <option th:each="category: ${categoryList}"
+                    th:value="${category}"
+                    th:text="${category}">
+            </option>
+        </select>
+        <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}" class="errorMessage">Invalid input</span>
+    </div>
+
+    <div class="form-group">
+        <label for="eventPrice" th:for="${#ids.next('price')}">Price: </label>
+        <input type="number" id="eventPrice" placeholder="Price..." th:field="${event.price}" th:errorClass="errorField"/>
+        <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="errorMessage">Invalid input</span>
+    </div>
+
+    <div>
+        <button type="submit" value="submit">Confirm</button>
+        <a href="/events" role="button">Cancel</a>
+    </div>
+
+</form>
+</body>
+</html>
