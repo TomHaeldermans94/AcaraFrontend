@@ -2,13 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title></title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
     <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
+    <title></title>
 </head>
 <body>
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
-<form modelAttribute="event" th:object="${event}" th:fragment="eventForm">
+<form modelAttribute="event" th:object="${event}" th:fragment="searchForm">
 
     <div class="form-group">
         <label for="eventName" th:for="${#ids.next('name')}">Event name: </label>
