@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -83,6 +84,25 @@ class EventControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(view)
                 .andExpect(model().attributeHasFieldErrors("event", "name", "description", "location", "category", "price"));
+    }
+    
+    @Test
+    void search_noParams() throws Exception {
+        Mockito.when(eventFeignClient.search(Map.of("location","genk"))).thenReturn(new EventList());
+        ResultMatcher view = MockMvcResultMatchers.view().name("searchForm");
+        this.mockMvc.perform(get("/events/search"))
+                .andExpect(status().isOk())
+                .andExpect(view);
+    }
+    
+    @Test
+    void search_withParams() throws Exception {
+        Mockito.when(eventFeignClient.search(Map.of("location","genk"))).thenReturn(createEventList());
+        ResultMatcher view = MockMvcResultMatchers.view().name("eventList");
+        this.mockMvc.perform(get("/events/search").param("location","genk"))
+                .andExpect(status().isOk())
+                .andExpect(view)
+                .andExpect(model().attribute("events", createEventList().getEventList()));
     }
 
     private Event createEvent() throws Exception {

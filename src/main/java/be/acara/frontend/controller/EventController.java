@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -77,19 +76,12 @@ public class EventController {
     }
     
     @GetMapping("/search")
-    public String getSearchForm() {
-        return "searchForm";
-    }
-    
-    @GetMapping("/search/results")
-    @PostMapping("/search")
-    public String handleSearchForm(Model model, @RequestParam(value = "location", required = false) String location) {
-        Map<String, String> params = new HashMap<>();
-        if (location != null) {
-            params.put("location", location);
+    public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
+        if (!params.isEmpty()) {
+            EventList searchResults = eventFeignClient.search(params);
+            model.addAttribute("events",searchResults.getEventList());
+            return "eventList";
         }
-        EventList searchResults = eventFeignClient.search(params);
-        model.addAttribute("events",searchResults.getEventList());
-        return "eventList";
+        return "searchForm";
     }
 }

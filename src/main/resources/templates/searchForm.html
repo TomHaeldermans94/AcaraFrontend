@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
     <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
-    <title></title>
+    <title>Search</title>
 </head>
 <body>
-<form th:method="post" th:fragment="searchForm">
+<form th:method="get" th:fragment="searchForm">
     <div>
         <label th:for="location">Location</label>
-        <input id="location" th:type="text" />
+        <input id="location" name="location" th:type="text" />
     </div>
 </form>
 </body>
