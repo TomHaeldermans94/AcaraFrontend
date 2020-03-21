@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Base64;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/events")
@@ -72,5 +73,15 @@ public class EventController {
         }
         eventFeignClient.editEvent(event.getId(), event);
         return "redirect:/events";
+    }
+    
+    @GetMapping("/search")
+    public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
+        if (!params.isEmpty()) {
+            EventList searchResults = eventFeignClient.search(params);
+            model.addAttribute("events",searchResults.getEventList());
+            return "eventList";
+        }
+        return "searchForm";
     }
 }

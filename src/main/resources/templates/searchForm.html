@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
     <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
-    <title>Add Event</title>
+    <title>Search</title>
 </head>
 <body>
-<h1>Add event</h1>
-<form th:insert="eventForm :: eventForm" th:method="post"></form>
+<form th:method="get" th:fragment="searchForm">
+    <div>
+        <label th:for="location">Location</label>
+        <input id="location" name="location" th:type="text" />
+    </div>
+</form>
 </body>
 </html>
