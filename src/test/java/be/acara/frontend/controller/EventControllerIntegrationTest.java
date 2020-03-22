@@ -27,6 +27,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +75,7 @@ class EventControllerIntegrationTest {
     void addEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).addEvent(createEvent());
         Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
-        Mockito.when(eventFeignClient.getEventById(null)).thenReturn(createEvent());
+        Mockito.when(eventFeignClient.getEventById(nullable(Long.class))).thenReturn(createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("addEvent");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", getImageBytes("image_event_1.jpg"));
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/events/new").file(mockMultipartFile))
@@ -87,7 +88,7 @@ class EventControllerIntegrationTest {
     void editEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).editEvent(createEvent().getId(), createEvent());
         Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
-        Mockito.when(eventFeignClient.getEventById(null)).thenReturn(createEvent());
+        Mockito.when(eventFeignClient.getEventById(nullable(Long.class))).thenReturn(createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("editEvent");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", getImageBytes("image_event_1.jpg"));
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/events/1").file(mockMultipartFile))
