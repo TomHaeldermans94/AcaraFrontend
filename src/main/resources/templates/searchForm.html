@@ -12,6 +12,19 @@
         <label th:for="location">Location</label>
         <input id="location" name="location" th:type="text" />
     </div>
+    <div>
+        <div>
+            Date
+        </div>
+        <label th:for="startDate">From</label>
+        <input id="startDate" name="startDate" th:type="date" />
+        <label th:for="endDate">Until</label>
+        <input id="endDate" name="endDate" th:type="date" />
+    </div>
+    <div>
+        <button type="submit" value="submit">Confirm</button>
+        <button type="reset" value="submit">Reset</button>
+    </div>
 </form>
 </body>
 </html>
