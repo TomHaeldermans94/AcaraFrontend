@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Event detail</title>
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/></head>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
+</head>
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
 <body th:object="${event}">
 <p th:text="'ID: ' + ${event.id}">ID</p>

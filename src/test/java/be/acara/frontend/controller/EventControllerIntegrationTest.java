@@ -4,7 +4,6 @@ import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.model.Event;
 import be.acara.frontend.model.EventList;
 import be.acara.frontend.service.EventFeignClient;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -75,6 +74,7 @@ class EventControllerIntegrationTest {
     void addEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).addEvent(createEvent());
         Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
+        Mockito.when(eventFeignClient.getEventById(null)).thenReturn(createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("addEvent");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", getImageBytes("image_event_1.jpg"));
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/events/new").file(mockMultipartFile))
@@ -87,6 +87,7 @@ class EventControllerIntegrationTest {
     void editEvent() throws Exception {
         Mockito.doNothing().when(eventFeignClient).editEvent(createEvent().getId(), createEvent());
         Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
+        Mockito.when(eventFeignClient.getEventById(null)).thenReturn(createEvent());
         ResultMatcher view = MockMvcResultMatchers.view().name("editEvent");
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", getImageBytes("image_event_1.jpg"));
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/events/1").file(mockMultipartFile))
@@ -166,14 +167,5 @@ class EventControllerIntegrationTest {
 
     private String compareBase64Image() throws Exception {
         return Base64.getEncoder().encodeToString(getImageBytes("image_event_1.jpg"));
-    }
-
-    private static String asJsonString(final Object obj) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

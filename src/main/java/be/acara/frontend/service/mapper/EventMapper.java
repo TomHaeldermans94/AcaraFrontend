@@ -48,4 +48,12 @@ public class EventMapper {
         }
         return event;
     }
+
+    public Event mapEventWithoutImageToEventWithUnchangedImage(EventWithoutImage eventWithoutImage, byte[] image) {
+        Event event = map(eventWithoutImage);
+        if (image != null) {
+            event.setImage(image);
+        }
+        return event;
+    }
 }
