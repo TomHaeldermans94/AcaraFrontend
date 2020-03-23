@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Event {
+public class EventWithoutImage {
 
     private Long id;
 
@@ -32,7 +32,6 @@ public class Event {
 
     @NotBlank(message = "NotBlank.event.description")
     private String description;
-    private byte[] image;
 
     @NotBlank(message = "NotBlank.event.location")
     private String location;
