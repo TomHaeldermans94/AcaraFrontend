@@ -101,6 +101,7 @@ public class EventController {
     @GetMapping("/search")
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
         if (!params.isEmpty()) {
+            params.entrySet().removeIf(e -> e.getValue().isEmpty());
             EventList searchResults = eventFeignClient.search(params);
             model.addAttribute("events", searchResults.getEventList());
             return "eventList";

@@ -12,6 +12,19 @@
         <label th:for="location">Location</label>
         <input id="location" name="location" th:type="text" />
     </div>
+    <div>
+        <div>
+            Price
+        </div>
+        <label th:for="minPrice">Min</label>
+        <input id="minPrice" name="minPrice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+        <label th:for="maxPrice">Max</label>
+        <input id="maxPrice" name="maxPrice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+    </div>
+    <div>
+        <button type="submit" value="submit">Confirm</button>
+        <button type="reset" value="submit">Reset</button>
+    </div>
 </form>
 </body>
 </html>
