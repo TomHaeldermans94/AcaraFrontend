@@ -7,7 +7,12 @@
     <title>Add Event</title>
 </head>
 <body>
-<h1>Add event</h1>
+
+<div class="px-2 py-2">
+    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top"/>
+    <h1> Add event</h1>
+    <img src="../images/logo-music.jpg.jpg">
+</div>
 <form th:insert="eventForm :: eventForm" th:method="post" enctype="multipart/form-data"></form>
 </body>
 </html>
