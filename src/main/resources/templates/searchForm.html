@@ -10,16 +10,27 @@
 <form th:method="get" th:fragment="searchForm">
     <div>
         <label th:for="location">Location</label>
-        <input id="location" name="location" th:type="text" />
+        <input id="location" name="location" th:type="text"/>
     </div>
     <div>
         <div>
             Price
         </div>
         <label th:for="minPrice">Min</label>
-        <input id="minPrice" name="minPrice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+        <input id="minPrice" name="minPrice" type="text"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
         <label th:for="maxPrice">Max</label>
-        <input id="maxPrice" name="maxPrice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+        <input id="maxPrice" name="maxPrice" type="text"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
+    </div>
+    <div>
+        <label th:for="category">Category</label>
+        <select name="category" id="eventCategory" th:type="text">
+            <option th:each="category: ${categoryList}"
+                    th:value="${category}"
+                    th:text="${category}">
+            </option>
+        </select>
     </div>
     <div>
         <div>
