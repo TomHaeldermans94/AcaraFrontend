@@ -22,6 +22,15 @@
         <input id="maxPrice" name="maxPrice" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
     </div>
     <div>
+        <div>
+            Date
+        </div>
+        <label th:for="startDate">From</label>
+        <input id="startDate" name="startDate" th:type="date" />
+        <label th:for="endDate">Until</label>
+        <input id="endDate" name="endDate" th:type="date" />
+    </div>
+    <div>
         <button type="submit" value="submit">Confirm</button>
         <button type="reset" value="submit">Reset</button>
     </div>
