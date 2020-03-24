@@ -60,6 +60,7 @@ class EventControllerIntegrationTest {
                 .andExpect(model().attribute("eventImage", compareBase64Image()));
     }
 
+
     @Test
     void getAllEvents() throws Exception {
 
