@@ -66,7 +66,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public String displayEditEventForm(@PathVariable("id") long id, Model model) {
+    public String displayEditEventForm(@PathVariable("id") Long id, Model model) {
         Event event = eventFeignClient.getEventById(id);
         model.addAttribute("event", event);
         if (event.getImage() != null) {
@@ -107,6 +107,12 @@ public class EventController {
             return "eventList";
         }
         return "searchForm";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteEvent(@PathVariable("id") Long id){
+        eventFeignClient.deleteEvent(id);
+        return "redirect:/events";
     }
 
     @ModelAttribute(name = "categoryList")
