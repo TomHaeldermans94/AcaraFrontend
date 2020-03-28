@@ -14,6 +14,11 @@
 <p th:text="'Price: ' + ${event.price}">Price</p>
 <p th:text="'Category: ' + ${event.category}">Category</p>
 <p th:text="'Location: ' + ${event.location}">Location</p>
+<a href="/events"
+   th:href="@{|/events/${event.id}|}">
+    Edit
+</a>
+<p th:insert="deleteEvent :: deleteEvent"></p>
 <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
 </body>
 </html>

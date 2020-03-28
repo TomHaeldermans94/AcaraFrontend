@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
+    <title></title>
+</head>
+<body>
+<a href="/events/delete"
+   th:href="@{|/events/delete/${event.id}|}"
+   onclick="return confirm('Are you sure you want to delete this event?');"
+   th:fragment="deleteEvent">
+    Delete
+</a>
+</body>
+</html>
