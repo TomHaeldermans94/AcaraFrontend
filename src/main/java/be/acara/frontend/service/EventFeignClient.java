@@ -28,4 +28,7 @@ public interface EventFeignClient {
     
     @GetMapping("/search")
     EventList search(@RequestParam Map<String, String> searchParams);
+
+    @DeleteMapping("/{id}")
+    void deleteEvent(@PathVariable("id") Long id);
 }

@@ -98,6 +98,21 @@ class EventControllerIntegrationTest {
     }
 
     @Test
+    void deleteEvent() throws Exception {
+        Long id = 1L;
+        Mockito.doNothing().when(eventFeignClient).deleteEvent(createEvent().getId());
+        Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
+        Mockito.when(eventFeignClient.getEvents()).thenReturn(createEventListAfterDelete());
+        ResultMatcher view = MockMvcResultMatchers.view().name("redirect:/events");
+        this.mockMvc.perform(get(String.format("/events/delete/%d", id)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view);
+        this.mockMvc.perform(get("/events"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("events", createEventListAfterDelete().getEventList()));
+    }
+
+    @Test
     void search_noParams() throws Exception {
         Mockito.when(eventFeignClient.search(Map.of("location", "genk"))).thenReturn(new EventList());
         Mockito.when(eventFeignClient.getAllCategories()).thenReturn(createCategoriesList());
@@ -156,6 +171,12 @@ class EventControllerIntegrationTest {
     private EventList createEventList() throws Exception {
         List<Event> events = new ArrayList<>();
         events.add(createEvent());
+        events.add(createEvent2());
+        return new EventList(events);
+    }
+
+    private EventList createEventListAfterDelete() throws Exception {
+        List<Event> events = new ArrayList<>();
         events.add(createEvent2());
         return new EventList(events);
     }
