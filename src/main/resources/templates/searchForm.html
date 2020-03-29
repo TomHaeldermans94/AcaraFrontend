@@ -8,6 +8,12 @@
 </head>
 <body>
 <form th:method="get" th:fragment="searchForm">
+
+    <div>
+        <label th:for="name">Name</label>
+        <input id="name" name="name" th:type="text"/>
+    </div>
+
     <div>
         <label th:for="location">Location</label>
         <input id="location" name="location" th:type="text" />
