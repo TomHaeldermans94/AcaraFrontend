@@ -5,6 +5,7 @@
     <title></title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
     <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
+    <link rel="stylesheet" href="css/custom.css" th:href="@{../resources/css/custom.css}"/>
 </head>
 <body>
 
@@ -13,13 +14,12 @@
 <form modelAttribute="event" th:object="${event}" th:fragment="eventForm" class="form-horizontal">
 
 
-    <div class="container-fluid">
+    <div class="container-fluid align-content-center">
         <div class="row">
             <div class="col-md-12">
 
                 <div class="form-group row">
-                    <label class="control-label col-md-2 float-left" for="eventName" th:for="${#ids.next('name')}">Event
-                        name: </label>
+                    <label class="control-label col-md-2 float-left" for="eventName" th:for="${#ids.next('name')}">Event name: </label>
                     <div class="col-md-8">
                         <input class="col-md-10" type="text" id="eventName" placeholder="Event name"
                                th:field="${event.name}" th:errorClass="errorField"/>
@@ -43,8 +43,8 @@
                 <div class="form-group row">
                     <label class="control-label col-md-2 float-left" for="eventLocation"
                            th:for="${#ids.next('location')}">Location: </label>
-                    <div class="col-lg-10">
-                        <input class="col-lg-8" type="text" id="eventLocation" placeholder="Event location"
+                    <div class="col-md-8">
+                        <input class="col-md-10" type="text" id="eventLocation" placeholder="Event location"
                                th:field="${event.location}"
                                th:errorClass="errorField"/>
                         <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="errorMessage">Event location is required</span>
@@ -54,8 +54,8 @@
                 <div class="form-group row">
                     <label class="control-label col-md-2 float-left" for="eventCategory"
                            th:for="${#ids.next('category')}">Category:</label>
-                    <div class="col-lg-10">
-                        <select class="col-lg-8" th:field="${event.category}" id="eventCategory">
+                    <div class="col-md-8">
+                        <select class="col-md-10" th:field="${event.category}" id="eventCategory">
                             <option th:each="category: ${categoryList}"
                                     th:value="${category}"
                                     th:text="${category}">
@@ -69,8 +69,8 @@
                 <div class="form-group row">
                     <label class="control-label col-lg-2 float-left" for="eventPrice"
                            th:for="${#ids.next('price')}">Price: </label>
-                    <div class="col-lg-10">
-                        <input class="col-lg-8" type="number" id="eventPrice" placeholder="Price..."
+                    <div class="col-md-8">
+                        <input class="col-md-10" type="number" id="eventPrice" placeholder="Price..."
                                th:field="${event.price}"
                                th:errorClass="errorField"/>
                         <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
@@ -81,8 +81,8 @@
                 <div class="form-group row">
                     <label class="control-label col-lg-2 float-left" for="eventDescription"
                            th:for="${#ids.next('description')}">Description: </label>
-                    <div class="col-lg-10">
-                        <input class="col-lg-8" type="text" id="eventDescription" placeholder="Description..."
+                    <div class="col-md-8">
+                        <input class="col-md-10" type="text" id="eventDescription" placeholder="Description..."
                                th:field="${event.description}"
                                th:errorClass="errorField"/>
                         <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
