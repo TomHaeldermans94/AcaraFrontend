@@ -19,7 +19,8 @@
     <div class="container-fluid align-content-center">
         <div class="row align-items-center">
 
-            <div class="col-md-12">
+
+            <div class="col col-md-10">
 
                 <div class="form-group row">
                     <label class="control-label col-md-2 float-left " for="eventName" th:for="${#ids.next('name')}">Event
@@ -33,7 +34,8 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="control-label col-md-2 float-left" for="eventDate" th:for="${#ids.next('eventDate')}">Date: </label>
+                    <label class="control-label col-md-2 float-left" for="eventDate"
+                           th:for="${#ids.next('eventDate')}">Date: </label>
                     <div class="col-md-8 ">
                         <input class="col-md-10 form-control-lg" type="datetime-local" id="eventDate"
                                placeholder="Event date"
@@ -43,7 +45,6 @@
                               class="errorMessage">Event date is required</span>
                     </div>
                 </div>
-
 
                 <div class="form-group row">
                     <label class="control-label col-md-2 float-left" for="eventLocation"
@@ -108,13 +109,14 @@
                     <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
                     <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
                 </div>
-
-
-                <div class="form-group" th:if="${eventImage != null}">
-                    <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
-                </div>
-
             </div>
+
+            <div class="col">
+                <div class="form-group" th:if="${eventImage != null}">
+                    <img th:src="@{'data:image/png;base64,'+${eventImage}}" />
+                </div>
+            </div>
+
         </div>
     </div>
 </form>
