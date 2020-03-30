@@ -1,13 +1,11 @@
 package be.acara.frontend.controller.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 public class CategoriesList {
     List<String> categories;
