@@ -1,10 +1,13 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.controller.dto.EventDto;
+import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.Event;
 import be.acara.frontend.model.EventList;
-import be.acara.frontend.model.EventWithoutImage;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.mapper.EventMapper;
+import org.apache.juli.logging.Log;
+import org.apache.juli.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,9 @@ public class EventController {
     private final EventFeignClient eventFeignClient;
     private final EventMapper mapper;
 
+    private Log logger = LogFactory.getLog(this.getClass());
+
+
     @Autowired
     public EventController(EventFeignClient eventFeignClient, EventMapper mapper) {
         this.eventFeignClient = eventFeignClient;
@@ -34,7 +41,8 @@ public class EventController {
 
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
-        Event event = eventFeignClient.getEventById(id);
+        EventDto eventDto = eventFeignClient.getEventById(id);
+        Event event = mapper.map(eventDto);
         model.addAttribute("event", event);
         if (event.getImage() != null) {
             model.addAttribute("eventImage", Base64.getEncoder().encodeToString(event.getImage()));
@@ -44,7 +52,8 @@ public class EventController {
 
     @GetMapping
     public String findAllEvents(ModelMap model) {
-        EventList eventList = eventFeignClient.getEvents();
+        EventDtoList eventDtoList = eventFeignClient.getEvents();
+        EventList eventList = mapper.map(eventDtoList);
         model.addAttribute("events", eventList.getEventList());
         return "eventList";
     }
@@ -56,18 +65,25 @@ public class EventController {
     }
 
     @PostMapping("/new")
-    public ModelAndView handleAddEventForm(@Valid @ModelAttribute("event") EventWithoutImage eventWithoutImage, BindingResult br, @RequestParam("image") MultipartFile image) {
-        Event eventFromDb = eventFeignClient.getEventById(eventWithoutImage.getId());
+    public ModelAndView handleAddEventForm(@Valid @ModelAttribute("event") Event event, BindingResult br, @RequestParam("eventImage") MultipartFile eventImage) {
         if (br.hasErrors()) {
-            return showNewModelAndViewInCaseOfErrorsInAddOrEditEvents(eventFromDb,"addEvent");
+            return new ModelAndView("addEvent");
         }
-        eventFeignClient.addEvent(mapper.mapEventWithoutImageToEventWithMultipartImage(eventWithoutImage, image));
+        if (eventImage != null) {
+            try {
+                event.setImage(eventImage.getBytes());
+            } catch (IOException e) {
+                logger.error("Something went wrong when setting the image to the event");
+            }
+        }
+        eventFeignClient.addEvent(mapper.map(event));
         return new ModelAndView("redirect:/events");
     }
 
     @GetMapping("/{id}")
     public String displayEditEventForm(@PathVariable("id") Long id, Model model) {
-        Event event = eventFeignClient.getEventById(id);
+        EventDto eventDto = eventFeignClient.getEventById(id);
+        Event event = mapper.map(eventDto);
         model.addAttribute("event", event);
         if (event.getImage() != null) {
             model.addAttribute("eventImage", Base64.getEncoder().encodeToString(event.getImage()));
@@ -76,34 +92,37 @@ public class EventController {
     }
 
     @PostMapping("/{id}")
-    public ModelAndView handleEditEventForm(@Valid @ModelAttribute("event") EventWithoutImage eventWithoutImage, BindingResult br, @RequestParam("image") MultipartFile image) {
-        Event eventFromDb = eventFeignClient.getEventById(eventWithoutImage.getId());
+    public ModelAndView handleEditEventForm(@Valid @ModelAttribute("event") Event event, BindingResult br, @RequestParam("eventImage") MultipartFile eventImage) {
+        EventDto eventDtoFromDb = eventFeignClient.getEventById(event.getId());
+        Event eventFromDb = mapper.map(eventDtoFromDb);
         if (br.hasErrors()) {
-            return showNewModelAndViewInCaseOfErrorsInAddOrEditEvents(eventFromDb, "editEvent");
+            return showNewModelAndViewInCaseOfErrorsInEditEvent(eventFromDb);
         }
-        if (image.getSize() != 0) {
-            eventFromDb = mapper.mapEventWithoutImageToEventWithMultipartImage(eventWithoutImage, image);
-        } else {
-            eventFromDb = mapper.mapEventWithoutImageToEventWithUnchangedImage(eventWithoutImage, eventFromDb.getImage());
+        if (eventImage != null) {
+            try {
+                event.setImage(eventImage.getBytes());
+            } catch (IOException e) {
+                logger.error("Something went wrong when setting the image to the event");
+            }
         }
-        eventFeignClient.editEvent(eventFromDb.getId(), eventFromDb);
+        eventFeignClient.editEvent(eventFromDb.getId(), mapper.map(event));
         return new ModelAndView("redirect:/events");
     }
 
-    private ModelAndView showNewModelAndViewInCaseOfErrorsInAddOrEditEvents(Event event, String viewName) {
+    private ModelAndView showNewModelAndViewInCaseOfErrorsInEditEvent(Event event) {
         if (event.getImage() != null) {
             String imageString = Base64.getEncoder().encodeToString(event.getImage());
-            return new ModelAndView(viewName, "eventImage", imageString);
+            return new ModelAndView("editEvent", "eventImage", imageString);
         }
-        return new ModelAndView(viewName);
+        return new ModelAndView("editEvent");
     }
 
     @GetMapping("/search")
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
         if (!params.isEmpty()) {
             params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parcing dates or bigDecimals
-            EventList searchResults = eventFeignClient.search(params);
-            model.addAttribute("events", searchResults.getEventList());
+            EventDtoList searchResults = eventFeignClient.search(params);
+            model.addAttribute("events", mapper.map(searchResults).getEventList());
             return "eventList";
         }
         return "searchForm";

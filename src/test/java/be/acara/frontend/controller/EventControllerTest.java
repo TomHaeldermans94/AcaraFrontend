@@ -1,9 +1,9 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.CategoriesList;
+import be.acara.frontend.controller.dto.EventDto;
+import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.Event;
-import be.acara.frontend.model.EventList;
-import be.acara.frontend.model.EventWithoutImage;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,15 +52,16 @@ class EventControllerTest {
     @Test
     void displayEvent() throws Exception {
         Long id = 1L;
-        Event event = firstEvent();
-        when(eventFeignClient.getEventById(id)).thenReturn(event);
-        
+        EventDto eventDto = firstEventDto();
+        when(eventFeignClient.getEventById(id)).thenReturn(eventDto);
+        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+
         
         mockMvc.perform(get("/events/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventDetails"))
                 .andExpect(model().attributeExists("event"))
-                .andExpect(model().attribute("event", event))
+                .andExpect(model().attribute("event", mapper.map(eventDto)))
                 .andExpect(model().attribute("categoryList", categoriesList.getCategories()));
     }
     
@@ -75,7 +76,8 @@ class EventControllerTest {
     @Test
     void displayEditEventForm() throws Exception {
         Long id = 1L;
-        when(eventFeignClient.getEventById(id)).thenReturn(firstEvent());
+        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
         
         mockMvc.perform(get("/events/{id}", id))
                 .andExpect(status().isOk())
@@ -85,25 +87,24 @@ class EventControllerTest {
     
     @Test
     void findAllEvents() throws Exception {
-        EventList eventList = createEventList();
-        when(eventFeignClient.getEvents()).thenReturn(eventList);
+        EventDtoList eventDtoList = createEventDtoList();
+        when(eventFeignClient.getEvents()).thenReturn(eventDtoList);
+        when(mapper.map(eventDtoList)).thenReturn(createEventList());
         
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", eventList.getEventList()));
+                .andExpect(model().attribute("events", mapper.map(eventDtoList).getEventList()));
     }
     
     @Test
     void handleAddEventForm() throws Exception {
         doNothing().when(eventFeignClient).addEvent(any());
-        when(mapper.mapEventWithoutImageToEventWithMultipartImage(any(),any())).thenReturn(firstEvent());
-        
-        MockMultipartFile image = new MockMultipartFile("image", getImage1AsBytes());
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
         mockMvc.perform(multipart("/events/new")
                 .file(image)
-                .flashAttr("event", map(firstEvent()))
+                .flashAttr("event", firstEvent())
         )
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
@@ -114,12 +115,13 @@ class EventControllerTest {
     void handleEditEventForm() throws Exception{
         Long id = 1L;
         doNothing().when(eventFeignClient).editEvent(anyLong(),any());
-        MockMultipartFile image = new MockMultipartFile("image", getImage1AsBytes());
-        when(mapper.mapEventWithoutImageToEventWithMultipartImage(any(),any())).thenReturn(firstEvent());
+        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());;
         
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
-                .flashAttr("event", map(firstEvent())))
+                .flashAttr("event", firstEvent()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
@@ -128,16 +130,15 @@ class EventControllerTest {
     @Test
     void handleEditEventForm_withUnchangedImage() throws Exception{
         Long id = 1L;
-        EventWithoutImage eventWithoutImage = map(firstEvent());
-        Event eventFromDb = firstEvent();
-        MockMultipartFile image = new MockMultipartFile("image",new byte[0]);
+        Event event = firstEvent();
+        MockMultipartFile image = new MockMultipartFile("eventImage",new byte[0]);
         
-        when(eventFeignClient.getEventById(id)).thenReturn(firstEvent());
-        when(mapper.mapEventWithoutImageToEventWithUnchangedImage(eventWithoutImage, eventFromDb.getImage())).thenReturn(eventFromDb);
-        
+        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
-                .flashAttr("event", eventWithoutImage))
+                .flashAttr("event", event))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
@@ -145,18 +146,15 @@ class EventControllerTest {
     
     @Test
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNullImage_whenAddEvent() throws Exception {
-        EventWithoutImage event = map(firstEvent());
+        Event event = firstEvent();
         event.setName("");
-        Event eventFromDb = firstEvent();
-        eventFromDb.setImage(null);
-        when(eventFeignClient.getEventById(anyLong())).thenReturn(eventFromDb);
-    
-        MockMultipartFile image = new MockMultipartFile("image", getImage1AsBytes());
+        EventDto eventDto = firstEventDto();
+        eventDto.setImage(null);
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
     
         mockMvc.perform(multipart("/events/new")
                 .file(image)
-                .flashAttr("event", event)
-        )
+                .flashAttr("event", event))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addEvent"))
                 .andExpect(model().attributeHasFieldErrors("event","name"));
@@ -164,12 +162,13 @@ class EventControllerTest {
     
     @Test
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNonNullImage_whenEditEvent() throws Exception {
-        EventWithoutImage event = map(firstEvent());
+        Event event = firstEvent();
         event.setName("");
-        Event eventFromDb = firstEvent();
+        EventDto eventFromDb = firstEventDto();
         when(eventFeignClient.getEventById(anyLong())).thenReturn(eventFromDb);
-        
-        MockMultipartFile image = new MockMultipartFile("image", getImage1AsBytes());
+        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
         mockMvc.perform(multipart("/events/{id}", 1L)
                 .file(image)
@@ -195,7 +194,8 @@ class EventControllerTest {
     
     @Test
     void search() throws Exception {
-        when(eventFeignClient.search(anyMap())).thenReturn(createEventList());
+        when(eventFeignClient.search(anyMap())).thenReturn(createEventDtoList());
+        when(mapper.map(createEventDtoList())).thenReturn(createEventList());
         
         mockMvc.perform(get("/events/search").queryParam("location","genk"))
                 .andExpect(status().isOk())
