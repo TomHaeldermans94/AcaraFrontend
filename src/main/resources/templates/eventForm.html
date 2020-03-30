@@ -95,30 +95,33 @@
                                   th:errorClass="errorField"/>
                         <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
                               class="errorMessage">Event description is required</span>
+                        <div class="form-group">
+                            <label for="eventImage">Image: </label>
+                            <input type="file" name="eventImage" id="eventImage">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-lg-2 float-left" for="eventImage">Image: </label>
+                        <div class="col-lg-10">
+                            <input type="file" name="eventImage" id="eventImage">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+                        <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label class="control-label col-lg-2 float-left" for="eventImage">Image: </label>
-                    <div class="col-lg-10">
-                        <input c type="file" name="image" id="eventImage">
+                <div class="col">
+                    <div class="form-group" th:if="${eventImage != null}">
+                        <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
-                    <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
-                </div>
             </div>
-
-            <div class="col">
-                <div class="form-group" th:if="${eventImage != null}">
-                    <img th:src="@{'data:image/png;base64,'+${eventImage}}" />
-                </div>
-            </div>
-
         </div>
-    </div>
 </form>
 </body>
 </html>

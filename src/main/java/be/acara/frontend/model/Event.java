@@ -32,6 +32,7 @@ public class Event {
 
     @NotBlank(message = "NotBlank.event.description")
     private String description;
+
     private byte[] image;
 
     @NotBlank(message = "NotBlank.event.location")
