@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}" type="text/css"/>
+    <title></title>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-dark" th:fragment="navbar">
+
+    <img src="/images/acara-logo-1.jpg" class="img-fluid">
+
+
+
+        <h1 style="color:white;">Acara Events</h1>
+
+
+        <div class="nav-item">
+            <a class="nav-link" th:href="@{/logout}">
+            <span style="color: firebrick">
+                <i class="fa fa-user fa-3x" aria-hidden="true" style="color: firebrick"></i>
+                Logout
+            </span>
+            </a>
+        </div>
+
+</nav>
+</body>
+</html>
