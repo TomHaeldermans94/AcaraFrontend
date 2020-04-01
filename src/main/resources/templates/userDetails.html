@@ -10,8 +10,9 @@
 <p th:text="'ID: ' + ${user.id}">ID</p>
 <p th:text="'First name: ' + ${user.firstName}">First name</p>
 <p th:text="'Last name: ' + ${user.lastName}">Last name</p>
+<p>Subscribed Events</p>
 <ul>
-    <li th:each="event : ${user.events}">
+    <li th:each="event : ${events}">
         <p th:text="'Name: ' + ${event.name}">Name</p>
     </li>
 </ul>

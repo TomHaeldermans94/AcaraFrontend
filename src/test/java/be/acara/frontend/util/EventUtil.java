@@ -92,6 +92,14 @@ public class EventUtil {
                 .image(getImage1AsBytes())
                 .build();
     }
+
+    public static List<Event> createListsOfEventsOfSize3() {
+        return List.of(
+                firstEvent(),
+                secondEvent(),
+                thirdEvent()
+        );
+    }
     
     public static EventDtoList createEventDtoList() {
         return new EventDtoList(List.of(
