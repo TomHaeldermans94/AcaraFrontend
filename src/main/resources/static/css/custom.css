@@ -1,0 +1,14 @@
+body {
+    background: url('/images/bass-background.jpg');
+    background-size: auto;
+}
+
+label {
+    font-size: 150%;
+    align-content: center;
+}
+
+textarea {
+    resize: none;
+    height: 20px;
+}

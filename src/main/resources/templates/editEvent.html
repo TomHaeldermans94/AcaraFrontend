@@ -2,12 +2,18 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
-    <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}" type="text/css"/>
     <title>Edit event</title>
 </head>
 <body>
-<h1>Edit event</h1>
-<form th:insert="eventForm :: eventForm" th:method="post" enctype="multipart/form-data"></form>
+<div th:insert="navbar :: navbar"></div>
+
+<div class="col-ml-12 ml-5" >
+    <h1>Edit event</h1>
+</div>
+<form th:insert="eventForm :: eventForm" th:method="post" enctype="multipart/form-data" class="mt-3 ml-4 w-75"></form>
 </body>
 </html>

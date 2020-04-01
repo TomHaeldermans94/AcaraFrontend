@@ -1,14 +1,14 @@
 package be.acara.frontend.controller.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Getter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-public class CategoriesList {
-    List<String> categories;
+@AllArgsConstructor
+public class EventDtoList {
+    private List<EventDto> eventDtoList;
 }
