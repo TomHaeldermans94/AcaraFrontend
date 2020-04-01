@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Event detail</title>
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
 </head>
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
 <body th:object="${event}">
@@ -15,6 +15,11 @@
 <p th:text="'Price: ' + ${event.price}">Price</p>
 <p th:text="'Category: ' + ${event.category}">Category</p>
 <p th:text="'Location: ' + ${event.location}">Location</p>
+<a href="/events"
+   th:href="@{|/events/${event.id}|}">
+    Edit
+</a>
+<p th:insert="deleteEvent :: deleteEvent"></p>
 <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
 </body>
 </html>

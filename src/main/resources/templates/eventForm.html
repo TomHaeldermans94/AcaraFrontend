@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
-    <link rel="stylesheet" href="../static/css/form.css" th:href="@{../resources/css/form.css}"/>
-    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{/css/custom.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"
-          type="text/css"/>
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}" type="text/css"/>
 </head>
 <body>
-
 
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
 <form modelAttribute="event" th:object="${event}" th:fragment="eventForm" class="form-horizontal">
 
-
     <div class="container-fluid align-content-center">
         <div class="row align-items-center">
-
-
             <div class="col col-md-10">
-
                 <div class="form-group row">
                     <label class="control-label col-md-2 float-left " for="eventName" th:for="${#ids.next('name')}">Event
                         name: </label>
@@ -39,6 +33,8 @@
                     <div class="col-md-8 ">
                         <input class="col-md-10 form-control-lg" type="datetime-local" id="eventDate"
                                placeholder="Event date"
+                               min="2000-01-01T00:00"
+                               max="2099-12-31T23:59"
                                th:field="${event.eventDate}"
                                th:errorClass="errorField"/>
                         <span th:if="${#fields.hasErrors('eventDate')}" th:errors="*{eventDate}"
@@ -92,7 +88,7 @@
                         <textarea class="form-control col-md-10" rows="5" id="eventDescription"
                                   placeholder="Description"
                                   th:field="${event.description}"
-                                  th:errorClass="errorField"/>
+                                  th:errorClass="errorField"></textarea>
                         <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
                               class="errorMessage">Event description is required</span>
                     </div>
@@ -101,7 +97,7 @@
                 <div class="form-group row">
                     <label class="control-label col-lg-2 float-left" for="eventImage">Image: </label>
                     <div class="col-lg-10">
-                        <input c type="file" name="image" id="eventImage">
+                        <input type="file" name="eventImage" id="eventImage" multiple accept="image/*">
                     </div>
                 </div>
 
@@ -110,14 +106,14 @@
                     <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
                 </div>
             </div>
-
-            <div class="col">
-                <div class="form-group" th:if="${eventImage != null}">
-                    <img th:src="@{'data:image/png;base64,'+${eventImage}}" />
-                </div>
-            </div>
-
         </div>
+
+        <div class="col">
+            <div class="form-group" th:if="${eventImage != null}">
+                <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+            </div>
+        </div>
+
     </div>
 </form>
 </body>
