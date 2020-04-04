@@ -1,6 +1,7 @@
 package be.acara.frontend.security.service;
 
 
+import be.acara.frontend.security.domain.JwtToken;
 import be.acara.frontend.security.domain.User;
 import be.acara.frontend.security.repository.UserRepository;
 import be.acara.frontend.service.UserFeignClient;
@@ -23,6 +24,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private UserFeignClient userFeignClient;
+    @Autowired
+    private JwtTokenService tokenService;
     
     @Override
     @Transactional(readOnly = true)
@@ -33,7 +36,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         
         ResponseEntity<Void> login = userFeignClient.login(String.format("{\"username\": \"%s\", \"password\": \"%s\"}", user.getUsername(), user.getPassword()));
-        System.out.println(login.getHeaders().get("Authorization"));
+        JwtToken token = JwtToken.builder().token(login.getHeaders().get("Authorization").get(0)).username(username).build();
+        tokenService.save(token);
     
         Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))

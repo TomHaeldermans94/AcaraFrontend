@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "userFeignClient", url = "${baseURL}/api/users")
+@FeignClient(value = "userFeignClient", url = "${baseURL}")
 public interface UserFeignClient {
 
-    @PostMapping("/sign-up")
+    @PostMapping("/api/users/sign-up")
     ResponseEntity<Void> signUp(User user);
     
     @PostMapping("/login")
