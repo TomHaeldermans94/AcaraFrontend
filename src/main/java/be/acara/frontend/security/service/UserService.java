@@ -3,6 +3,8 @@ package be.acara.frontend.security.service;
 import be.acara.frontend.security.domain.User;
 import be.acara.frontend.security.repository.RoleRepository;
 import be.acara.frontend.security.repository.UserRepository;
+import be.acara.frontend.service.UserFeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +15,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserFeignClient userFeignClient;
     
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userFeignClient = userFeignClient;
     }
     
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(new HashSet<>(roleRepository.findAll()));
+        ResponseEntity<Void> signUpResponse = userFeignClient.signUp(user);
+        if (!signUpResponse.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Something went wrong!");
+        }
         userRepository.save(user);
     }
     
