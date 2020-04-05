@@ -7,15 +7,10 @@
     background-color: #f5c6cb;
 }
 
-.form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-}
-
-.fit-image {
-    width: 100%;
-    object-fit: cover;
+.max-height {
+    max-height: 33vh;
+    width: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }

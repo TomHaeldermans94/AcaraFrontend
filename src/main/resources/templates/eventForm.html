@@ -16,87 +16,111 @@
 
     <div class="container-fluid row">
         <div class="col col-9">
+            <div th:if="${#httpServletRequest.requestURI == '/events/new'}">
+                <h1>
+                    Add a new event
+                </h1>
+            </div>
+            <div th:unless="${#httpServletRequest.requestURI == '/events/new'}">
+                <h1>
+                    Edit event
+                </h1>
+            </div>
             <div class="form-group row">
-                <label class="control-label col-2 float-left " for="eventName" th:for="${#ids.next('name')}">Event
-                    name: </label>
-                <div class="col-7">
-                    <input class="col-9 form-control-lg" type="text" id="eventName" placeholder="Event name"
+                <div class="col-3">
+                    <label class="control-label float-left " for="eventName" th:for="${#ids.next('name')}">Event
+                        name: </label>
+                </div>
+                <div class="col-9">
+                    <input class="form-control-lg w-75" type="text" id="eventName" placeholder="Event name"
                            th:field="${event.name}" th:errorClass="errorField"/>
                     <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
-                          class="errorMessage">Event name is required</span>
+                          class="errorMessage w-75">Event name is required</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventDate"
-                       th:for="${#ids.next('eventDate')}">Date: </label>
-                <div class="col-7 ">
-                    <input class="col-9 form-control-lg" type="datetime-local" id="eventDate"
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventDate"
+                           th:for="${#ids.next('eventDate')}">Date: </label>
+                </div>
+                <div class="col-9 ">
+                    <input class="form-control-lg w-75" type="datetime-local" id="eventDate"
                            placeholder="Event date"
                            min="2000-01-01T00:00"
                            max="2099-12-31T23:59"
                            th:field="${event.eventDate}"
                            th:errorClass="errorField"/>
                     <span th:if="${#fields.hasErrors('eventDate')}" th:errors="*{eventDate}"
-                          class="errorMessage">Event date is required</span>
+                          class="errorMessage w-75">Event date is required</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventLocation"
-                       th:for="${#ids.next('location')}">Location: </label>
-                <div class="col-7">
-                    <input class="col-9 form-control-lg" type="text" id="eventLocation"
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventLocation"
+                           th:for="${#ids.next('location')}">Location: </label>
+                </div>
+                <div class="col-9">
+                    <input class="form-control-lg w-75" type="text" id="eventLocation"
                            placeholder="Event location"
                            th:field="${event.location}"
                            th:errorClass="errorField"/>
-                    <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="errorMessage">Event location is required</span>
+                    <span th:if="${#fields.hasErrors('location')}" th:errors="*{location}" class="errorMessage w-75">Event location is required</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventCategory"
-                       th:for="${#ids.next('category')}">Category:</label>
-                <div class="col-7">
-                    <select class="col-9 form-control-lg" th:field="${event.category}" id="eventCategory">
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventCategory"
+                           th:for="${#ids.next('category')}">Category:</label>
+                </div>
+                <div class="col-9">
+                    <select class="form-control-lg w-75" th:field="${event.category}" id="eventCategory">
                         <option th:each="category: ${categoryList}"
                                 th:value="${category}"
                                 th:text="${category}">
                         </option>
                     </select>
                     <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}"
-                          class="errorMessage">Invalid input</span>
+                          class="errorMessage w-75">Invalid input</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventPrice"
-                       th:for="${#ids.next('price')}">Price: </label>
-                <div class="col-7">
-                    <input class="col-9 form-control-lg" type="number" id="eventPrice" placeholder="Price"
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventPrice"
+                           th:for="${#ids.next('price')}">Price: </label>
+                </div>
+                <div class="col-9">
+                    <input class="form-control-lg w-75" type="number" id="eventPrice" placeholder="Price"
                            th:field="${event.price}"
                            th:errorClass="errorField"/>
                     <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}"
-                          class="errorMessage">Invalid input</span>
+                          class="errorMessage w-75">Invalid input</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventDescription"
-                       th:for="${#ids.next('description')}">Description: </label>
-                <div class="col-7">
-                        <textarea class="form-control-lg col-9" rows="5" id="eventDescription"
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventDescription"
+                           th:for="${#ids.next('description')}">Description: </label>
+                </div>
+                <div class="col-9">
+                        <textarea class="form-control-lg w-75 h-100" rows="3" id="eventDescription"
                                   placeholder="Description"
                                   th:field="${event.description}"
                                   th:errorClass="errorField"></textarea>
                     <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"
-                          class="errorMessage">Event description is required</span>
+                          class="errorMessage w-75">Event description is required</span>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label class="control-label col-2 float-left" for="eventImage">Image: </label>
-                <div class="col-10">
+                <div class="col-3">
+                    <label class="control-label float-left" for="eventImage">Image: </label>
+                </div>
+                <div class="col-9">
                     <input type="file" name="eventImage" id="eventImage" multiple accept="image/*"
                            onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])"/>
                 </div>
@@ -109,11 +133,21 @@
         </div>
 
         <div class="col col-3">
-            <div>
-                <img id="preview" alt="preview image" class="img-fluid"/>
+            <div class="form-group row vh-50" th:if="${eventImage != null}">
+                <div class="col">
+                    <div class="row">Current event image</div>
+                    <div class="row">
+                        <img th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid rounded max-height"/>
+                    </div>
+                </div>
             </div>
-            <div class="form-group" th:if="${eventImage != null}">
-                <img th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid"/>
+            <div class="form-group row vh-50" onerror="this.style.display = 'none'">
+                <div class="col">
+                    <div class="row">New event image</div>
+                    <div class="row">
+                        <img id="preview" class="img-fluid rounded max-height"/>
+                    </div>
+                </div>
             </div>
         </div>
 
