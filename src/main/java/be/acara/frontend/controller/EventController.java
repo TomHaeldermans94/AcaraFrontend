@@ -134,6 +134,11 @@ public class EventController {
         return "redirect:/events";
     }
 
+    @GetMapping(value="/image-removal")
+    public void imageRemoval(){
+        System.out.println("hoi");
+    }
+
     @ModelAttribute(name = "categoryList")
     public List<String> getCategories() {
         return eventFeignClient.getAllCategories().getCategories();

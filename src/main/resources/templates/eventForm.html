@@ -121,10 +121,29 @@
                     <label class="control-label float-left" for="eventImage">Image: </label>
                 </div>
                 <div class="col-9">
-                    <input type="file" name="eventImage" id="eventImage" multiple accept="image/*"
-                           onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])"/>
+                    <div class="row">
+                        <div class="upload-btn-wrapper ml-3">
+                            <button type="button" class="btn btn-primary">Upload</button>
+                            <input type="file" name="eventImage" id="eventImage" multiple accept="image/*" th:value="${eventImage}"
+                                   onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])"/>
+                        </div>
+                        <div class="ml-2">
+                            <button type="button" class="btn btn-danger"
+                                    onclick="deleteImage()">
+                                <script>
+                                    function deleteImage() {
+                                        var eventImage = "${eventImage}";
+                                        document.getElementById('preview').src = '';
+                                        eventImage = null;
+                                    }
+                                </script>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
             <div class="form-group row">
                 <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
@@ -135,7 +154,7 @@
         <div class="col col-3">
             <div class="form-group row vh-50" th:if="${eventImage != null}">
                 <div class="col">
-                    <div class="row">Current event image</div>
+                    <h1 class="row">Current event image</h1>
                     <div class="row">
                         <img th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid rounded max-height"/>
                     </div>
@@ -143,15 +162,15 @@
             </div>
             <div class="form-group row vh-50" onerror="this.style.display = 'none'">
                 <div class="col">
-                    <div class="row">New event image</div>
+                    <h1 class="row">New event image</h1>
                     <div class="row">
                         <img id="preview" class="img-fluid rounded max-height"/>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+
 </form>
 </body>
 </html>
