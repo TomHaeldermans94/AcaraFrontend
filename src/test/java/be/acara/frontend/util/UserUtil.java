@@ -4,7 +4,7 @@ import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.model.Event;
 import be.acara.frontend.model.User;
 
-import java.util.List;
+import java.util.Set;
 
 public class UserUtil {
 
@@ -17,7 +17,7 @@ public class UserUtil {
     }
 
     public static User firstUser() {
-        List<Event> events = EventUtil.createListsOfEventsOfSize3();
+        Set<Event> events = EventUtil.createSetOfEventsOfSize3();
         return User.builder()
                 .id(1L)
                 .firstName("firstName")

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 
 public class EventUtil {
     
@@ -93,8 +94,16 @@ public class EventUtil {
                 .build();
     }
 
-    public static List<Event> createListsOfEventsOfSize3() {
+    public static List<Event> createListOfEventsOfSize3() {
         return List.of(
+                firstEvent(),
+                secondEvent(),
+                thirdEvent()
+        );
+    }
+
+    public static Set<Event> createSetOfEventsOfSize3() {
+        return Set.of(
                 firstEvent(),
                 secondEvent(),
                 thirdEvent()
