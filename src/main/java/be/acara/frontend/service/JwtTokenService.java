@@ -13,6 +13,10 @@ public class JwtTokenService {
     }
     
     public void save(JwtToken token) {
+        JwtToken existingToken = getToken(token.getUsername());
+        if (existingToken != null) {
+            token.setId(existingToken.getId());
+        }
         this.tokenRepository.saveAndFlush(token);
     }
     

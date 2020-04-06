@@ -21,7 +21,7 @@
            th:href="@{|/events/detail/${event.id}|}">
             Detail
         </a>
-        <p th:insert="deleteEvent :: deleteEvent"></p>
+        <p sec:authorize="hasAuthority('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
     </li>
 </ul>
 </body>
