@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .deleteCookies("JSESSIONID");
     
         http.authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/events/new").hasAuthority("ADMIN")
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable();
