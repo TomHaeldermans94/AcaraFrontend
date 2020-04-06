@@ -1,10 +1,9 @@
-package be.acara.frontend.security.service;
+package be.acara.frontend.service;
 
 
-import be.acara.frontend.security.domain.JwtToken;
-import be.acara.frontend.security.domain.User;
-import be.acara.frontend.security.repository.UserRepository;
-import be.acara.frontend.service.UserFeignClient;
+import be.acara.frontend.domain.JwtToken;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;

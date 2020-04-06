@@ -1,9 +1,8 @@
-package be.acara.frontend.security.service;
+package be.acara.frontend.service;
 
-import be.acara.frontend.security.domain.User;
-import be.acara.frontend.security.repository.RoleRepository;
-import be.acara.frontend.security.repository.UserRepository;
-import be.acara.frontend.service.UserFeignClient;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.repository.RoleRepository;
+import be.acara.frontend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

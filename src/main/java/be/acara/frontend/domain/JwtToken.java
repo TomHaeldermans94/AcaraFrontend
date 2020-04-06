@@ -1,4 +1,4 @@
-package be.acara.frontend.security.domain;
+package be.acara.frontend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

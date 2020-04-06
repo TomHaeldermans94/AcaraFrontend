@@ -1,6 +1,6 @@
 package be.acara.frontend.security;
 
-import be.acara.frontend.security.service.JwtTokenService;
+import be.acara.frontend.service.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;

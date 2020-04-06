@@ -1,7 +1,7 @@
-package be.acara.frontend.security.service;
+package be.acara.frontend.service;
 
-import be.acara.frontend.security.domain.JwtToken;
-import be.acara.frontend.security.repository.TokenRepository;
+import be.acara.frontend.domain.JwtToken;
+import be.acara.frontend.repository.TokenRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,7 @@
 package be.acara.frontend.security;
 
-import be.acara.frontend.security.domain.JwtToken;
-import be.acara.frontend.security.service.JwtTokenService;
+import be.acara.frontend.domain.JwtToken;
+import be.acara.frontend.service.JwtTokenService;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

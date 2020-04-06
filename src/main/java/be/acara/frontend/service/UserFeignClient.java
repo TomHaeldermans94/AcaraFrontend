@@ -1,6 +1,6 @@
 package be.acara.frontend.service;
 
-import be.acara.frontend.security.domain.User;
+import be.acara.frontend.domain.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

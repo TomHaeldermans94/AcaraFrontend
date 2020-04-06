@@ -1,8 +1,8 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.security.domain.User;
-import be.acara.frontend.security.service.SecurityService;
-import be.acara.frontend.security.service.UserService;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.service.SecurityService;
+import be.acara.frontend.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;

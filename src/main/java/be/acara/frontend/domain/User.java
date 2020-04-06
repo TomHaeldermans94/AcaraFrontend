@@ -1,4 +1,4 @@
-package be.acara.frontend.security.domain;
+package be.acara.frontend.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,11 +9,14 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-public class Role {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private String username;
+    private String password;
+    @Transient
+    private String passwordConfirm;
+    @ManyToMany
+    private Set<Role> roles;
 }

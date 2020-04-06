@@ -1,6 +1,6 @@
-package be.acara.frontend.security.repository;
+package be.acara.frontend.repository;
 
-import be.acara.frontend.security.domain.JwtToken;
+import be.acara.frontend.domain.JwtToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
-package be.acara.frontend.security.repository;
+package be.acara.frontend.repository;
 
-import be.acara.frontend.security.domain.Role;
+import be.acara.frontend.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
