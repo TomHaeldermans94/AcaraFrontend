@@ -19,4 +19,8 @@ public class JwtTokenService {
     public JwtToken getToken(String username) {
         return this.tokenRepository.findJwtTokenByUsername(username).orElse(null);
     }
+    
+    public void remove(String name) {
+        tokenRepository.findJwtTokenByUsername(name).ifPresent(tokenRepository::delete);
+    }
 }

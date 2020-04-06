@@ -5,6 +5,8 @@ import be.acara.frontend.security.domain.JwtToken;
 import be.acara.frontend.security.domain.User;
 import be.acara.frontend.security.repository.UserRepository;
 import be.acara.frontend.service.UserFeignClient;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static be.acara.frontend.security.SecurityConstants.SECRET;
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -36,8 +41,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         
         ResponseEntity<Void> login = userFeignClient.login(String.format("{\"username\": \"%s\", \"password\": \"%s\"}", user.getUsername(), user.getPassword()));
-        JwtToken token = JwtToken.builder().token(login.getHeaders().get("Authorization").get(0)).username(username).build();
-        tokenService.save(token);
+        if (!login.getHeaders().containsKey("Authorization")) {
+            return null;
+        }
+        String authHeader = login.getHeaders().get("Authorization").get(0);
+        DecodedJWT token = JWT.require(HMAC512(SECRET.getBytes()))
+                .build()
+                .verify(authHeader.replace("Bearer ", ""));
+        JwtToken jwtToken = JwtToken.builder()
+                .token(token.getToken())
+                .username(username)
+                .expirationDate(token.getExpiresAt())
+                .build();
+        tokenService.save(jwtToken);
     
         Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))

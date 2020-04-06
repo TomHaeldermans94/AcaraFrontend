@@ -20,6 +20,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Qualifier("userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
     
+    @Autowired
+    private TokenLogoutHandler tokenLogoutHandler;
+    
     @Bean
     public AuthenticationManager customAuthenticationManager() throws Exception {
         return authenticationManager();
@@ -35,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(10);
     }
     
+    
+    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -42,6 +47,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login")
                 .and()
                 .logout()
+                .logoutSuccessUrl("/events")
+                .logoutSuccessHandler(tokenLogoutHandler)
                 .deleteCookies("JSESSIONID");
     
         http.authorizeRequests()
