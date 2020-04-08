@@ -1,5 +1,6 @@
 package be.acara.frontend.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +23,6 @@ public class User {
     private String passwordConfirm;
     @ManyToMany
     private Set<Role> roles;
+    private String firstName;
+    private String lastName;
 }

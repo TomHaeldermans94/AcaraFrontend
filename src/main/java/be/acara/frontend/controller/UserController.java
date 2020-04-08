@@ -57,7 +57,7 @@ public class UserController {
     
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
-        be.acara.frontend.model.User user = userMapper.map(userFeignClient.getUserById(id));
+        User user = userMapper.map(userFeignClient.getUserById(id));
         List<Event> events = eventMapper.map(eventFeignClient.getAllEventsFromSelectedUser(id)).getEventList();
         model.addAttribute("user", user);
         model.addAttribute("events", events);
