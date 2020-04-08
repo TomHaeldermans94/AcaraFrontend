@@ -42,7 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        http.authorizeRequests()
+                .antMatchers("/events/new").hasAuthority("ADMIN")
+                .antMatchers("/events/{\\d+}").hasAuthority("ADMIN")
+                .and()
+                .formLogin()
                 .defaultSuccessUrl("/events")
                 .loginProcessingUrl("/login")
                 .and()
