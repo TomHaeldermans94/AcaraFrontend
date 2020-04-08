@@ -2,8 +2,8 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.controller.dto.UserDto;
+import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventList;
-import be.acara.frontend.model.User;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.mapper.EventMapper;
