@@ -4,21 +4,65 @@
     <meta charset="UTF-8">
     <title>Event detail</title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/eventDetail.css" th:href="@{~/css/eventDetail.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
 </head>
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
+
 <body th:object="${event}">
-<p th:text="'ID: ' + ${event.id}">ID</p>
-<p th:text="'Name: ' + ${event.name}">Name</p>
-<p th:text="'Description: ' + ${event.description}">Description</p>
-<p th:text="'Date: ' + ${event.eventDate}">Event date</p>
-<p th:text="'Price: ' + ${event.price}">Price</p>
-<p th:text="'Category: ' + ${event.category}">Category</p>
-<p th:text="'Location: ' + ${event.location}">Location</p>
-<a href="/events"
-   th:href="@{|/events/${event.id}|}">
-    Edit
-</a>
-<p th:insert="deleteEvent :: deleteEvent"></p>
-<img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+<div th:insert="navbar :: navbar"></div>
+<div class="container-fluid align-content-center">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="container mx-2 my-2" align="center">
+                <p class="sr-only" th:text="'ID: ' + ${event.id}">ID</p>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <span class="sr-only">Name:</span>
+                    <h1 th:text="${event.name}">name</h1>
+                </div>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <div class="font-weight-bold w-25 d-inline-block text-right">Description:</div>
+                    <span  th:text="${event.description}">description</span>
+                </div>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <div class="font-weight-bold w-25 d-inline-block text-right">Event date:</div>
+                    <span th:text="${event.eventDate}">event date</span>
+                </div>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <div class="font-weight-bold w-25 d-inline-block text-right">Price:</div>
+                    <span th:text="${event.price}">price</span>
+                </div>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <div class="font-weight-bold w-25 d-inline-block text-right">Category:</div>
+                    <span th:text="${event.category}">category</span>
+                </div>
+
+                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                    <div class="font-weight-bold w-25 d-inline-block text-right">Location:</div>
+                    <span th:text="${event.location}">location</span>
+                </div>
+
+                <div class="form-group row" >
+                    <div class="col-9 ml-3 my-2">
+                        <a class="btn btn-primary btn-lg" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
+                        <span class="btn btn-secondary btn-lg" th:insert="deleteEvent :: deleteEvent"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img class="img-small px-2 py-2" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+        </div>
+    </div>
+</div>
 </body>
 </html>
