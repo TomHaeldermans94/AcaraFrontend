@@ -3,7 +3,6 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.Event;
-import be.acara.frontend.model.EventList;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.apache.juli.logging.Log;
@@ -22,6 +21,8 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/events")
@@ -51,10 +52,18 @@ public class EventController {
     }
 
     @GetMapping
-    public String findAllEvents(ModelMap model) {
-        EventDtoList eventDtoList = eventFeignClient.getEvents();
-        EventList eventList = mapper.map(eventDtoList);
-        model.addAttribute("events", eventList.getEventList());
+    public String findAllEvents(ModelMap model,
+                                @RequestParam(name = "page", defaultValue = "1", required = false) int page,
+                                @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
+        EventDtoList eventList = eventFeignClient.getEvents(page - 1, size);
+        int totalPages = eventList.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        model.addAttribute("events", eventList);
         return "eventList";
     }
 
@@ -122,7 +131,7 @@ public class EventController {
         if (!params.isEmpty()) {
             params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parcing dates or bigDecimals
             EventDtoList searchResults = eventFeignClient.search(params);
-            model.addAttribute("events", mapper.map(searchResults).getEventList());
+            model.addAttribute("events", searchResults.getContent());
             return "eventList";
         }
         return "searchForm";

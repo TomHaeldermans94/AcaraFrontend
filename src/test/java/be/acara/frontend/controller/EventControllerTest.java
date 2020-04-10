@@ -88,13 +88,12 @@ class EventControllerTest {
     @Test
     void findAllEvents() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
-        when(eventFeignClient.getEvents()).thenReturn(eventDtoList);
-        when(mapper.map(eventDtoList)).thenReturn(createEventList());
+        when(eventFeignClient.getEvents(any(), any())).thenReturn(eventDtoList);
         
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", mapper.map(eventDtoList).getEventList()));
+                .andExpect(model().attribute("events", eventDtoList.getContent()));
     }
     
     @Test
@@ -195,7 +194,6 @@ class EventControllerTest {
     @Test
     void search() throws Exception {
         when(eventFeignClient.search(anyMap())).thenReturn(createEventDtoList());
-        when(mapper.map(createEventDtoList())).thenReturn(createEventList());
         
         mockMvc.perform(get("/events/search").queryParam("location","genk"))
                 .andExpect(status().isOk())

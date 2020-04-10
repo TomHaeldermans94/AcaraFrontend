@@ -1,7 +1,7 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.domain.User;
-import be.acara.frontend.model.Event;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.SecurityService;
 import be.acara.frontend.service.UserFeignClient;
@@ -58,7 +58,7 @@ public class UserController {
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
         User user = userMapper.map(userFeignClient.getUserById(id));
-        List<Event> events = eventMapper.map(eventFeignClient.getAllEventsFromSelectedUser(id)).getEventList();
+        List<EventDto> events = eventFeignClient.getAllEventsFromSelectedUser(id).getContent();
         model.addAttribute("user", user);
         model.addAttribute("events", events);
         return "userDetails";

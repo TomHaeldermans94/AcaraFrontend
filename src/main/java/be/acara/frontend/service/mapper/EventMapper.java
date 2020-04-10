@@ -1,12 +1,8 @@
 package be.acara.frontend.service.mapper;
 
 import be.acara.frontend.controller.dto.EventDto;
-import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.Event;
-import be.acara.frontend.model.EventList;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
@@ -40,13 +36,5 @@ public class EventMapper {
             eventDto.setImage(event.getImage());
         }
         return eventDto;
-    }
-
-    public EventList map(EventDtoList eventDtoList) {
-        return new EventList(eventDtoList.getEventDtoList().stream().map(this::map).collect(Collectors.toList()));
-    }
-
-    public EventDtoList map(EventList eventList) {
-        return new EventDtoList(eventList.getEventList().stream().map(this::map).collect(Collectors.toList()));
     }
 }
