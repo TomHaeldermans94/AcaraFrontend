@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -61,6 +63,27 @@ public class UserController {
         List<Event> events = eventMapper.map(eventFeignClient.getAllEventsFromSelectedUser(id)).getEventList();
         model.addAttribute("user", user);
         model.addAttribute("events", events);
-        return "userDetails";
+        return "user/userDetails";
+    }
+
+    @GetMapping("/{id}")
+    public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
+        User user = userMapper.map(userFeignClient.getUserById(id));
+        model.addAttribute("editUser", user);
+        return "user/editUser";
+    }
+
+    @PostMapping("/{id}")
+    public String handleEditEventForm(@Valid @ModelAttribute("editUser") User user, BindingResult br) {
+        User userFromDb = userMapper.map(userFeignClient.getUserById(user.getId()));
+        if (br.hasErrors()) {
+            for (ObjectError error : br.getAllErrors()) {
+                String field = ((FieldError) error).getField();
+                System.out.println(field);
+            }
+            return "user/editUser";
+        }
+        userFeignClient.editUser(userFromDb.getId(), userMapper.map(user));
+        return "redirect:/events";
     }
 }

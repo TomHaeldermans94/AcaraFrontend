@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+    <title>Edit User</title>
+</head>
+<body>
+<!--/*@thymesVar id="editUser" type="be.acara.frontend.domain.User"*/-->
+<form modelAttribute="editUser" th:object="${editUser}" th:method="post">
+    <div>
+        <p th:text="'Current username: ' + ${editUser.username}">Username</p>
+        <label for="username" th:for="${#ids.next('username')}">Username</label>
+        <input type="text" id="username" placeholder="Username" th:field="${editUser.username}"/>
+    </div>
+    <div>
+        <p th:text="'Current first name: ' + ${editUser.firstName}">First name</p>
+        <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
+        <input type="text" id="firstName" placeholder="First name" th:field="${editUser.username}">
+    </div>
+
+    <div>
+        <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+        <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
+    </div>
+</form>
+</body>
+</html>
