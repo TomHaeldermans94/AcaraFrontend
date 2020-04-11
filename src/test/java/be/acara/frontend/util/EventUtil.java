@@ -2,7 +2,7 @@ package be.acara.frontend.util;
 
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
-import be.acara.frontend.model.Event;
+import be.acara.frontend.model.EventModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,8 +28,8 @@ public class EventUtil {
                 .build();
     }
 
-    public static Event firstEvent() {
-        return Event.builder()
+    public static EventModel firstEvent() {
+        return EventModel.builder()
                 .id(1L)
                 .category("MUSIC")
                 .description("event description")
@@ -54,8 +54,8 @@ public class EventUtil {
                 .build();
     }
 
-    public static Event secondEvent() {
-        return Event.builder()
+    public static EventModel secondEvent() {
+        return EventModel.builder()
                 .id(2L)
                 .category("THEATRE")
                 .description("another event description")
@@ -80,8 +80,8 @@ public class EventUtil {
                 .build();
     }
 
-    public static Event thirdEvent() {
-        return Event.builder()
+    public static EventModel thirdEvent() {
+        return EventModel.builder()
                 .id(3L)
                 .category("THEATRE")
                 .description("another event description")
@@ -93,7 +93,7 @@ public class EventUtil {
                 .build();
     }
 
-    public static List<Event> createListOfEventsOfSize3() {
+    public static List<EventModel> createListOfEventsOfSize3() {
         return List.of(
                 firstEvent(),
                 secondEvent(),
@@ -101,7 +101,7 @@ public class EventUtil {
         );
     }
 
-    public static Set<Event> createSetOfEventsOfSize3() {
+    public static Set<EventModel> createSetOfEventsOfSize3() {
         return Set.of(
                 firstEvent(),
                 secondEvent(),

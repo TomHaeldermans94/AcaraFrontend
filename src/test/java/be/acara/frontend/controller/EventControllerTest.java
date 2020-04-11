@@ -3,7 +3,7 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
-import be.acara.frontend.model.Event;
+import be.acara.frontend.model.EventModel;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +70,7 @@ class EventControllerTest {
         mockMvc.perform(get("/events/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addEvent"))
-                .andExpect(model().attribute("event", new Event()));
+                .andExpect(model().attribute("event", new EventModel()));
     }
     
     @Test
@@ -129,7 +129,7 @@ class EventControllerTest {
     @Test
     void handleEditEventForm_withUnchangedImage() throws Exception{
         Long id = 1L;
-        Event event = firstEvent();
+        EventModel event = firstEvent();
         MockMultipartFile image = new MockMultipartFile("eventImage",new byte[0]);
         
         when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
@@ -145,7 +145,7 @@ class EventControllerTest {
     
     @Test
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNullImage_whenAddEvent() throws Exception {
-        Event event = firstEvent();
+        EventModel event = firstEvent();
         event.setName("");
         EventDto eventDto = firstEventDto();
         eventDto.setImage(null);
@@ -161,7 +161,7 @@ class EventControllerTest {
     
     @Test
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNonNullImage_whenEditEvent() throws Exception {
-        Event event = firstEvent();
+        EventModel event = firstEvent();
         event.setName("");
         EventDto eventFromDb = firstEventDto();
         when(eventFeignClient.getEventById(anyLong())).thenReturn(eventFromDb);

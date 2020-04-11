@@ -1,18 +1,19 @@
 package be.acara.frontend.service.mapper;
 
 import be.acara.frontend.controller.dto.EventDto;
-import be.acara.frontend.model.Event;
+import be.acara.frontend.model.EventModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EventMapper {
-    public Event map(EventDto eventDto) {
-        Event event = Event.builder()
+    public EventModel map(EventDto eventDto) {
+        EventModel event = EventModel.builder()
                 .category(eventDto.getCategory())
                 .description(eventDto.getDescription())
                 .eventDate(eventDto.getEventDate())
                 .id(eventDto.getId())
                 .location(eventDto.getLocation())
+                .image(new byte[0])
                 .name(eventDto.getName())
                 .price(eventDto.getPrice())
                 .build();
@@ -22,7 +23,7 @@ public class EventMapper {
         return event;
     }
 
-    public EventDto map(Event event) {
+    public EventDto map(EventModel event) {
         EventDto eventDto = EventDto.builder()
                 .category(event.getCategory())
                 .description(event.getDescription())

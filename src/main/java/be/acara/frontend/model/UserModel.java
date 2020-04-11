@@ -11,11 +11,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class UserModel {
     private Long id;
     private String firstName;
     private String lastName;
-    private Set<Event> events;
+    private Set<EventModel> events;
     private String userName;
     private String password;
 }

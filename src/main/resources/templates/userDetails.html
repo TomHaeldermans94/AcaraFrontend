@@ -5,7 +5,7 @@
     <title>Event detail</title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
 </head>
-<!--/*@thymesVar id="user" type="be.acara.frontend.model.User"*/-->
+<!--/*@thymesVar id="user" type="be.acara.frontend.model.UserModel"*/-->
 <body th:object="${user}">
 <p th:text="'ID: ' + ${user.id}">ID</p>
 <p th:text="'First name: ' + ${user.firstName}">First name</p>
@@ -16,7 +16,7 @@
         <p th:text="'Name: ' + ${event.name}">Name</p>
     </li>
 </ul>
-<a href="/users"
+<a href="userDetails.html"
    th:href="@{|/users/${user.id}|}">
     Edit
 </a>

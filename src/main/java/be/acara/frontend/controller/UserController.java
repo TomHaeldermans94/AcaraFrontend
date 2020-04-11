@@ -2,11 +2,11 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.SecurityService;
 import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
-import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,15 +26,13 @@ public class UserController {
     private final UserFeignClient userFeignClient;
     private final EventFeignClient eventFeignClient;
     private final UserMapper userMapper;
-    private final EventMapper eventMapper;
     
-    public UserController(UserService userService, SecurityService securityService, UserFeignClient userFeignClient, EventFeignClient eventFeignClient, UserMapper userMapper, EventMapper eventMapper) {
+    public UserController(UserService userService, SecurityService securityService, UserFeignClient userFeignClient, EventFeignClient eventFeignClient, UserMapper userMapper) {
         this.userService = userService;
         this.securityService = securityService;
         this.userFeignClient = userFeignClient;
         this.eventFeignClient = eventFeignClient;
         this.userMapper = userMapper;
-        this.eventMapper = eventMapper;
     }
     
     @GetMapping("/registration")
@@ -44,13 +42,15 @@ public class UserController {
     }
     
     @PostMapping("/registration")
-    public String registration(@Valid @ModelAttribute("userForm") User userForm, BindingResult br) {
+    public String registration(@Valid @ModelAttribute("userForm") UserModel userForm, BindingResult br) {
         if (br.hasErrors()) {
             return "user/registration";
         }
         
-        userService.save(userForm);
-        securityService.autoLogin(userForm.getUsername(), userForm.getPasswordConfirm());
+        User user = userMapper.map(userForm);
+        
+        userService.save(user);
+        securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
         
         return "redirect:/events";
     }

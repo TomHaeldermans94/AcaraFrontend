@@ -2,16 +2,11 @@ package be.acara.frontend.service.mapper;
 
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-
-    private final EventMapper eventMapper;
-
-    public UserMapper(EventMapper eventMapper) {
-        this.eventMapper = eventMapper;
-    }
 
     public User map(UserDto userDto) {
         return User.builder()
@@ -27,5 +22,9 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .id(user.getId())
                 .build();
+    }
+    
+    public User map(UserModel userForm) {
+    
     }
 }

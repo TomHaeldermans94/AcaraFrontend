@@ -10,7 +10,7 @@
 </head>
 <body>
 <!--/*@thymesVar id="userForm" type="be.acara.frontend.domain.User"*/-->
-<form modelAttribute="userForm" th:object="${userForm}" th:method="post">
+<form th:modelAttribute="userForm" th:object="${userForm}" th:method="post">
     <label for="username" th:for="${#ids.next('username')}">Username</label>
     <input type="text" id="username" placeholder="Username" th:field="${userForm.username}">
 
