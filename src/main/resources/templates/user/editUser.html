@@ -20,7 +20,7 @@
     <div>
         <p th:text="'Current first name: ' + ${editUser.firstName}">First name</p>
         <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
-        <input type="text" id="firstName" placeholder="First name" th:field="${editUser.username}">
+        <input type="text" id="firstName" placeholder="First name" th:field="${editUser.firstName}">
     </div>
 
     <div>

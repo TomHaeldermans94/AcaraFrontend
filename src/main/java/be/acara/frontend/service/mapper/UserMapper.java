@@ -7,16 +7,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    private final EventMapper eventMapper;
-
-    public UserMapper(EventMapper eventMapper) {
-        this.eventMapper = eventMapper;
-    }
-
     public User map(UserDto userDto) {
         return User.builder()
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
+                .username(userDto.getUsername())
+                .password(userDto.getPassword())
                 .id(userDto.getId())
                 .build();
     }
@@ -25,6 +21,8 @@ public class UserMapper {
         return UserDto.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .username(user.getUsername())
+                .password(user.getPassword())
                 .id(user.getId())
                 .build();
     }

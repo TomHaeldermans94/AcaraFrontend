@@ -18,6 +18,6 @@ public interface UserFeignClient {
     @GetMapping("/api/users/{id}")
     UserDto getUserById(@PathVariable("id") Long id);
 
-    @PutMapping("/{id}")
+    @PutMapping("/api/users/{id}")
     void editUser(@PathVariable("id") Long id, UserDto userDto);
 }

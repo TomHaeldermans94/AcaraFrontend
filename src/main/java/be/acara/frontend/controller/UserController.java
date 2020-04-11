@@ -1,5 +1,6 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.Event;
 import be.acara.frontend.service.EventFeignClient;
@@ -83,7 +84,10 @@ public class UserController {
             }
             return "user/editUser";
         }
-        userFeignClient.editUser(userFromDb.getId(), userMapper.map(user));
+        UserDto userDto = userMapper.map(user);
+        userDto.setLastName("lalala");
+        userDto.setPassword("lalalalal");
+        userFeignClient.editUser(userFromDb.getId(),userDto);
         return "redirect:/events";
     }
 }
