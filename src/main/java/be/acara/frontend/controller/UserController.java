@@ -50,7 +50,7 @@ public class UserController {
             return "user/registration";
         }
         
-        User user = userMapper.map(userForm);
+        User user = userMapper.userModelToUser(userForm);
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
         return "redirect:/events";
@@ -58,7 +58,7 @@ public class UserController {
     
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
-        User user = userMapper.map(userFeignClient.getUserById(id));
+        User user = userMapper.userDtoToUser(userFeignClient.getUserById(id));
         List<EventDto> events = eventFeignClient.getAllEventsFromSelectedUser(id).getContent();
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute(ATTRIBUTE_EVENTS, events);

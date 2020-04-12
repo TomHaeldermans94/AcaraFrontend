@@ -39,7 +39,7 @@ public class EventController {
 
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
-        EventModel event = mapper.map(eventService.getEvent(id));
+        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         return "eventDetails";
@@ -75,14 +75,14 @@ public class EventController {
             return "addEvent";
         }
         event.setImage(eventImage.getBytes());
-        eventService.addEvent(mapper.map(event));
+        eventService.addEvent(mapper.eventModelToEventDto(event));
         return REDIRECT_EVENTS;
     }
 
     @GetMapping("/{id}")
     public String displayEditEventForm(@PathVariable("id") Long id, Model model) {
         EventDto eventDto = eventService.getEvent(id);
-        EventModel event = mapper.map(eventDto);
+        EventModel event = mapper.eventDtoToEventModel(eventDto);
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         addCategories(model);
@@ -92,7 +92,7 @@ public class EventController {
     @PostMapping("/{id}")
     public String handleEditEventForm(@Valid @ModelAttribute(ATTRIBUTE_EVENT) EventModel event, BindingResult br, @RequestParam(ATTRIBUTE_EVENT_IMAGE) MultipartFile eventImage, Model model) throws IOException {
         EventDto eventDtoFromDb = eventService.getEvent(event.getId());
-        EventModel eventFromDb = mapper.map(eventDtoFromDb);
+        EventModel eventFromDb = mapper.eventDtoToEventModel(eventDtoFromDb);
         if (br.hasErrors()) {
             addCategories(model);
             model.addAttribute(ATTRIBUTE_EVENT, event);
@@ -100,7 +100,7 @@ public class EventController {
             return "editEvent";
         }
         event.setImage(eventImage.getBytes());
-        eventService.editEvent(eventFromDb.getId(), mapper.map(event));
+        eventService.editEvent(eventFromDb.getId(), mapper.eventModelToEventDto(event));
         return REDIRECT_EVENTS;
     }
 

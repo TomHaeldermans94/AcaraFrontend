@@ -52,12 +52,12 @@ public class UserControllerTest {
         EventDtoList eventDtoList = createEventDtoList();
         when(userFeignClient.getUserById(id)).thenReturn(userDto);
         when(eventFeignClient.getAllEventsFromSelectedUser(id)).thenReturn(eventDtoList);
-        when(userMapper.map(userDto)).thenReturn(user);
+        when(userMapper.userDtoToUser(userDto)).thenReturn(user);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("userDetails"))
                 .andExpect(model().attribute("events", eventDtoList.getContent()))
-                .andExpect(model().attribute("user", userMapper.map(userDto)));
+                .andExpect(model().attribute("user", userMapper.userDtoToUser(userDto)));
     }
 }

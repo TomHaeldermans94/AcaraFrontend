@@ -54,14 +54,14 @@ class EventControllerTest {
         Long id = 1L;
         EventDto eventDto = firstEventDto();
         when(eventFeignClient.getEventById(id)).thenReturn(eventDto);
-        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
 
         
         mockMvc.perform(get("/events/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventDetails"))
                 .andExpect(model().attributeExists("event"))
-                .andExpect(model().attribute("event", mapper.map(eventDto)))
+                .andExpect(model().attribute("event", mapper.eventDtoToEventModel(eventDto)))
                 .andExpect(model().attribute("categoryList", categoriesList.getCategories()));
     }
     
@@ -77,7 +77,7 @@ class EventControllerTest {
     void displayEditEventForm() throws Exception {
         Long id = 1L;
         when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
-        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
         
         mockMvc.perform(get("/events/{id}", id))
                 .andExpect(status().isOk())
@@ -115,8 +115,8 @@ class EventControllerTest {
         Long id = 1L;
         doNothing().when(eventFeignClient).editEvent(anyLong(),any());
         when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
-        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
-        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());;
+        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
@@ -133,7 +133,7 @@ class EventControllerTest {
         MockMultipartFile image = new MockMultipartFile("eventImage",new byte[0]);
         
         when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
-        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
 
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
@@ -165,7 +165,7 @@ class EventControllerTest {
         event.setName("");
         EventDto eventFromDb = firstEventDto();
         when(eventFeignClient.getEventById(anyLong())).thenReturn(eventFromDb);
-        when(mapper.map(firstEventDto())).thenReturn(firstEvent());
+        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
 
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
