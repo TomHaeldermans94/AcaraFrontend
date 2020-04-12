@@ -117,7 +117,7 @@ class EventControllerTest {
         doNothing().when(eventFeignClient).editEvent(anyLong(),any());
         when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
         when(mapper.map(firstEventDto())).thenReturn(firstEvent());
-        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());;
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)

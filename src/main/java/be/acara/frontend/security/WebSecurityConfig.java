@@ -45,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/events/new").hasAuthority("ADMIN")
                 .antMatchers("/events/{\\d+}").hasAuthority("ADMIN")
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")

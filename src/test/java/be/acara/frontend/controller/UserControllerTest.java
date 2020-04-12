@@ -21,8 +21,12 @@ import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.EventUtil.createEventList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDto;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,8 +64,34 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userDetails"))
+                .andExpect(view().name("user/userDetails"))
                 .andExpect(model().attribute("events", eventMapper.map(eventDtoList).getEventList()))
                 .andExpect(model().attribute("user", userMapper.map(userDto)));
+    }
+
+    @Test
+    void displayEditUserForm() throws Exception {
+        Long id = 1L;
+        when(userFeignClient.getUserById(id)).thenReturn(firstUserDto());
+        when(userMapper.map(firstUserDto())).thenReturn(firstUser());
+
+        mockMvc.perform(get("/users/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/editUser"))
+                .andExpect(model().attribute("editUser", firstUser()));
+    }
+
+    @Test
+    void handleEditUserForm() throws Exception{
+        Long id = 1L;
+        doNothing().when(userFeignClient).editUser(anyLong(),any());
+        when(userFeignClient.getUserById(id)).thenReturn(firstUserDto());
+        when(userMapper.map(firstUserDto())).thenReturn(firstUser());
+
+        mockMvc.perform(put("/users/{id}", id)
+                .flashAttr("editUser", firstUser()))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"))
+                .andExpect(model().hasNoErrors());
     }
 }

@@ -13,9 +13,10 @@ import java.util.Set;
 @Builder
 public class User {
     private Long id;
+    private String username;
     private String firstName;
     private String lastName;
     private Set<Event> events;
-    private String userName;
     private String password;
+    private String passwordConfirm;
 }
