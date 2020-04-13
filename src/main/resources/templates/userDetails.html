@@ -2,23 +2,54 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Event detail</title>
+    <title>User detail</title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
 </head>
 <!--/*@thymesVar id="user" type="be.acara.frontend.model.User"*/-->
 <body th:object="${user}">
-<p th:text="'ID: ' + ${user.id}">ID</p>
-<p th:text="'First name: ' + ${user.firstName}">First name</p>
-<p th:text="'Last name: ' + ${user.lastName}">Last name</p>
-<p>Subscribed Events</p>
-<ul>
-    <li th:each="event : ${events}">
-        <p th:text="'Name: ' + ${event.name}">Name</p>
-    </li>
-</ul>
-<a href="/users"
-   th:href="@{|/users/${user.id}|}">
-    Edit
-</a>
+
+<div th:insert="navbar :: navbar"></div>
+
+<div class="container-fluid ">
+    <div class="row" align="center">
+        <div class="col-12 mx-2 my-2">
+            <p class="sr-only" th:text="'ID: ' + ${user.id}">ID</p>
+
+            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">First name:</div>
+                <span class="col-6 text-left" th:text="${user.firstName}">firstName</span>
+            </div>
+
+            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Last name:</div>
+                <span class="col-6 text-left" th:text="${user.lastName}">lastName</span>
+            </div>
+
+
+            <div class="row">
+                <div class="col-6 align-self-center offset-3" style="font-size: x-large">
+                    <p class="font-weight-bold" style="color: red">Subscribed Events</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4 align-self-center offset-4">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="event : ${events}">
+                            <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event name:</div>
+                            <span th:text="${event.name}">name</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <a class="btn btn-primary" href="/users"
+               th:href="@{|/users/${user.id}|}">
+                Edit
+            </a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
