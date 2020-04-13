@@ -8,3 +8,11 @@ h1 {
     font-weight: bold;
 }
 
+.btn-primary-text {
+    color: white;
+}
+
+.custom-button-style {
+    width: 125px;
+
+}

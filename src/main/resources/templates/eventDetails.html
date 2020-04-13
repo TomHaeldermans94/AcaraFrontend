@@ -20,47 +20,47 @@
             <div class="container mx-2 my-2" align="center">
                 <p class="sr-only" th:text="'ID: ' + ${event.id}">ID</p>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
+                <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
                     <span class="sr-only">Name:</span>
                     <h1 th:text="${event.name}">name</h1>
                 </div>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
-                    <div class="font-weight-bold w-25 d-inline-block text-right">Description:</div>
-                    <span  th:text="${event.description}">description</span>
+                <div class="my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Description:</div>
+                    <span class="col-6 text-left" th:text="${event.description}">description</span>
                 </div>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
-                    <div class="font-weight-bold w-25 d-inline-block text-right">Event date:</div>
-                    <span th:text="${event.eventDate}">event date</span>
+                <div class=" my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event date:</div>
+                    <span class="col-6 text-left"  th:text="${event.eventDate}">event date</span>
                 </div>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
-                    <div class="font-weight-bold w-25 d-inline-block text-right">Price:</div>
-                    <span th:text="${event.price}">price</span>
+                <div class="my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Price:</div>
+                    <span class="col-6 text-left"  th:text="${event.price}">price</span>
                 </div>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
-                    <div class="font-weight-bold w-25 d-inline-block text-right">Category:</div>
-                    <span th:text="${event.category}">category</span>
+                <div class="my-3 lead form-group row " style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Category:</div>
+                    <span class="col-6 text-left" th:text="${event.category}">category</span>
                 </div>
 
-                <div class="mx-3 my-3 lead" style="font-size: x-large">
-                    <div class="font-weight-bold w-25 d-inline-block text-right">Location:</div>
-                    <span th:text="${event.location}">location</span>
+                <div class="my-3 lead form-group row " style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Location:</div>
+                    <span class="col-6 text-left"  th:text="${event.location}">location</span>
                 </div>
 
-                <div class="form-group row" >
+                <div class="form-group row justify-content-center">
                     <div class="col-9 ml-3 my-2">
-                        <a class="btn btn-primary btn-lg" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
-                        <span class="btn btn-secondary btn-lg" th:insert="deleteEvent :: deleteEvent"></span>
+                        <a class="btn btn-primary btn-dark btn-lg custom-button-style" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
+                        <span class="btn btn-secondary btn-dark btn-lg custom-button-style" th:insert="deleteEvent :: deleteEvent"></span>
                     </div>
                 </div>
 
             </div>
         </div>
         <div class="col-md-6">
-            <img class="img-small px-2 py-2" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+            <img class="img-small mt-3 px-2 py-2" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
         </div>
     </div>
 </div>
