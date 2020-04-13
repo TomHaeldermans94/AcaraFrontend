@@ -133,7 +133,7 @@ public class EventController {
         eventFeignClient.deleteEvent(id);
         return "redirect:/events";
     }
-
+    
     @ModelAttribute(name = "categoryList")
     public List<String> getCategories() {
         return eventFeignClient.getAllCategories().getCategories();

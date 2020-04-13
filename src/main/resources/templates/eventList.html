@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
     <title>Acara</title>
 </head>
 <body>
+<div th:insert="navbar :: navbar"></div>
 <h1>List of events</h1>
-<a href="/events/new" th:href="@{|/events/new|}">
+<a href="/events/new" th:href="@{|/events/new|}" sec:authorize="hasAuthority('ADMIN')">
     Add event
 </a>
 <ul>
@@ -20,7 +24,7 @@
            th:href="@{|/events/detail/${event.id}|}">
             Detail
         </a>
-        <p th:insert="deleteEvent :: deleteEvent"></p>
+        <p sec:authorize="hasAuthority('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
     </li>
 </ul>
 </body>

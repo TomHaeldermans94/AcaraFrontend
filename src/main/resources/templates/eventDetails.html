@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Event detail</title>
@@ -19,7 +20,7 @@
    th:href="@{|/events/${event.id}|}">
     Edit
 </a>
-<p th:insert="deleteEvent :: deleteEvent"></p>
+<p sec:authorize="hasAuthority('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
 <img th:src="@{'data:image/png;base64,'+${eventImage}}"/>
 </body>
 </html>
