@@ -22,7 +22,7 @@ public class User {
     @NotBlank(message = "NotBlank.user.password")
     private String password;
     @Transient
-    @NotBlank(message = "NotBlank.user.password")
+    @NotBlank(message = "NotBlank.user.passwordConfirm")
     private String passwordConfirm;
     @ManyToMany
     private Set<Role> roles;
@@ -30,6 +30,7 @@ public class User {
     private String firstName;
     @NotBlank(message = "NotBlank.user.lastName")
     private String lastName;
+    private Boolean uniqueUsername = true;
 
     @Override
     public boolean equals(Object o) {

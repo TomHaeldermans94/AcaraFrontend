@@ -1,6 +1,5 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.Event;
 import be.acara.frontend.service.EventFeignClient;
@@ -67,21 +66,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
-        UserDto userDto = userFeignClient.getUserById(id);
-        User user = userMapper.map(userDto);
+        User user = userMapper.map(userFeignClient.getUserById(id));
         model.addAttribute("editUser", user);
         return "user/editUser";
     }
 
     @PostMapping("/{id}")
     public String handleEditEventForm(@ModelAttribute("editUser") @Valid User user, BindingResult br) {
-        User userFromDb = userMapper.map(userFeignClient.getUserById(user.getId()));
-        if (br.hasErrors()) {
+        boolean isValidUsername = userService.checkIfUserNameIsValid(user);
+        if (br.hasErrors() || !isValidUsername) {
             return "user/editUser";
         }
-        if (user.getPassword().equals(user.getPasswordConfirm()) && user.getPassword() != null && user.getPasswordConfirm() != null){
-            UserDto userDto = userMapper.map(user);
-            userFeignClient.editUser(userFromDb.getId(), userDto);
+        if (user.getPassword().equals(user.getPasswordConfirm())){
+            userService.editUser(user);
             return "redirect:/events";
         }
         return "user/editUser";

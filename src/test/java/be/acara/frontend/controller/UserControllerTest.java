@@ -6,6 +6,7 @@ import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventList;
 import be.acara.frontend.service.EventFeignClient;
 import be.acara.frontend.service.UserFeignClient;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,6 @@ import static be.acara.frontend.util.EventUtil.createEventList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDto;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +40,8 @@ public class UserControllerTest {
     private UserMapper userMapper;
     @Mock
     private EventMapper eventMapper;
+    @Mock
+    private UserService userService;
     @InjectMocks
     private UserController userController;
 
@@ -84,9 +86,7 @@ public class UserControllerTest {
     @Test
     void handleEditUserForm() throws Exception{
         Long id = 1L;
-        doNothing().when(userFeignClient).editUser(anyLong(),any());
-        when(userFeignClient.getUserById(id)).thenReturn(firstUserDto());
-        when(userMapper.map(firstUserDto())).thenReturn(firstUser());
+        doNothing().when(userService).editUser(any());
 
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", firstUser()))

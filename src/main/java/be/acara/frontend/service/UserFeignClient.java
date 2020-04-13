@@ -20,4 +20,7 @@ public interface UserFeignClient {
 
     @PutMapping("/api/users/{id}")
     void editUser(@PathVariable("id") Long id, UserDto userDto);
+
+    @GetMapping("/api/users/username/{username}")
+    boolean checkUsername(@PathVariable("username") String username);
 }
