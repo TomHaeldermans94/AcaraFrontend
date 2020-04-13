@@ -3,7 +3,6 @@ package be.acara.frontend.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,20 +16,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "NotBlank.user.username")
     private String username;
-    @NotBlank(message = "NotBlank.user.password")
     private String password;
     @Transient
-    @NotBlank(message = "NotBlank.user.passwordConfirm")
     private String passwordConfirm;
     @ManyToMany
     private Set<Role> roles;
-    @NotBlank(message = "NotBlank.user.firstName")
     private String firstName;
-    @NotBlank(message = "NotBlank.user.lastName")
     private String lastName;
-    private Boolean uniqueUsername = true;
 
     @Override
     public boolean equals(Object o) {

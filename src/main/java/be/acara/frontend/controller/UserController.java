@@ -66,13 +66,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
-        User user = userMapper.map(userFeignClient.getUserById(id));
+        be.acara.frontend.model.User user = userMapper.mapUserForEdit(userFeignClient.getUserById(id));
         model.addAttribute("editUser", user);
         return "user/editUser";
     }
 
     @PostMapping("/{id}")
-    public String handleEditEventForm(@ModelAttribute("editUser") @Valid User user, BindingResult br) {
+    public String handleEditEventForm(@ModelAttribute("editUser") @Valid be.acara.frontend.model.User user, BindingResult br) {
         boolean isValidUsername = userService.checkIfUserNameIsValid(user);
         if (br.hasErrors() || !isValidUsername) {
             return "user/editUser";

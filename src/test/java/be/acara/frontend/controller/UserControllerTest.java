@@ -20,8 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.EventUtil.createEventList;
-import static be.acara.frontend.util.UserUtil.firstUser;
-import static be.acara.frontend.util.UserUtil.firstUserDto;
+import static be.acara.frontend.util.UserUtil.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -56,7 +55,7 @@ public class UserControllerTest {
     void findById() throws Exception {
         Long id = 1L;
         UserDto userDto = firstUserDto();
-        User user = firstUser();
+        User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
         EventList eventList = createEventList();
         when(userFeignClient.getUserById(id)).thenReturn(userDto);
@@ -75,7 +74,7 @@ public class UserControllerTest {
     void displayEditUserForm() throws Exception {
         Long id = 1L;
         when(userFeignClient.getUserById(id)).thenReturn(firstUserDto());
-        when(userMapper.map(firstUserDto())).thenReturn(firstUser());
+        when(userMapper.mapUserForEdit(firstUserDto())).thenReturn(firstUser());
 
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isOk())
@@ -87,6 +86,7 @@ public class UserControllerTest {
     void handleEditUserForm() throws Exception{
         Long id = 1L;
         doNothing().when(userService).editUser(any());
+        when(userService.checkIfUserNameIsValid(any())).thenReturn(true);
 
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", firstUser()))
@@ -98,7 +98,7 @@ public class UserControllerTest {
     @Test
     void showNewModelAndViewInCaseOfErrorsEditUser() throws Exception {
         Long id = 1L;
-        User user = firstUser();
+        be.acara.frontend.model.User user = firstUser();
         user.setFirstName("");
 
         mockMvc.perform(post("/users/{id}", id)
