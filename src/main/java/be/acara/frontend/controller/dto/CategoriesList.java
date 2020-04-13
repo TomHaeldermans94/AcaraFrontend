@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoriesList {
-    List<String> categories;
+    List<CategoryDto> categories;
 }

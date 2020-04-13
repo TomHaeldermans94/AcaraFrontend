@@ -14,6 +14,7 @@
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.EventModel"*/-->
 <!--/*@thymesVar id="eventImage" type="java.lang.String"*/-->
 <!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
+<!--/*@thymesVar id="category" type="be.acara.frontend.controller.dto.CategoryDto"*/-->
 <form th:modelAttribute="event" th:object="${event}" th:fragment="eventForm" class="form-horizontal">
 
     <div class="container-fluid row">
@@ -80,8 +81,8 @@
                 <div class="col-9">
                     <select class="form-control-lg w-75" th:field="${event.category}" id="eventCategory">
                         <option th:each="category: ${categoryList}"
-                                th:value="${category}"
-                                th:text="${category}">
+                                th:value="${category.name}"
+                                th:text="${category.webDisplay}">
                         </option>
                     </select>
                     <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}"

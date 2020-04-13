@@ -1,6 +1,7 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.CategoriesList;
+import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
@@ -45,8 +46,14 @@ class EventControllerTest {
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
-        categoriesList = new CategoriesList(List.of("MUSIC", "THEATRE", "UNKNOWN"));
-        when(eventFeignClient.getAllCategories()).thenReturn(categoriesList);
+        this.categoriesList = new CategoriesList(
+                List.of(
+                        new CategoryDto("MUSIC", "Music"),
+                        new CategoryDto("THEATRE", "Theatre"),
+                        new CategoryDto("UNKNOWN", "Unknown")
+                )
+        );
+        when(eventFeignClient.getAllCategories()).thenReturn(this.categoriesList);
     }
     
     @Test

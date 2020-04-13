@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class EventServiceImpl implements EventService {
     }
     
     @Override
-    public List<String> getCategories() {
+    public List<CategoryDto> getCategories() {
         return eventFeignClient.getAllCategories().getCategories();
     }
     

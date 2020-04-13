@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 
@@ -13,7 +14,7 @@ public interface EventService {
     
     EventDtoList findAllEvents(int page, int size);
     
-    List<String> getCategories();
+    List<CategoryDto> getCategories();
     
     void addEvent(EventDto eventDto);
     
