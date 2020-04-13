@@ -12,3 +12,7 @@ textarea {
     resize: none;
     height: 20px;
 }
+
+.img-small {
+    max-width: 800px;
+}

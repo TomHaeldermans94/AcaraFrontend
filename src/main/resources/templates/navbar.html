@@ -12,11 +12,11 @@
 <body>
 <nav class="navbar navbar-dark bg-dark" th:fragment="navbar">
 
-    <img src="/images/acara-logo-1.jpg" class="img-fluid">
 
 
-    <h1 style="color:white;">Acara Events</h1>
-
+    <a href="/events">
+        <img src="/images/acara-logo-1.jpg" class="img-fluid">
+    </a>
 
     <div class="nav-item">
         <div sec:authorize="isAnonymous()">
@@ -36,7 +36,6 @@
             </a>
         </div>
     </div>
-
 </nav>
 </body>
 </html>

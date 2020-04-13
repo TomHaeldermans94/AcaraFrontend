@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
+
+
     public Event map(EventDto eventDto) {
         Event event = Event.builder()
                 .category(eventDto.getCategory())
