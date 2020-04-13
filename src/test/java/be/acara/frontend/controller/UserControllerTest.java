@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -88,10 +88,23 @@ public class UserControllerTest {
         when(userFeignClient.getUserById(id)).thenReturn(firstUserDto());
         when(userMapper.map(firstUserDto())).thenReturn(firstUser());
 
-        mockMvc.perform(put("/users/{id}", id)
+        mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", firstUser()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
+    }
+
+    @Test
+    void showNewModelAndViewInCaseOfErrorsEditUser() throws Exception {
+        Long id = 1L;
+        User user = firstUser();
+        user.setFirstName("");
+
+        mockMvc.perform(post("/users/{id}", id)
+                .flashAttr("editUser", user))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/editUser"))
+                .andExpect(model().attributeHasFieldErrors("editUser","firstName"));
     }
 }

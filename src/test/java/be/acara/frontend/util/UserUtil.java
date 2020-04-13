@@ -20,6 +20,7 @@ public class UserUtil {
                 .lastName("lastName")
                 .username("username")
                 .password("password")
+                .passwordConfirm("password")
                 .build();
     }
 }
