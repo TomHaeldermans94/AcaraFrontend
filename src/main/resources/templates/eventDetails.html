@@ -59,7 +59,9 @@
 
             </div>
         </div>
+
         <div class="col-md-6">
+            <p sec:authorize="hasAuthority('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
             <img class="img-small mt-3 px-2 py-2" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
         </div>
     </div>
