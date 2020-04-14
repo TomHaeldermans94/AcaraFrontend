@@ -125,18 +125,22 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockAdmin
     void displayEditUserForm() throws Exception {
         Long id = 1L;
-        when(userService.getUser(id)).thenReturn(firstUserDomain());
-        when(userMapper.userToUserModel(firstUserDomain())).thenReturn(firstUser());
+        User user = firstUserDomain();
+        UserModel userModel = firstUser();
+        when(userService.getUser(id)).thenReturn(user);
+        when(userMapper.userToUserModel(user)).thenReturn(userModel);
 
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/editUser"))
-                .andExpect(model().attribute("editUser", firstUser()));
+                .andExpect(model().attribute("editUser", userModel));
     }
 
     @Test
+    @WithMockAdmin
     void handleEditUserForm() throws Exception{
         Long id = 1L;
         doNothing().when(userService).editUser(any());
@@ -147,8 +151,28 @@ public class UserControllerTest {
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
     }
+    
+    @Test
+    @WithMockUser
+    void handleEditUserForm_asUser() throws Exception {
+        Long id = 1L;
+        
+        mockMvc.perform(post("/users/{id}", id))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void handleEditUserForm_asAnonymous() throws Exception {
+        Long id = 1L;
+        
+        mockMvc.perform(post("/users/{id}", id))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
 
     @Test
+    @WithMockAdmin
     void showNewModelAndViewInCaseOfErrorsEditUser() throws Exception {
         Long id = 1L;
         User user = firstUserDomain();

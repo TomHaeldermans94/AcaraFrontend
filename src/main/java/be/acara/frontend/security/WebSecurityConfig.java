@@ -52,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/events/new").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/users/detail/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/users/{\\d+}").hasRole(ROLE_ADMIN)
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")
