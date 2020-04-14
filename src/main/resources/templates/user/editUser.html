@@ -42,7 +42,7 @@
         <span th:if="${editUser.password} != ${editUser.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
     </div>
     <div>
-        <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+        <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit" onclick="return confirm('Please confirm the edits.\nYou will be logged out after confirming.');">Confirm</button>
         <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
     </div>
 </form>
