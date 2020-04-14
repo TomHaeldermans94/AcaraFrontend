@@ -2,6 +2,7 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.*;
 import be.acara.frontend.service.mapper.EventMapper;
@@ -15,10 +16,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.UserUtil.firstUser;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -73,5 +77,48 @@ public class UserControllerTest {
                 .andExpect(view().name("userDetails"))
                 .andExpect(model().attribute("events", eventDtoList.getContent()))
                 .andExpect(model().attribute("user", user));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void shouldNotBeAbleToDisplayUser_asAnonymousUser() throws Exception {
+        Long id = 1L;
+        
+        mockMvc.perform(get("/users/detail/{id}", id))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+    
+    @Test
+    @WithMockUser
+    void shouldNotBeAbleToDisplayUser_asNormalUser() throws Exception {
+        Long id = 1L;
+    
+        mockMvc.perform(get("/users/detail/{id}", id))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void shouldBeAbleToDisplayRegistration_asAnonymousUser() throws Exception {
+        mockMvc.perform(get("/users/registration"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("userForm", new UserModel()))
+                .andExpect(view().name("user/registration"))
+                .andExpect(content().string(containsString("<title>Registration</title>")));
+    }
+    
+    @Test
+    @WithMockUser
+    void shouldNotBeAbleToDisplayRegistration_asUser() throws Exception {
+        mockMvc.perform(get("/users/registration"))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithMockAdmin
+    void shouldNotBeAbleToDisplayRegistration_asAdmin() throws Exception {
+        mockMvc.perform(get("/users/registration"))
+                .andExpect(status().isForbidden());
     }
 }

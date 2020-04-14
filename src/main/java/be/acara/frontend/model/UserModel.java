@@ -16,6 +16,7 @@ public class UserModel {
     private String firstName;
     private String lastName;
     private Set<EventModel> events;
-    private String userName;
+    private String username;
     private String password;
+    private String passwordConfirm;
 }
