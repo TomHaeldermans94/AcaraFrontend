@@ -1,63 +1,77 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDtoList;
-import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
-import be.acara.frontend.service.EventFeignClient;
-import be.acara.frontend.service.UserFeignClient;
+import be.acara.frontend.security.TokenLogoutHandler;
+import be.acara.frontend.service.*;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
-import org.junit.jupiter.api.BeforeEach;
+import be.acara.frontend.util.WithMockAdmin;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.UserUtil.firstUser;
-import static be.acara.frontend.util.UserUtil.firstUserDto;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(UserController.class)
 public class UserControllerTest {
-
-    @Mock
-    private UserFeignClient userFeignClient;
-    @Mock
-    private EventFeignClient eventFeignClient;
-    @Mock
+    @MockBean
+    @Qualifier("userDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    @MockBean
+    private TokenLogoutHandler tokenLogoutHandler;
+    
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private SecurityService securityService;
+    @MockBean
     private UserMapper userMapper;
-    @Mock
+    @MockBean
+    private EventService eventService;
+    
+    @MockBean
+    private UserFeignClient userFeignClient;
+    @MockBean
+    private EventFeignClient eventFeignClient;
+    @MockBean
     private EventMapper eventMapper;
-    @InjectMocks
-    private UserController userController;
 
+    @Autowired
     private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+    
+    @AfterEach
+    void tearDown() {
+        reset(userService);
     }
-
+    
     @Test
-    void findById() throws Exception {
+    @WithMockAdmin
+    void displayUser() throws Exception {
         Long id = 1L;
-        UserDto userDto = firstUserDto();
         User user = firstUser();
         EventDtoList eventDtoList = createEventDtoList();
-        when(userFeignClient.getUserById(id)).thenReturn(userDto);
-        when(eventFeignClient.getAllEventsFromSelectedUser(id)).thenReturn(eventDtoList);
-        when(userMapper.userDtoToUser(userDto)).thenReturn(user);
+        when(userService.getUser(id)).thenReturn(user);
+        when(eventService.getEventsFromUser(anyLong())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("userDetails"))
                 .andExpect(model().attribute("events", eventDtoList.getContent()))
-                .andExpect(model().attribute("user", userMapper.userDtoToUser(userDto)));
+                .andExpect(model().attribute("user", user));
     }
 }

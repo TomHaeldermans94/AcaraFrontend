@@ -51,4 +51,9 @@ public class EventServiceImpl implements EventService {
         params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         return eventFeignClient.search(params);
     }
+    
+    @Override
+    public EventDtoList getEventsFromUser(Long id) {
+        return eventFeignClient.getAllEventsFromSelectedUser(id);
+    }
 }

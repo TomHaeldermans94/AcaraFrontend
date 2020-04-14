@@ -3,9 +3,8 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.UserModel;
-import be.acara.frontend.service.EventFeignClient;
+import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
-import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.UserMapper;
 import org.springframework.stereotype.Controller;
@@ -22,20 +21,18 @@ public class UserController {
     
     private final UserService userService;
     private final SecurityService securityService;
-    private final UserFeignClient userFeignClient;
-    private final EventFeignClient eventFeignClient;
     private final UserMapper userMapper;
+    private final EventService eventService;
     
     private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String ATTRIBUTE_USER = "user";
     private static final String ATTRIBUTE_EVENTS = "events";
     
-    public UserController(UserService userService, SecurityService securityService, UserFeignClient userFeignClient, EventFeignClient eventFeignClient, UserMapper userMapper) {
+    public UserController(UserService userService, SecurityService securityService, UserMapper userMapper, EventService eventService) {
         this.userService = userService;
         this.securityService = securityService;
-        this.userFeignClient = userFeignClient;
-        this.eventFeignClient = eventFeignClient;
         this.userMapper = userMapper;
+        this.eventService = eventService;
     }
     
     @GetMapping("/registration")
@@ -57,9 +54,9 @@ public class UserController {
     }
     
     @GetMapping("/detail/{id}")
-    public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
-        User user = userMapper.userDtoToUser(userFeignClient.getUserById(id));
-        List<EventDto> events = eventFeignClient.getAllEventsFromSelectedUser(id).getContent();
+    public String displayUser(@PathVariable("id") Long id, ModelMap model) {
+        User user = userService.getUser(id);
+        List<EventDto> events = eventService.getEventsFromUser(id).getContent();
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute(ATTRIBUTE_EVENTS, events);
         return "userDetails";

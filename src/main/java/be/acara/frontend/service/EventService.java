@@ -21,4 +21,6 @@ public interface EventService {
     void editEvent(Long id, EventDto eventDto);
     
     EventDtoList search(Map<String, String> params);
+    
+    EventDtoList getEventsFromUser(Long id);
 }
