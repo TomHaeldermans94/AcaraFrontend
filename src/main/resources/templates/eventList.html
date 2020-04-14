@@ -13,7 +13,7 @@
 <body>
 <div th:insert="navbar :: navbar"></div>
 <h1>List of events</h1>
-<a href="/events/new" th:href="@{/events/new}" sec:authorize="hasAuthority('ADMIN')">
+<a href="/events/new" th:href="@{/events/new}" sec:authorize="hasRole('ADMIN')">
     Add event
 </a>
 <ul>
@@ -26,7 +26,7 @@
            th:href="@{|/events/detail/${event.id}|}">
             Detail
         </a>
-        <p sec:authorize="hasAuthority('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
+        <p sec:authorize="hasRole('ADMIN')" th:insert="deleteEvent :: deleteEvent"></p>
     </li>
 </ul>
 <nav aria-label="Page navigation" th:if="${events.totalPages > 0}">

@@ -1,7 +1,7 @@
 package be.acara.frontend.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException() {
-        super("User not found");
+public class UserNotFoundException extends NotFoundException {
+    public UserNotFoundException(String message) {
+        super("User not found", message);
     }
 }

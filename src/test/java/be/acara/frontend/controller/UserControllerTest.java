@@ -4,7 +4,10 @@ import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.UserModel;
 import be.acara.frontend.security.TokenLogoutHandler;
-import be.acara.frontend.service.*;
+import be.acara.frontend.service.EventService;
+import be.acara.frontend.service.SecurityService;
+import be.acara.frontend.service.UserFeignClient;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
@@ -22,11 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.UserUtil.firstUser;
+import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
@@ -51,8 +55,6 @@ public class UserControllerTest {
     @MockBean
     private UserFeignClient userFeignClient;
     @MockBean
-    private EventFeignClient eventFeignClient;
-    @MockBean
     private EventMapper eventMapper;
 
     @Autowired
@@ -67,14 +69,14 @@ public class UserControllerTest {
     @WithMockAdmin
     void displayUser() throws Exception {
         Long id = 1L;
-        User user = firstUser();
+        User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
         when(userService.getUser(id)).thenReturn(user);
         when(eventService.getEventsFromUser(anyLong())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
-                .andExpect(view().name("userDetails"))
+                .andExpect(view().name("user/userDetails"))
                 .andExpect(model().attribute("events", eventDtoList.getContent()))
                 .andExpect(model().attribute("user", user));
     }
@@ -105,7 +107,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("userForm", new UserModel()))
                 .andExpect(view().name("user/registration"))
-                .andExpect(content().string(containsString("<title>Registration</title>")));
+                .andExpect(content().string(containsString("<title>Add User</title>")));
     }
     
     @Test
@@ -120,5 +122,43 @@ public class UserControllerTest {
     void shouldNotBeAbleToDisplayRegistration_asAdmin() throws Exception {
         mockMvc.perform(get("/users/registration"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void displayEditUserForm() throws Exception {
+        Long id = 1L;
+        when(userService.getUser(id)).thenReturn(firstUserDomain());
+        when(userMapper.userToUserModel(firstUserDomain())).thenReturn(firstUser());
+
+        mockMvc.perform(get("/users/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/editUser"))
+                .andExpect(model().attribute("editUser", firstUser()));
+    }
+
+    @Test
+    void handleEditUserForm() throws Exception{
+        Long id = 1L;
+        doNothing().when(userService).editUser(any());
+
+        mockMvc.perform(post("/users/{id}", id)
+                .flashAttr("editUser", firstUser()))
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"))
+                .andExpect(model().hasNoErrors());
+    }
+
+    @Test
+    void showNewModelAndViewInCaseOfErrorsEditUser() throws Exception {
+        Long id = 1L;
+        User user = firstUserDomain();
+        user.setFirstName("");
+        UserModel userModel = UserMapper.INSTANCE.userToUserModel(user);
+    
+        mockMvc.perform(post("/users/{id}", id)
+                .flashAttr("editUser", userModel))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/editUser"))
+                .andExpect(model().attributeHasFieldErrors("editUser","firstName"));
     }
 }

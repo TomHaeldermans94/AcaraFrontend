@@ -8,6 +8,7 @@ import be.acara.frontend.service.SecurityService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.UserMapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +19,14 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    
+
     private final UserService userService;
     private final SecurityService securityService;
     private final UserMapper userMapper;
     private final EventService eventService;
     
     private static final String ATTRIBUTE_USER_FORM = "userForm";
+    private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
     private static final String ATTRIBUTE_USER = "user";
     private static final String ATTRIBUTE_EVENTS = "events";
     
@@ -59,6 +61,25 @@ public class UserController {
         List<EventDto> events = eventService.getEventsFromUser(id).getContent();
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute(ATTRIBUTE_EVENTS, events);
-        return "userDetails";
+        return "user/userDetails";
+    }
+    
+    @GetMapping("/{id}")
+    public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
+        UserModel user = userMapper.userToUserModel(userService.getUser(id));
+        model.addAttribute("editUser", user);
+        return ATTRIBUTE_EDIT_USER_REDIRECT;
+    }
+    
+    @PostMapping("/{id}")
+    public String handleEditEventForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
+        if (br.hasErrors()) {
+            return ATTRIBUTE_EDIT_USER_REDIRECT;
+        }
+        if (user.getPassword().equals(user.getPasswordConfirm())){
+            userService.editUser(user);
+            return "redirect:/events";
+        }
+        return ATTRIBUTE_EDIT_USER_REDIRECT;
     }
 }
