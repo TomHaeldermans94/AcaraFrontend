@@ -19,7 +19,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
+    
     private final UserService userService;
     private final SecurityService securityService;
     private final UserMapper userMapper;
@@ -73,13 +73,11 @@ public class UserController {
     
     @PostMapping("/{id}")
     public String handleEditEventForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
-        if (br.hasErrors()) {
+        boolean passwordEquals = user.getPassword().equals(user.getPasswordConfirm());
+        if (br.hasErrors() || !passwordEquals) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
         }
-        if (user.getPassword().equals(user.getPasswordConfirm())){
-            userService.editUser(user);
-            return "redirect:/events";
-        }
-        return ATTRIBUTE_EDIT_USER_REDIRECT;
+        userService.editUser(user);
+        return "redirect:/events";
     }
 }

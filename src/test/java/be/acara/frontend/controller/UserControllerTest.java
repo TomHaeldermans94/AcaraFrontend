@@ -154,7 +154,9 @@ public class UserControllerTest {
         User user = firstUserDomain();
         user.setFirstName("");
         UserModel userModel = UserMapper.INSTANCE.userToUserModel(user);
-    
+        userModel.setPassword("pw");
+        userModel.setPasswordConfirm("pw");
+        
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", userModel))
                 .andExpect(status().isOk())

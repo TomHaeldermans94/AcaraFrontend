@@ -21,13 +21,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserFeignClient userFeignClient;
     private final UserMapper userMapper;
+    private final JwtTokenService jwtTokenService;
     
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper, JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.userFeignClient = userFeignClient;
         this.userMapper = userMapper;
+        this.jwtTokenService = jwtTokenService;
     }
     
     @Override
@@ -52,41 +54,37 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void editUser(UserModel user){
-        editBackEndUser(user);
-        editFrontEndUser(user);
+    public void editUser(UserModel user) {
+        try {
+            editBackEndUser(user);
+            editFrontEndUser(user);
+        } catch (Exception e) {
+            //todo: any possibilities on a rollback method?
+        } finally {
+            jwtTokenService.remove(user.getUsername());
+        }
     }
     
-    private void editBackEndUser(UserModel user){
+    private void editBackEndUser(UserModel user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserDto userDto = userMapper.userModelToUserDto(user);
         userFeignClient.editUser(user.getId(), userDto);
     }
     
-    private void editFrontEndUser(UserModel user){
+    private void editFrontEndUser(UserModel user) {
         User userFromDb = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException(String.format("User with ID %d not found", user.getId())));
         if (!userFromDb.getId().equals(user.getId())) {
-            throw new IdNotFoundException(String.format("Id of user to edit does not match given id. User id = %d, and given id = %d", userFromDb.getId(), user.getId())
-            );
+            throw new IdNotFoundException(String.format("Id of user to edit does not match given id. User id = %d, and given id = %d", userFromDb.getId(), user.getId()));
         }
-        if(!userFromDb.getUsername().equals(user.getUsername())){
-            userFromDb.setUsername(user.getUsername());
+        if (!userFromDb.getFirstName().equals(user.getFirstName())) {
+            userFromDb.setFirstName(user.getFirstName());
         }
-        if(!userFromDb.getPassword().equals(user.getPassword())){
+        if (!userFromDb.getLastName().equals(user.getLastName())) {
+            userFromDb.setLastName(user.getLastName());
+        }
+        if (!userFromDb.getPassword().equals(user.getPassword())) {
             userFromDb.setPassword(user.getPassword());
         }
         userRepository.saveAndFlush(userFromDb);
-    }
-    
-    public boolean checkIfUserNameIsValid(UserModel user) {
-        boolean isValidUsername = true;
-        //check if the username was edited
-        UserDto userDtoFromDb = userFeignClient.getUserById(user.getId());
-        if(!userDtoFromDb.getUsername().equals(user.getUsername())) {
-            //check if the username is already in the database
-            isValidUsername = !userFeignClient.checkUsername(user.getUsername());
-        }
-        user.setUniqueUsername(isValidUsername);
-        return isValidUsername;
     }
 }

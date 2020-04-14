@@ -10,14 +10,11 @@
     <title>Edit User</title>
 </head>
 <body>
-<!--/*@thymesVar id="editUser" type="be.acara.frontend.domain.User"*/-->
-<form modelAttribute="editUser" th:object="${editUser}" th:method="post">
-    <div>
+<!--/*@thymesVar id="editUser" type="be.acara.frontend.model.UserModel"*/-->
+<form th:modelAttribute="editUser" th:object="${editUser}" th:method="post">
+    <div hidden>
         <label for="username" th:for="${#ids.next('username')}">Username</label>
         <input type="text" id="username" placeholder="Username" th:field="${editUser.username}" th:errorClass="errorField"/>
-        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
-              class="errorMessage w-75">Username is required</span>
-        <span th:if="${editUser.uniqueUsername} == false" class="errorMessage w-75">Username is already in use</span>
     </div>
     <div>
         <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
