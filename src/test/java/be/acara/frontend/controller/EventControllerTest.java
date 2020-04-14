@@ -17,12 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -74,6 +75,21 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockUser
+    void displayAddEventForm_asUser() throws Exception {
+        mockMvc.perform(get("/events/new"))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void displayAddEventForm_asAnonymous() throws Exception {
+        mockMvc.perform(get("/events/new"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+    
+    @Test
     @WithMockAdmin
     void displayEditEventForm() throws Exception {
         Long id = 1L;
@@ -84,6 +100,23 @@ class EventControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("editEvent"))
                 .andExpect(model().attribute("event", firstEvent()));
+    }
+    
+    @Test
+    @WithMockUser
+    void displayEditEventForm_asUser() throws Exception {
+        Long id = 1L;
+        mockMvc.perform(get("/events/{id}", id))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void displayEditEventForm_asAnonymous() throws Exception {
+        Long id = 1L;
+        mockMvc.perform(get("/events/{id}", id))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
     
     @Test
@@ -113,6 +146,31 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockUser
+    void handleAddEventForm_withUser() throws Exception {
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
+        
+        mockMvc.perform(multipart("/events/new")
+                .file(image)
+                .flashAttr("event", firstEvent())
+        )
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void handleAddEventForm_withAnonymous() throws Exception {
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
+        
+        mockMvc.perform(multipart("/events/new")
+                .file(image)
+                .flashAttr("event", firstEvent())
+        )
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
+    }
+    
+    @Test
     @WithMockAdmin
     void handleEditEventForm() throws Exception {
         Long id = 1L;
@@ -126,6 +184,31 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
+    }
+    
+    @Test
+    @WithMockUser
+    void handleEditEventForm_withUser() throws Exception {
+        Long id = 1L;
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
+        
+        mockMvc.perform(multipart("/events/{id}", id)
+                .file(image)
+                .flashAttr("event", firstEvent()))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void handleEditEventForm_withAnonymous() throws Exception {
+        Long id = 1L;
+        MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
+        
+        mockMvc.perform(multipart("/events/{id}", id)
+                .file(image)
+                .flashAttr("event", firstEvent()))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("http://localhost/login"));
     }
     
     @Test
@@ -177,7 +260,6 @@ class EventControllerTest {
         mockMvc.perform(multipart("/events/{id}", 1L)
                 .file(image)
                 .flashAttr("event", event)
-                .with(csrf())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("editEvent"))
@@ -191,7 +273,7 @@ class EventControllerTest {
         
         doNothing().when(eventService).delete(id);
         
-        mockMvc.perform(get("/events/delete/{id}", id).with(csrf()))
+        mockMvc.perform(get("/events/delete/{id}", id))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
         
@@ -199,7 +281,14 @@ class EventControllerTest {
     }
     
     @Test
-    @WithMockAdmin
+    @WithMockUser
+    void deleteEvent_asUser() throws Exception {
+        Long id = 1L;
+        mockMvc.perform(get("/events/delete/{id}", id))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
     void search() throws Exception {
         when(eventService.search(anyMap())).thenReturn(createEventDtoList());
         
