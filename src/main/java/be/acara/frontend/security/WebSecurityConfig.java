@@ -43,8 +43,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/events/new").hasAuthority("ADMIN")
-                .antMatchers("/events/{\\d+}").hasAuthority("ADMIN")
+                .antMatchers("/events/search/**").permitAll()
+                .antMatchers("/events/new").hasRole("ADMIN")
+                .antMatchers("/events/{\\d+}").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")
@@ -55,9 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(tokenLogoutHandler)
                 .deleteCookies("JSESSIONID");
     
+        // H2 webconsole stuff, don't add stuff to this
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/events/new").hasAuthority("ADMIN")
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable();

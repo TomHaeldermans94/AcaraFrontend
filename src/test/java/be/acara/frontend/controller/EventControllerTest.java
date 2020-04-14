@@ -1,66 +1,75 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.CategoriesList;
-import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventFeignClient;
+import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.mapper.EventMapper;
+import be.acara.frontend.util.WithMockAdmin;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.List;
 
 import static be.acara.frontend.util.EventUtil.*;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(EventController.class)
+@AutoConfigureMockMvc
 class EventControllerTest {
-    
-    @Mock
+    @MockBean
+    @Qualifier("userDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
+    @MockBean
+    private AuthenticationProvider authenticationProvider;
+    @MockBean
+    private TokenLogoutHandler tokenLogoutHandler;
+    @MockBean
+    private EventService eventService;
+    @MockBean
     private EventFeignClient eventFeignClient;
-    @Mock
+    @MockBean
     private EventMapper mapper;
-    @InjectMocks
-    private EventController eventController;
     
+    @Autowired
     private MockMvc mockMvc;
     private CategoriesList categoriesList;
     
     
     @BeforeEach
     void setUp() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(eventController).build();
-        this.categoriesList = new CategoriesList(
+        /*this.categoriesList = new CategoriesList(
                 List.of(
                         new CategoryDto("MUSIC", "Music"),
                         new CategoryDto("THEATRE", "Theatre"),
                         new CategoryDto("UNKNOWN", "Unknown")
                 )
         );
-        when(eventFeignClient.getAllCategories()).thenReturn(this.categoriesList);
+        when(eventFeignClient.getAllCategories()).thenReturn(this.categoriesList);*/
     }
     
     @Test
     void displayEvent() throws Exception {
         Long id = 1L;
         EventDto eventDto = firstEventDto();
-        when(eventFeignClient.getEventById(id)).thenReturn(eventDto);
+        when(eventService.getEvent(id)).thenReturn(eventDto);
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
 
         
@@ -68,11 +77,11 @@ class EventControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventDetails"))
                 .andExpect(model().attributeExists("event"))
-                .andExpect(model().attribute("event", mapper.eventDtoToEventModel(eventDto)))
-                .andExpect(model().attribute("categoryList", categoriesList.getCategories()));
+                .andExpect(model().attribute("event", mapper.eventDtoToEventModel(eventDto)));
     }
     
     @Test
+    @WithMockAdmin
     void displayAddEventForm() throws Exception {
         mockMvc.perform(get("/events/new"))
                 .andExpect(status().isOk())
@@ -81,9 +90,10 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void displayEditEventForm() throws Exception {
         Long id = 1L;
-        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
         
         mockMvc.perform(get("/events/{id}", id))
@@ -95,18 +105,20 @@ class EventControllerTest {
     @Test
     void findAllEvents() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
-        when(eventFeignClient.getEvents(any(), any())).thenReturn(eventDtoList);
+        when(eventService.findAllEvents(anyInt(), anyInt())).thenReturn(eventDtoList);
         
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", eventDtoList.getContent()));
+                .andExpect(model().attribute("events", eventDtoList));
     }
     
     @Test
+    @WithMockAdmin
     void handleAddEventForm() throws Exception {
         doNothing().when(eventFeignClient).addEvent(any());
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
+        doNothing().when(eventService).addEvent(firstEventDto());
         
         mockMvc.perform(multipart("/events/new")
                 .file(image)
@@ -118,10 +130,11 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void handleEditEventForm() throws Exception{
         Long id = 1L;
         doNothing().when(eventFeignClient).editEvent(anyLong(),any());
-        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
@@ -134,12 +147,13 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void handleEditEventForm_withUnchangedImage() throws Exception{
         Long id = 1L;
         EventModel event = firstEvent();
         MockMultipartFile image = new MockMultipartFile("eventImage",new byte[0]);
         
-        when(eventFeignClient.getEventById(id)).thenReturn(firstEventDto());
+        when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
 
         mockMvc.perform(multipart("/events/{id}", id)
@@ -151,6 +165,7 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNullImage_whenAddEvent() throws Exception {
         EventModel event = firstEvent();
         event.setName("");
@@ -167,18 +182,20 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNonNullImage_whenEditEvent() throws Exception {
         EventModel event = firstEvent();
         event.setName("");
         EventDto eventFromDb = firstEventDto();
-        when(eventFeignClient.getEventById(anyLong())).thenReturn(eventFromDb);
-        when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
+        when(eventService.getEvent(anyLong())).thenReturn(eventFromDb);
+        when(mapper.eventDtoToEventModel(eventFromDb)).thenReturn(firstEvent());
 
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         
         mockMvc.perform(multipart("/events/{id}", 1L)
                 .file(image)
                 .flashAttr("event", event)
+                .with(csrf())
         )
                 .andExpect(status().isOk())
                 .andExpect(view().name("editEvent"))
@@ -186,26 +203,28 @@ class EventControllerTest {
     }
     
     @Test
+    @WithMockAdmin
     void deleteEvent() throws Exception {
         Long id = 1L;
         
-        doNothing().when(eventFeignClient).deleteEvent(id);
+        doNothing().when(eventService).delete(id);
         
-        mockMvc.perform(get("/events/delete/{id}", id))
+        mockMvc.perform(get("/events/delete/{id}", id).with(csrf()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
         
-        verify(eventFeignClient, times(1)).deleteEvent(id);
+        verify(eventService, times(1)).delete(id);
     }
     
     @Test
+    @WithMockAdmin
     void search() throws Exception {
-        when(eventFeignClient.search(anyMap())).thenReturn(createEventDtoList());
+        when(eventService.search(anyMap())).thenReturn(createEventDtoList());
         
         mockMvc.perform(get("/events/search").queryParam("location","genk"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", hasSize(greaterThan(0))));
+                .andExpect(model().attribute("events", Matchers.equalTo(createEventDtoList())));
     }
     
     @Test
