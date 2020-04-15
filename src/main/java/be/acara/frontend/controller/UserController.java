@@ -1,6 +1,6 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.controller.dto.EventDto;
+import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.UserModel;
 import be.acara.frontend.service.EventService;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/users")
@@ -56,9 +58,18 @@ public class UserController {
     }
     
     @GetMapping("/detail/{id}")
-    public String displayUser(@PathVariable("id") Long id, ModelMap model) {
+    public String displayUser(@PathVariable("id") Long id, ModelMap model,
+                              @RequestParam(name = "page", defaultValue = "1", required = false) int page,
+                              @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
         User user = userService.getUser(id);
-        List<EventDto> events = eventService.getEventsFromUser(id).getContent();
+        EventDtoList events = eventService.getEventsFromUser(id, page-1, size);
+        int totalPages = events.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute(ATTRIBUTE_EVENTS, events);
         return "user/userDetails";

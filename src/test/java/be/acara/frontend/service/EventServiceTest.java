@@ -118,12 +118,12 @@ public class EventServiceTest {
     void getEventsFromUser() {
         Long id = 1L;
         EventDtoList eventDtoList = createEventDtoList();
-        when(eventFeignClient.getAllEventsFromSelectedUser(id)).thenReturn(eventDtoList);
+        when(eventFeignClient.getAllEventsFromSelectedUser(id, eventDtoList.getNumber(), eventDtoList.getSize())).thenReturn(eventDtoList);
     
-        EventDtoList answer = eventService.getEventsFromUser(id);
+        EventDtoList answer = eventService.getEventsFromUser(id, eventDtoList.getNumber(), eventDtoList.getSize());
         
         assertThat(answer).isEqualTo(eventDtoList);
-        verifyOnce().getAllEventsFromSelectedUser(id);
+        verifyOnce().getAllEventsFromSelectedUser(id, eventDtoList.getNumber(), eventDtoList.getSize());
         
     }
     

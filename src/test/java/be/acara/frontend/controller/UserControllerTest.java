@@ -72,12 +72,12 @@ public class UserControllerTest {
         User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
         when(userService.getUser(id)).thenReturn(user);
-        when(eventService.getEventsFromUser(anyLong())).thenReturn(eventDtoList);
+        when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/userDetails"))
-                .andExpect(model().attribute("events", eventDtoList.getContent()))
+                .andExpect(model().attribute("events", eventDtoList))
                 .andExpect(model().attribute("user", user));
     }
     

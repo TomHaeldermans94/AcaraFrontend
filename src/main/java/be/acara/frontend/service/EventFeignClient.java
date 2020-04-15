@@ -33,5 +33,5 @@ public interface EventFeignClient {
     void deleteEvent(@PathVariable("id") Long id);
 
     @GetMapping("/userevents/{id}")
-    EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id);
+    EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 }

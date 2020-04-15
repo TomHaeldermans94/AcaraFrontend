@@ -16,6 +16,27 @@
         <p th:text="'Name: ' + ${event.name}">Name</p>
     </li>
 </ul>
+<nav aria-label="Page navigation" th:if="${events.totalPages > 0}">
+    <ul class="pagination">
+        <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
+            <a th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number})}"
+               th:class="page-link">
+                Previous
+            </a>
+        </li>
+        <li class="page-item" th:each="pageNumber : ${pageNumbers}" th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
+            <a class="page-link" th:href="@{/users/details/${user.id}(size=${events.size}, page=${pageNumber})}"
+               th:text="${pageNumber}"
+               th:class="page-link">
+            </a>
+        </li>
+        <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
+            <a th:class="page-link" th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number+2})}">
+                Next
+            </a>
+        </li>
+    </ul>
+</nav>
 <a href="userDetails.html"
    th:href="@{|/users/${user.id}|}">
     Edit

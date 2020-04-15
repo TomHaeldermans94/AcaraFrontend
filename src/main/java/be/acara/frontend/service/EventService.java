@@ -22,5 +22,5 @@ public interface EventService {
     
     EventDtoList search(Map<String, String> params);
     
-    EventDtoList getEventsFromUser(Long id);
+    EventDtoList getEventsFromUser(Long id, int page, int size);
 }
