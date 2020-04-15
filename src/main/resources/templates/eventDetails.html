@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
     <link rel="stylesheet" href="../static/css/eventDetail.css" th:href="@{~/css/eventDetail.css}"/>
-    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
 </head>
-<!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
 
+<!--/*@thymesVar id="event" type="be.acara.frontend.model.EventModel"*/-->
 <body th:object="${event}">
 <div th:insert="navbar :: navbar"></div>
 <div class="container-fluid align-content-center">
@@ -51,7 +51,7 @@
                     <span class="col-6 text-left"  th:text="${event.location}">location</span>
                 </div>
 
-                <div class="form-group row justify-content-center" sec:authorize="hasAuthority('ADMIN')">
+                <div class="form-group row justify-content-center" sec:authorize="hasRole('ADMIN')">
                     <div class="col-9 ml-3 my-2">
                         <a class="btn btn-primary btn-dark btn-lg custom-button-style" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
                         <span class="btn btn-secondary btn-dark btn-lg custom-button-style" th:insert="deleteEvent :: deleteEvent"></span>

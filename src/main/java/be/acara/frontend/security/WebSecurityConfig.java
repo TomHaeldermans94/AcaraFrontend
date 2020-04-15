@@ -20,6 +20,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Qualifier("userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
     
+    private static final String ROLE_ADMIN = "ADMIN";
+    
     @Autowired
     private TokenLogoutHandler tokenLogoutHandler;
     
@@ -43,8 +45,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/events/new").hasAuthority("ADMIN")
-                .antMatchers("/events/{\\d+}").hasAuthority("ADMIN")
+                .antMatchers("/login").not().authenticated()
+                .antMatchers("/users/registration").not().authenticated()
+                .antMatchers("/events/search/**").permitAll()
+                .antMatchers("/events/delete/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/events/new").hasRole(ROLE_ADMIN)
+                .antMatchers("/events/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/users/detail/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/users/{\\d+}").hasRole(ROLE_ADMIN)
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")
@@ -55,9 +63,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(tokenLogoutHandler)
                 .deleteCookies("JSESSIONID");
     
+        // H2 webconsole stuff, don't add stuff to this
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/events/new").hasAuthority("ADMIN")
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable();

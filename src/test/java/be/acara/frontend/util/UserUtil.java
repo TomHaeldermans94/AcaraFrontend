@@ -1,7 +1,8 @@
 package be.acara.frontend.util;
 
 import be.acara.frontend.controller.dto.UserDto;
-import be.acara.frontend.model.User;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
 
 public class UserUtil {
 
@@ -13,8 +14,8 @@ public class UserUtil {
                 .build();
     }
 
-    public static User firstUser() {
-        return User.builder()
+    public static UserModel firstUser() {
+        return UserModel.builder()
                 .id(1L)
                 .firstName("firstName")
                 .lastName("lastName")
@@ -24,8 +25,8 @@ public class UserUtil {
                 .build();
     }
 
-    public static be.acara.frontend.domain.User firstUserDomain() {
-        return be.acara.frontend.domain.User.builder()
+    public static User firstUserDomain() {
+        return User.builder()
                 .id(1L)
                 .firstName("firstName")
                 .lastName("lastName")

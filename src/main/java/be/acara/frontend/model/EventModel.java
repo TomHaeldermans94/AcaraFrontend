@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Event {
+public class EventModel {
 
     private Long id;
 
@@ -48,8 +48,8 @@ public class Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event)) return false;
-        Event event = (Event) o;
+        if (!(o instanceof EventModel)) return false;
+        EventModel event = (EventModel) o;
         return Objects.equals(getId(), event.getId()) &&
                 Objects.equals(getEventDate(), event.getEventDate()) &&
                 Objects.equals(getName(), event.getName()) &&

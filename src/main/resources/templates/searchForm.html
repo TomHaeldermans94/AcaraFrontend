@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
     <title>Search</title>
 </head>
+<!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
 <body>
 <form th:method="get" th:fragment="searchForm">
 
@@ -30,7 +31,7 @@
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
     </div>
     <div>
-        <label th:for="category">Category</label>
+        <label th:for="eventCategory">Category</label>
         <select name="category" id="eventCategory" th:type="text">
             <option th:each="category: ${categoryList}"
                     th:value="${category}"

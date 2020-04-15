@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class UserModel {
     private Long id;
     @NotBlank(message = "NotBlank.user.username")
     private String username;
@@ -19,7 +19,7 @@ public class User {
     private String firstName;
     @NotBlank(message = "NotBlank.user.lastName")
     private String lastName;
-    private Set<Event> events;
+    private Set<EventModel> events;
     @NotBlank(message = "NotBlank.user.password")
     private String password;
     @NotBlank(message = "NotBlank.user.passwordConfirm")
@@ -29,8 +29,8 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
+        if (!(o instanceof UserModel)) return false;
+        UserModel user = (UserModel) o;
         return Objects.equals(getId(), user.getId()) &&
                 Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getFirstName(), user.getFirstName()) &&
