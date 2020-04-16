@@ -1,9 +1,6 @@
 package be.acara.frontend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
@@ -12,9 +9,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Objects;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -44,4 +44,26 @@ public class Event {
     @NotNull(message = "Minimum price is 1 euro")
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Event)) return false;
+        Event event = (Event) o;
+        return Objects.equals(getId(), event.getId()) &&
+                Objects.equals(getEventDate(), event.getEventDate()) &&
+                Objects.equals(getName(), event.getName()) &&
+                Objects.equals(getDescription(), event.getDescription()) &&
+                Arrays.equals(getImage(), event.getImage()) &&
+                Objects.equals(getLocation(), event.getLocation()) &&
+                Objects.equals(getCategory(), event.getCategory()) &&
+                Objects.equals(getPrice(), event.getPrice());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(getId(), getEventDate(), getName(), getDescription(), getLocation(), getCategory(), getPrice());
+        result = 31 * result + Arrays.hashCode(getImage());
+        return result;
+    }
 }
