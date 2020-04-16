@@ -97,7 +97,8 @@ public class UserControllerTest {
         Long id = 1L;
     
         mockMvc.perform(get("/users/detail/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -114,14 +115,16 @@ public class UserControllerTest {
     @WithMockUser
     void shouldNotBeAbleToDisplayRegistration_asUser() throws Exception {
         mockMvc.perform(get("/users/registration"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
     @WithMockAdmin
     void shouldNotBeAbleToDisplayRegistration_asAdmin() throws Exception {
         mockMvc.perform(get("/users/registration"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
 
     @Test
@@ -158,7 +161,8 @@ public class UserControllerTest {
         Long id = 1L;
         
         mockMvc.perform(post("/users/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
