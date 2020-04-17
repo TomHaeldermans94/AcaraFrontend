@@ -191,4 +191,32 @@ public class UserControllerTest {
                 .andExpect(view().name("user/editUser"))
                 .andExpect(model().attributeHasFieldErrors("editUser","firstName"));
     }
+    
+    @Test
+    @WithAnonymousUser
+    void register() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setId(null);
+        User user = UserMapper.INSTANCE.userModelToUser(userModel);
+        
+        when(userMapper.userModelToUser(userModel)).thenReturn(user);
+        doNothing().when(userService).save(user);
+        doNothing().when(securityService).autoLogin(anyString(), anyString());
+        
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/events"));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void registerWithErrors() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setFirstName(null);
+    
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isOk());
+    }
 }
