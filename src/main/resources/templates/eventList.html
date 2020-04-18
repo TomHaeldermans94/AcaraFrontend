@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="list-group">
-                <div class="list-group-item" th:each="event,image : ${events}">
+                <div class="list-group-item border-dark rounded mb-1" th:each="event,image : ${events}">
                     <div class="float-left w-75">
                     <p th:text="'Name: ' + ${event.name}">Name</p>
                     <p th:text="'Date: ' + ${event.eventDate}">Date</p>

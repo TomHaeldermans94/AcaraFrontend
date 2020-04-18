@@ -46,11 +46,11 @@ public class EventController {
     }
 
     @GetMapping
-    public String findAllEvents(ModelMap model,
+    public String findAllEvents(Model model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
         addCategories(model);
-        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size);
+        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size);
         int totalPages = eventDtoList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -107,9 +107,9 @@ public class EventController {
 
     @GetMapping("/search")
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
-        addCategories(model);
+        params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         if (params.isEmpty()) {
-            return "searchForm";
+            return "redirect:";
         }
         EventDtoList searchResults = eventService.search(params);
         model.addAttribute("events", searchResults);
@@ -123,10 +123,6 @@ public class EventController {
     }
 
     private void addCategories(Model model) {
-        model.addAttribute("categoryList", eventService.getCategories());
-    }
-
-    private void addCategories(ModelMap model) {
         model.addAttribute("categoryList", eventService.getCategories());
     }
 }

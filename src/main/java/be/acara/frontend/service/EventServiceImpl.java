@@ -48,7 +48,6 @@ public class EventServiceImpl implements EventService {
     
     @Override
     public EventDtoList search(Map<String, String> params) {
-        params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         return eventFeignClient.search(params);
     }
     
