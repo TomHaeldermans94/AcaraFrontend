@@ -16,6 +16,14 @@
         <img src="/images/acara-logo-1.jpg" class="img-fluid" alt="">
     </a>
 
+    <div class="text-white" style="font-size: xx-large" sec:authorize="isAnonymous()">
+        You are currently not logged in
+    </div>
+
+    <div class="text-white" style="font-size: xx-large" sec:authorize="isAuthenticated()">
+        Welcome <span sec:authentication="name">Name</span>
+    </div>
+
     <div class="nav-item">
         <div sec:authorize="isAnonymous()">
             <a class="nav-link" th:href="@{/login}">

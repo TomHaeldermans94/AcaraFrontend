@@ -9,11 +9,11 @@
 </head>
 <!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
 <body>
-<form th:method="get" th:fragment="searchForm">
+<form th:method="get" th:fragment="searchForm" th:action="@{/events/search}">
 
     <div>
         <label th:for="name" class="text-white">Name</label>
-        <input id="name" name="name" th:type="text" class="form-control"/>
+        <input id="name" name="name" th:type="text" placeholder="Name" class="form-control"/>
     </div>
 
     <div>
@@ -36,6 +36,7 @@
     <div>
         <label th:for="eventCategory" class="text-white">Category</label>
         <select name="category" id="eventCategory" th:type="text" class="form-control">
+            <option hidden disabled selected value=""> -- select an option -- </option>
             <option th:each="category: ${categoryList}"
                     th:value="${category.name}"
                     th:text="${category.webDisplay}">
