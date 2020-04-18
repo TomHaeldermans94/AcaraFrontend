@@ -50,15 +50,15 @@ public class EventController {
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
         addCategories(model);
-        EventDtoList eventList = eventService.findAllEvents(page - 1, size);
-        int totalPages = eventList.getTotalPages();
+        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size);
+        int totalPages = eventDtoList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        model.addAttribute("events", eventList);
+        model.addAttribute("events", eventDtoList);
         return "eventList";
     }
 
