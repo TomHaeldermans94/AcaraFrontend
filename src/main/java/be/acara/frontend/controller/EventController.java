@@ -30,7 +30,7 @@ public class EventController {
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
-    
+
     @Autowired
     public EventController(EventMapper mapper, EventService eventService) {
         this.mapper = mapper;
@@ -49,6 +49,7 @@ public class EventController {
     public String findAllEvents(ModelMap model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
+        addCategories(model);
         EventDtoList eventList = eventService.findAllEvents(page - 1, size);
         int totalPages = eventList.getTotalPages();
         if (totalPages > 0) {
@@ -106,22 +107,26 @@ public class EventController {
 
     @GetMapping("/search")
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
+        addCategories(model);
         if (params.isEmpty()) {
             return "searchForm";
         }
-        
         EventDtoList searchResults = eventService.search(params);
         model.addAttribute("events", searchResults);
         return "eventList";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteEvent(@PathVariable("id") Long id){
+    public String deleteEvent(@PathVariable("id") Long id) {
         eventService.delete(id);
         return REDIRECT_EVENTS;
     }
-    
+
     private void addCategories(Model model) {
-        model.addAttribute("categoryList",eventService.getCategories());
+        model.addAttribute("categoryList", eventService.getCategories());
+    }
+
+    private void addCategories(ModelMap model) {
+        model.addAttribute("categoryList", eventService.getCategories());
     }
 }
