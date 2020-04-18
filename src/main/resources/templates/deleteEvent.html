@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <title></title>
 </head>
 <body>
-<a href="/events/delete"
+<!--/*@thymesVar id="event" type="be.acara.frontend.model.EventModel"*/-->
+<a sec:authorize="hasRole('ADMIN')" href="/events/delete"
    th:href="@{|/events/delete/${event.id}|}"
    onclick="return confirm('Are you sure you want to delete this event?');"
    th:fragment="deleteEvent">

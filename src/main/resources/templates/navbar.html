@@ -1,31 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/form.css" th:href="@{~/css/form.css}"/>
-    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}" type="text/css"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
     <title></title>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark" th:fragment="navbar">
 
-    <img src="/images/acara-logo-1.jpg" class="img-fluid">
+    <a href="/events">
+        <img src="/images/acara-logo-1.jpg" class="img-fluid" alt="">
+    </a>
 
-
-
-        <h1 style="color:white;">Acara Events</h1>
-
-
-        <div class="nav-item">
-            <a class="nav-link" th:href="@{/logout}">
-            <span style="color: firebrick">
+    <div class="nav-item">
+        <div sec:authorize="isAnonymous()">
+            <a class="nav-link" th:href="@{/login}">
+                <span style="color: firebrick">
                 <i class="fa fa-user fa-3x" aria-hidden="true" style="color: firebrick"></i>
-                Logout
-            </span>
+                Login
+                </span>
             </a>
         </div>
-
+        <div sec:authorize="isAuthenticated()">
+            <a class="nav-link" th:href="@{/logout}">
+                <span style="color: firebrick">
+                <i class="fa fa-user fa-3x" aria-hidden="true" style="color: firebrick"></i>
+                Logout
+                </span>
+            </a>
+        </div>
+    </div>
 </nav>
 </body>
 </html>

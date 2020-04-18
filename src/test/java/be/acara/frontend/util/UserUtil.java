@@ -1,10 +1,8 @@
 package be.acara.frontend.util;
 
 import be.acara.frontend.controller.dto.UserDto;
-import be.acara.frontend.model.Event;
-import be.acara.frontend.model.User;
-
-import java.util.Set;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
 
 public class UserUtil {
 
@@ -16,15 +14,25 @@ public class UserUtil {
                 .build();
     }
 
-    public static User firstUser() {
-        Set<Event> events = EventUtil.createSetOfEventsOfSize3();
+    public static UserModel firstUser() {
+        return UserModel.builder()
+                .id(1L)
+                .firstName("firstName")
+                .lastName("lastName")
+                .username("username")
+                .password("password")
+                .passwordConfirm("password")
+                .build();
+    }
+
+    public static User firstUserDomain() {
         return User.builder()
                 .id(1L)
                 .firstName("firstName")
                 .lastName("lastName")
-                .userName("userName")
+                .username("username")
                 .password("password")
-                .events(events)
+                .passwordConfirm("password")
                 .build();
     }
 }

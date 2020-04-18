@@ -12,7 +12,7 @@ import java.util.Map;
 public interface EventFeignClient {
 
     @GetMapping
-    EventDtoList getEvents();
+    EventDtoList getEvents(@RequestParam("page") int page, @RequestParam("size") int size);
     
     @GetMapping("/{id}")
     EventDto getEventById(@PathVariable("id") Long id);
@@ -33,5 +33,5 @@ public interface EventFeignClient {
     void deleteEvent(@PathVariable("id") Long id);
 
     @GetMapping("/userevents/{id}")
-    EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id);
+    EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 }

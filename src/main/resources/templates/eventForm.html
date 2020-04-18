@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/form.css" th:href="@{~/css/form.css}"/>
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
-    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
 </head>
 <body>
 
-<!--/*@thymesVar id="event" type="be.acara.frontend.model.Event"*/-->
-<form modelAttribute="event" th:object="${event}" th:fragment="eventForm" class="form-horizontal">
+<!--/*@thymesVar id="event" type="be.acara.frontend.model.EventModel"*/-->
+<!--/*@thymesVar id="eventImage" type="java.lang.String"*/-->
+<!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
+<!--/*@thymesVar id="category" type="be.acara.frontend.controller.dto.CategoryDto"*/-->
+<form th:modelAttribute="event" th:object="${event}" th:fragment="eventForm" class="form-horizontal">
 
     <div class="container-fluid row">
         <div class="col col-9">
@@ -29,7 +33,7 @@
             <div class="form-group row">
                 <div class="col-3">
                     <label class="control-label float-left " for="eventName" th:for="${#ids.next('name')}">Event
-                        name: </label>
+                        name:</label>
                 </div>
                 <div class="col-9">
                     <input class="form-control-lg w-75" type="text" id="eventName" placeholder="Event name"
@@ -78,8 +82,8 @@
                 <div class="col-9">
                     <select class="form-control-lg w-75" th:field="${event.category}" id="eventCategory">
                         <option th:each="category: ${categoryList}"
-                                th:value="${category}"
-                                th:text="${category}">
+                                th:value="${category.name}"
+                                th:text="${category.webDisplay}">
                         </option>
                     </select>
                     <span th:if="${#fields.hasErrors('category')}" th:errors="*{category}"
@@ -132,9 +136,7 @@
                                     onclick="deleteImage()">
                                 <script>
                                     function deleteImage() {
-                                        var eventImage = "${eventImage}";
                                         document.getElementById('preview').src = '';
-                                        eventImage = null;
                                     }
                                 </script>
                                 Delete
@@ -152,11 +154,11 @@
         </div>
 
         <div class="col col-3">
-            <div class="form-group row vh-50" th:if="${eventImage != null}">
+            <div class="form-group row vh-50" th:if="${eventImage != null}" onerror="this.style.display = 'none'">
                 <div class="col">
                     <h1 class="row">Current event image</h1>
                     <div class="row">
-                        <img th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid rounded max-height"/>
+                        <img src="" th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid rounded max-height" alt=""/>
                     </div>
                 </div>
             </div>
@@ -164,11 +166,12 @@
                 <div class="col">
                     <h1 class="row">New event image</h1>
                     <div class="row">
-                        <img id="preview" class="img-fluid rounded max-height"/>
+                        <img src="" id="preview" class="img-fluid rounded max-height" alt=""/>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
 </form>

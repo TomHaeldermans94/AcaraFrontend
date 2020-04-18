@@ -1,31 +1,27 @@
 package be.acara.frontend.service.mapper;
 
 import be.acara.frontend.controller.dto.UserDto;
-import be.acara.frontend.model.User;
-import org.springframework.stereotype.Component;
+import be.acara.frontend.domain.User;
+import be.acara.frontend.model.UserModel;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
-@Component
-public class UserMapper {
-
-    private final EventMapper eventMapper;
-
-    public UserMapper(EventMapper eventMapper) {
-        this.eventMapper = eventMapper;
-    }
-
-    public User map(UserDto userDto) {
-        return User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .id(userDto.getId())
-                .build();
-    }
-
-    public UserDto map(User user){
-        return UserDto.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .id(user.getId())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface UserMapper {
+    
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "passwordConfirm", ignore = true)
+    UserModel userDtoToUserModel(UserDto userDto);
+    User userDtoToUser(UserDto userDto);
+    
+    UserDto userModelToUserDto(UserModel userModel);
+    User userModelToUser(UserModel userModel);
+    
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "passwordConfirm", ignore = true)
+    UserModel userToUserModel(User user);
+    UserDto userToUserDto(User user);
 }
