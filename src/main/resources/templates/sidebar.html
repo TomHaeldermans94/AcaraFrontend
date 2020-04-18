@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
@@ -13,6 +13,10 @@
 <nav class="navbar navbar-dark bg-dark" th:fragment="sidebar">
     <div th:insert="searchForm">
     </div>
+    <a href="/events/new" th:href="@{/events/new}" sec:authorize="hasRole('ADMIN')"
+       class="btn btn-primary mt-3 w-100">
+        Add event
+    </a>
 </nav>
 </body>
 </html>
