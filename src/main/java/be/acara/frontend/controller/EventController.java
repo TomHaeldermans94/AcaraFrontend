@@ -30,7 +30,7 @@ public class EventController {
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
-    
+
     @Autowired
     public EventController(EventMapper mapper, EventService eventService) {
         this.mapper = mapper;
@@ -46,18 +46,19 @@ public class EventController {
     }
 
     @GetMapping
-    public String findAllEvents(ModelMap model,
+    public String findAllEvents(Model model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
-        EventDtoList eventList = eventService.findAllEvents(page - 1, size);
-        int totalPages = eventList.getTotalPages();
+        addCategories(model);
+        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size);
+        int totalPages = eventDtoList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        model.addAttribute("events", eventList);
+        model.addAttribute("events", eventDtoList);
         return "eventList";
     }
 
@@ -106,22 +107,22 @@ public class EventController {
 
     @GetMapping("/search")
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
+        params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         if (params.isEmpty()) {
-            return "searchForm";
+            return "redirect:";
         }
-        
         EventDtoList searchResults = eventService.search(params);
         model.addAttribute("events", searchResults);
         return "eventList";
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteEvent(@PathVariable("id") Long id){
+    public String deleteEvent(@PathVariable("id") Long id) {
         eventService.delete(id);
         return REDIRECT_EVENTS;
     }
-    
+
     private void addCategories(Model model) {
-        model.addAttribute("categoryList",eventService.getCategories());
+        model.addAttribute("categoryList", eventService.getCategories());
     }
 }

@@ -297,12 +297,12 @@ class EventControllerTest {
                 .andExpect(view().name("eventList"))
                 .andExpect(model().attribute("events", Matchers.equalTo(createEventDtoList())));
     }
-    
+
     @Test
     void search_noParams() throws Exception {
         mockMvc.perform(get("/events/search"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("searchForm"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl(""))
                 .andExpect(model().attributeDoesNotExist("events"));
     }
 }
