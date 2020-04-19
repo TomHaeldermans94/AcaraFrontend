@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         if (!signUpResponse.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Something went wrong!");
         }
-        user.setRoles(Set.of(roleRepository.findByName("USER")));
+        user.setRoles(Set.of(roleRepository.findByName("ROLE_USER")));
         userRepository.save(user);
     }
     
