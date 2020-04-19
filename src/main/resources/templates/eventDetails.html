@@ -53,8 +53,8 @@
 
                 <div class="form-group row justify-content-center" sec:authorize="hasRole('ADMIN')">
                     <div class="col-9 ml-3 my-2">
-                        <a class="btn btn-primary btn-dark btn-lg custom-button-style" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
-                        <span class="btn btn-secondary btn-dark btn-lg custom-button-style" th:insert="deleteEvent :: deleteEvent"></span>
+                        <a class="btn btn-dark" href="/events" th:href="@{|/events/${event.id}|}">Edit</a>
+                        <span th:insert="deleteEvent :: deleteEvent"></span>
                     </div>
                 </div>
 

@@ -78,7 +78,8 @@ class EventControllerTest {
     @WithMockUser
     void displayAddEventForm_asUser() throws Exception {
         mockMvc.perform(get("/events/new"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -107,7 +108,8 @@ class EventControllerTest {
     void displayEditEventForm_asUser() throws Exception {
         Long id = 1L;
         mockMvc.perform(get("/events/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -154,7 +156,8 @@ class EventControllerTest {
                 .file(image)
                 .flashAttr("event", firstEvent())
         )
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -195,7 +198,8 @@ class EventControllerTest {
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
                 .flashAttr("event", firstEvent()))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -285,7 +289,8 @@ class EventControllerTest {
     void deleteEvent_asUser() throws Exception {
         Long id = 1L;
         mockMvc.perform(get("/events/delete/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -297,12 +302,12 @@ class EventControllerTest {
                 .andExpect(view().name("eventList"))
                 .andExpect(model().attribute("events", Matchers.equalTo(createEventDtoList())));
     }
-    
+
     @Test
     void search_noParams() throws Exception {
         mockMvc.perform(get("/events/search"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("searchForm"))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl(""))
                 .andExpect(model().attributeDoesNotExist("events"));
     }
 }

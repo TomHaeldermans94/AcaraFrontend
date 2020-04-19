@@ -16,21 +16,23 @@
         <img src="/images/acara-logo-1.jpg" class="img-fluid" alt="">
     </a>
 
+    <div class="text-white" style="font-size: xx-large" sec:authorize="isAnonymous()">
+        You are currently not logged in
+    </div>
+
+    <div class="text-white" style="font-size: xx-large" sec:authorize="isAuthenticated()">
+        Welcome <span sec:authentication="name">Name</span>
+    </div>
+
     <div class="nav-item">
         <div sec:authorize="isAnonymous()">
             <a class="nav-link" th:href="@{/login}">
-                <span style="color: firebrick">
-                <i class="fa fa-user fa-3x" aria-hidden="true" style="color: firebrick"></i>
-                Login
-                </span>
+                <i class="fa fa-sign-in-alt fa-3x" aria-hidden="true" style="color: #0275d8"></i>
             </a>
         </div>
         <div sec:authorize="isAuthenticated()">
             <a class="nav-link" th:href="@{/logout}">
-                <span style="color: firebrick">
-                <i class="fa fa-user fa-3x" aria-hidden="true" style="color: firebrick"></i>
-                Logout
-                </span>
+                <i class="fa fa-sign-out-alt fa-3x" aria-hidden="true" style="color: firebrick"></i>
             </a>
         </div>
     </div>
