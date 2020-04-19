@@ -4,42 +4,79 @@
     <meta charset="UTF-8">
     <title>User detail</title>
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
 </head>
 <!--/*@thymesVar id="user" type="be.acara.frontend.model.UserModel"*/-->
 <body th:object="${user}">
-<p th:text="'ID: ' + ${user.id}">ID</p>
-<p th:text="'First name: ' + ${user.firstName}">First name</p>
-<p th:text="'Last name: ' + ${user.lastName}">Last name</p>
-<p>Subscribed Events</p>
-<ul>
-    <li th:each="event : ${events}">
-        <p th:text="'Name: ' + ${event.name}">Name</p>
-    </li>
-</ul>
-<nav aria-label="Page navigation" th:if="${events.totalPages > 0}">
-    <ul class="pagination">
-        <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
-            <a th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number})}"
-               th:class="page-link">
-                Previous
-            </a>
-        </li>
-        <li class="page-item" th:each="pageNumber : ${pageNumbers}" th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
-            <a class="page-link" th:href="@{/users/details/${user.id}(size=${events.size}, page=${pageNumber})}"
-               th:text="${pageNumber}"
-               th:class="page-link">
-            </a>
-        </li>
-        <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
-            <a th:class="page-link" th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number+2})}">
-                Next
-            </a>
-        </li>
-    </ul>
-</nav>
-<a href="userDetails.html"
-   th:href="@{|/users/${user.id}|}">
-    Edit
-</a>
+
+<div th:insert="navbar :: navbar"></div>
+
+<div class="container-fluid">
+    <div class="row" align="center">
+        <div class="col-12 mx-2 my-2">
+
+            <p class="sr-only" th:text="'ID: ' + ${user.id}">ID</p>
+
+            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">First name:</div>
+                <span class="col-6 text-left" th:text="${user.firstName}">firstName</span>
+            </div>
+
+
+            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Last name:</div>
+                <span class="col-6 text-left" th:text="${user.lastName}">lastName</span>
+            </div>
+
+            <div class="row">
+                <div class="col justify-content-center">
+                    <div class="col-4 align-self-center table-borderless">
+                        <ul class="list-group bg-transparent">
+                            <li class="list-group-item bg-transparent" style="font-size: x-large">
+                                <div class="font-weight-bold" style="color: red">Subscribed Events</div>
+                            </li>
+
+                            <li class="list-group-item bg-transparent" th:each="event : ${events}">
+                                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event name:</div>
+                                <span th:text="${event.name}">name</span>
+                            </li>
+                        </ul>
+
+                        <nav class="offset-4 pt-2" aria-label="Page navigation" th:if="${events.totalPages > 0}">
+                            <ul class="pagination">
+                                <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
+                                    <a th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number})}"
+                                       th:class="page-link">
+                                        Previous
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                                    th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
+                                    <a class="page-link"
+                                       th:href="@{/users/details/${user.id}(size=${events.size}, page=${pageNumber})}"
+                                       th:text="${pageNumber}"
+                                       th:class="page-link">
+                                    </a>
+                                </li>
+                                <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
+                                    <a th:class="page-link"
+                                       th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number+2})}">
+                                        Next
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <a href="userDetails.html"
+                           th:href="@{|/users/${user.id}|}">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
