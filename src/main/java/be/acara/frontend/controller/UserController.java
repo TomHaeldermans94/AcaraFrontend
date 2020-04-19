@@ -83,7 +83,7 @@ public class UserController {
     }
     
     @PostMapping("/{id}")
-    public String handleEditEventForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
+    public String handleEditUserForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
         boolean passwordEquals = user.getPassword().equals(user.getPasswordConfirm());
         if (br.hasErrors() || !passwordEquals) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;

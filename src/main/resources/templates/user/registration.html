@@ -5,23 +5,72 @@
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
     <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{~/css/custom.css}"/>
-    <link rel="stylesheet" href="../../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}" type="text/css"/>
+    <link rel="stylesheet" href="../../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
     <title>Add User</title>
 </head>
 <body>
 <!--/*@thymesVar id="userForm" type="be.acara.frontend.model.UserModel"*/-->
+<div th:insert="navbar :: navbar"></div>
 <form th:modelAttribute="userForm" th:object="${userForm}" th:method="post">
-    <label for="username" th:for="${#ids.next('username')}">Username</label>
-    <input type="text" id="username" placeholder="Username" th:field="${userForm.username}">
+    <div class="container justify-content-center col-5">
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="username" th:for="${#ids.next('username')}">Username</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="username" placeholder="Username"
+                       th:field="${userForm.username}" th:errorClass="errorField">
+            </div>
+        </div>
 
-    <label for="password" th:for="${#ids.next('password')}">Password</label>
-    <input type="password" id="password" th:field="${userForm.password}">
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="firstName" placeholder="First name"
+                       th:field="${userForm.firstName}" th:errorClass="errorField">
+            </div>
+        </div>
 
-    <label for="passwordConfirmation" th:for="${#ids.next('passwordConfirm')}">Password confirmation</label>
-    <input type="password" id="passwordConfirmation" th:field="${userForm.passwordConfirm}">
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="lastName" th:for="${#ids.next('lastName')}">Last name</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="lastName" placeholder="Last name"
+                       th:field="${userForm.lastName}" th:errorClass="errorField">
+            </div>
+        </div>
 
-    <button type="submit" value="submit">Confirm</button>
-    <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="password" th:for="${#ids.next('password')}">Password</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="password" id="password" th:field="${userForm.password}"
+                       th:errorClass="errorField">
+                <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="passwordConfirmation" th:for="${#ids.next('passwordConfirm')}">Confirm password</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="password" id="passwordConfirmation"
+                       th:field="${userForm.passwordConfirm}" th:errorClass="errorField">
+                <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+            <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
+        </div>
+    </div>
 </form>
 </body>
 </html>

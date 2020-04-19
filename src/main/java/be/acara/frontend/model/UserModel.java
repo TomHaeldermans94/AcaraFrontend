@@ -1,5 +1,6 @@
 package be.acara.frontend.model;
 
+import be.acara.frontend.validators.FieldsValueMatch;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldsValueMatch.List({
+        @FieldsValueMatch(
+                field = "password",
+                fieldMatch = "passwordConfirm",
+                message = "Passwords do not match!"
+        )
+})
 public class UserModel {
     private Long id;
     @NotBlank(message = "NotBlank.user.username")
