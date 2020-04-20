@@ -3,6 +3,7 @@ package be.acara.frontend.model;
 import be.acara.frontend.validators.FieldsValueMatch;
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 import java.util.Set;
@@ -17,6 +18,11 @@ import java.util.Set;
                 field = "password",
                 fieldMatch = "passwordConfirm",
                 message = "Passwords do not match!"
+        ),
+        @FieldsValueMatch(
+                field = "email",
+                fieldMatch = "emailConfirm",
+                message = "E-mails do not match!"
         )
 })
 public class UserModel {
@@ -32,7 +38,12 @@ public class UserModel {
     private String password;
     @NotBlank(message = "NotBlank.user.passwordConfirm")
     private String passwordConfirm;
-    private Boolean uniqueUsername = true;
+    @NotBlank(message = "NotBlank.user.email")
+    @Email
+    private String email;
+    @NotBlank(message = "NotBlank.user.emailConfirm")
+    @Email
+    private String emailConfirm;
 
     @Override
     public boolean equals(Object o) {
@@ -45,12 +56,11 @@ public class UserModel {
                 Objects.equals(getLastName(), user.getLastName()) &&
                 Objects.equals(getEvents(), user.getEvents()) &&
                 Objects.equals(getPassword(), user.getPassword()) &&
-                Objects.equals(getPasswordConfirm(), user.getPasswordConfirm()) &&
-                Objects.equals(getUniqueUsername(), user.getUniqueUsername());
+                Objects.equals(getPasswordConfirm(), user.getPasswordConfirm());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUsername(), getFirstName(), getLastName(), getEvents(), getPassword(), getPasswordConfirm(), getUniqueUsername());
+        return Objects.hash(getId(), getUsername(), getFirstName(), getLastName(), getEvents(), getPassword(), getPasswordConfirm());
     }
 }

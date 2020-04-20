@@ -46,11 +46,31 @@
 
         <div class="form-group row">
             <div class="col-4">
+                <label for="email" th:for="${#ids.next('email')}">E-mail</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="email" placeholder="E-mail"
+                       th:field="${userForm.email}" th:errorClass="errorField">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="emailConfirm" th:for="${#ids.next('emailConfirm')}">Confirm e-mail</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="emailConfirm" placeholder="E-mail"
+                       th:field="${userForm.emailConfirm}" th:errorClass="errorField">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
                 <label for="password" th:for="${#ids.next('password')}">Password</label>
             </div>
             <div class="col-8">
                 <input class="form-control" type="password" id="password" th:field="${userForm.password}"
-                       th:errorClass="errorField">
+                       th:errorClass="errorField" placeholder="password">
                 <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
             </div>
         </div>
@@ -61,7 +81,7 @@
             </div>
             <div class="col-8">
                 <input class="form-control" type="password" id="passwordConfirmation"
-                       th:field="${userForm.passwordConfirm}" th:errorClass="errorField">
+                       th:field="${userForm.passwordConfirm}" th:errorClass="errorField" placeholder="password">
                 <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
             </div>
         </div>
