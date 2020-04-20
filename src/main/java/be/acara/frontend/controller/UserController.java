@@ -84,8 +84,7 @@ public class UserController {
     
     @PostMapping("/{id}")
     public String handleEditUserForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
-        boolean passwordEquals = user.getPassword().equals(user.getPasswordConfirm());
-        if (br.hasErrors() || !passwordEquals) {
+        if (br.hasErrors()) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
         }
         userService.editUser(user);
