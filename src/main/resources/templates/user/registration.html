@@ -21,6 +21,7 @@
             <div class="col-8">
                 <input class="form-control" type="text" id="username" placeholder="Username"
                        th:field="${userForm.username}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -31,6 +32,7 @@
             <div class="col-8">
                 <input class="form-control" type="text" id="firstName" placeholder="First name"
                        th:field="${userForm.firstName}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -41,6 +43,7 @@
             <div class="col-8">
                 <input class="form-control" type="text" id="lastName" placeholder="Last name"
                        th:field="${userForm.lastName}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -51,6 +54,7 @@
             <div class="col-8">
                 <input class="form-control" type="text" id="email" placeholder="E-mail"
                        th:field="${userForm.email}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -61,6 +65,7 @@
             <div class="col-8">
                 <input class="form-control" type="text" id="emailConfirm" placeholder="E-mail"
                        th:field="${userForm.emailConfirm}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('emailConfirm')}" th:errors="*{emailConfirm}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -71,7 +76,7 @@
             <div class="col-8">
                 <input class="form-control" type="password" id="password" th:field="${userForm.password}"
                        th:errorClass="errorField" placeholder="password">
-                <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="errorMessage"></span>
             </div>
         </div>
 
@@ -82,7 +87,7 @@
             <div class="col-8">
                 <input class="form-control" type="password" id="passwordConfirmation"
                        th:field="${userForm.passwordConfirm}" th:errorClass="errorField" placeholder="password">
-                <span th:if="${userForm.password} != ${userForm.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
+                <span th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="errorMessage"></span>
             </div>
         </div>
 

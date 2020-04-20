@@ -4,7 +4,6 @@ import org.springframework.beans.BeanWrapperImpl;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
 public class FieldsValueMatchValidator implements ConstraintValidator<FieldsValueMatch, Object> {
     private String field;
@@ -17,13 +16,22 @@ public class FieldsValueMatchValidator implements ConstraintValidator<FieldsValu
     }
     
     @Override
-    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
-        Object fieldValue = new BeanWrapperImpl(o).getPropertyValue(field);
-        Object fieldMatchValue = new BeanWrapperImpl(o).getPropertyValue(fieldMatch);
+    public boolean isValid(Object object, ConstraintValidatorContext ctx) {
+        Object fieldValue = new BeanWrapperImpl(object).getPropertyValue(field);
+        Object fieldMatchValue = new BeanWrapperImpl(object).getPropertyValue(fieldMatch);
         
-        if (Objects.nonNull(fieldValue)) {
-            return fieldValue.equals(fieldMatchValue);
+        if (fieldValue != null && !fieldValue.equals(fieldMatchValue)) {
+            addConstraintViolation(ctx, field);
+            addConstraintViolation(ctx, fieldMatch);
+            return false;
         }
-        return false;
+        return true;
+        
+    }
+    
+    private void addConstraintViolation(ConstraintValidatorContext ctx, String node) {
+        ctx.buildConstraintViolationWithTemplate(ctx.getDefaultConstraintMessageTemplate())
+                .addPropertyNode(node)
+                .addConstraintViolation();
     }
 }

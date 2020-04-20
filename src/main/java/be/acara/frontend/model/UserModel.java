@@ -17,31 +17,31 @@ import java.util.Set;
         @FieldsValueMatch(
                 field = "password",
                 fieldMatch = "passwordConfirm",
-                message = "Passwords do not match!"
+                message = "FieldsValueMatch.userForm.password"
         ),
         @FieldsValueMatch(
                 field = "email",
                 fieldMatch = "emailConfirm",
-                message = "E-mails do not match!"
+                message = "NotEquals.userForm.notMatchingEmails"
         )
 })
 public class UserModel {
     private Long id;
-    @NotBlank(message = "NotBlank.user.username")
+    @NotBlank(message = "NotBlank.userForm.username")
     private String username;
-    @NotBlank(message = "NotBlank.user.firstName")
+    @NotBlank(message = "NotBlank.userForm.firstName")
     private String firstName;
-    @NotBlank(message = "NotBlank.user.lastName")
+    @NotBlank(message = "NotBlank.userForm.lastName")
     private String lastName;
     private Set<EventModel> events;
-    @NotBlank(message = "NotBlank.user.password")
+    @NotBlank(message = "NotBlank.userForm.password")
     private String password;
-    @NotBlank(message = "NotBlank.user.passwordConfirm")
+    @NotBlank(message = "NotBlank.userForm.passwordConfirm")
     private String passwordConfirm;
-    @NotBlank(message = "NotBlank.user.email")
+    @NotBlank(message = "NotBlank.userForm.email")
     @Email
     private String email;
-    @NotBlank(message = "NotBlank.user.emailConfirm")
+    @NotBlank(message = "NotBlank.userForm.emailConfirm")
     @Email
     private String emailConfirm;
 
