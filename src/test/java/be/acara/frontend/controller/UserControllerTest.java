@@ -97,7 +97,8 @@ public class UserControllerTest {
         Long id = 1L;
     
         mockMvc.perform(get("/users/detail/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -114,14 +115,16 @@ public class UserControllerTest {
     @WithMockUser
     void shouldNotBeAbleToDisplayRegistration_asUser() throws Exception {
         mockMvc.perform(get("/users/registration"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
     @WithMockAdmin
     void shouldNotBeAbleToDisplayRegistration_asAdmin() throws Exception {
         mockMvc.perform(get("/users/registration"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
 
     @Test
@@ -158,7 +161,8 @@ public class UserControllerTest {
         Long id = 1L;
         
         mockMvc.perform(post("/users/{id}", id))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/forbidden"));
     }
     
     @Test
@@ -186,5 +190,33 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/editUser"))
                 .andExpect(model().attributeHasFieldErrors("editUser","firstName"));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void register() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setId(null);
+        User user = UserMapper.INSTANCE.userModelToUser(userModel);
+        
+        when(userMapper.userModelToUser(userModel)).thenReturn(user);
+        doNothing().when(userService).save(user);
+        doNothing().when(securityService).autoLogin(anyString(), anyString());
+        
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/events"));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void registerWithErrors() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setFirstName(null);
+    
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isOk());
     }
 }
