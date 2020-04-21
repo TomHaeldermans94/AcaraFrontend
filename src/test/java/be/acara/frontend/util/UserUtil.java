@@ -11,6 +11,7 @@ public class UserUtil {
                 .id(1L)
                 .firstName("firstName")
                 .lastName("lastName")
+                .email("email@email.local")
                 .build();
     }
 
@@ -22,6 +23,8 @@ public class UserUtil {
                 .username("username")
                 .password("password")
                 .passwordConfirm("password")
+                .email("email@email.local")
+                .emailConfirm("email@email.local")
                 .build();
     }
 
@@ -33,6 +36,7 @@ public class UserUtil {
                 .username("username")
                 .password("password")
                 .passwordConfirm("password")
+                .email("email@email.local")
                 .build();
     }
 }

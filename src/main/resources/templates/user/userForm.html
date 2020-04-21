@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+    <title></title>
+</head>
+<body>
+<!--/*@thymesVar id="userForm" type="be.acara.frontend.model.UserModel"*/-->
+<form th:modelAttribute="userForm" th:object="${userForm}" th:method="post" th:fragment="userForm">
+    <div class="container justify-content-center col-5 pt-5 pb-5 lighten-background">
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="username" th:for="${#ids.next('username')}">Username</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="username" placeholder="Username"
+                       th:field="${userForm.username}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="firstName" placeholder="First name"
+                       th:field="${userForm.firstName}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="lastName" th:for="${#ids.next('lastName')}">Last name</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="lastName" placeholder="Last name"
+                       th:field="${userForm.lastName}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="email" th:for="${#ids.next('email')}">E-mail</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="email" placeholder="E-mail"
+                       th:field="${userForm.email}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="emailConfirm" th:for="${#ids.next('emailConfirm')}">Confirm e-mail</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="text" id="emailConfirm" placeholder="E-mail"
+                       th:field="${userForm.emailConfirm}" th:errorClass="errorField">
+                <span th:if="${#fields.hasErrors('emailConfirm')}" th:errors="*{emailConfirm}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="password" th:for="${#ids.next('password')}">Password</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="password" id="password" th:field="${userForm.password}"
+                       th:errorClass="errorField" placeholder="password">
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-4">
+                <label for="passwordConfirmation" th:for="${#ids.next('passwordConfirm')}">Confirm password</label>
+            </div>
+            <div class="col-8">
+                <input class="form-control" type="password" id="passwordConfirmation"
+                       th:field="${userForm.passwordConfirm}" th:errorClass="errorField" placeholder="password">
+                <span th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="errorMessage"></span>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+            <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
+        </div>
+    </div>
+</form>
+</body>
+</html>

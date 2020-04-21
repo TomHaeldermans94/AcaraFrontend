@@ -10,41 +10,7 @@
     <title>Edit User</title>
 </head>
 <body>
-<!--/*@thymesVar id="editUser" type="be.acara.frontend.model.UserModel"*/-->
-<form th:modelAttribute="editUser" th:object="${editUser}" th:method="post">
-    <div hidden>
-        <label for="username" th:for="${#ids.next('username')}">Username</label>
-        <input type="text" id="username" placeholder="Username" th:field="${editUser.username}" th:errorClass="errorField"/>
-    </div>
-    <div>
-        <label for="firstName" th:for="${#ids.next('firstName')}">First name</label>
-        <input type="text" id="firstName" placeholder="First name" th:field="${editUser.firstName}"th:errorClass="errorField"/>
-        <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
-              class="errorMessage w-75">First name is required</span>
-    </div>
-    <div>
-        <label for="lastName" th:for="${#ids.next('lastName')}">Last name</label>
-        <input type="text" id="lastName" placeholder="Last name" th:field="${editUser.lastName}"th:errorClass="errorField"/>
-        <span th:if="${#fields.hasErrors('lastName')}" class="errorMessage w-75">Last name is required</span>
-    </div>
-    <div>
-        <label for="password" th:for="${#ids.next('password')}">Password</label>
-        <input type="password" id="password" placeholder="password" th:field="${editUser.password}" th:errorClass="errorField"/>
-        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-              class="errorMessage w-75">password is required</span>
-        <span th:if="${editUser.password} != ${editUser.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
-    </div>
-    <div>
-        <label for="passwordConfirm" th:for="${#ids.next('passwordConfirm')}">Confirm password</label>
-        <input type="password" id="passwordConfirm" placeholder="Confirm password" th:field="${editUser.passwordConfirm}" th:errorClass="errorField"/>
-        <span th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"
-              class="errorMessage w-75">password confirmation is required</span>
-        <span th:if="${editUser.password} != ${editUser.passwordConfirm}" class="errorMessage w-75">The passwords need to be the same</span>
-    </div>
-    <div>
-        <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit" onclick="return confirm('Please confirm the edits.\nYou will be logged out after confirming.');">Confirm</button>
-        <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
-    </div>
-</form>
+<div th:insert="navbar :: navbar"></div>
+<form th:insert="user/userForm :: userForm" th:method="post"></form>
 </body>
 </html>
