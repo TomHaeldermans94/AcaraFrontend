@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="float-left">
-                    <img style="height: 25vh" th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
+                    <img style="max-height: 25vw; max-width: 15vw" th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
                     </div>
                 </div>
             </div>
