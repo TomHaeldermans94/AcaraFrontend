@@ -1,8 +1,12 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.Role;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.exception.IdNotFoundException;
+import be.acara.frontend.exception.SomethingWentWrongException;
 import be.acara.frontend.exception.UserNotFoundException;
+import be.acara.frontend.model.UserModel;
 import be.acara.frontend.repository.RoleRepository;
 import be.acara.frontend.repository.UserRepository;
 import be.acara.frontend.service.mapper.UserMapper;
@@ -74,7 +78,7 @@ class UserServiceImplTest {
         ResponseEntity<Void> responseVoid = ResponseEntity.badRequest().build();
         when(userFeignClient.signUp(user)).thenReturn(responseVoid);
         
-        assertThrows(RuntimeException.class, () -> userService.save(user));
+        assertThrows(SomethingWentWrongException.class, () -> userService.save(user));
     
         verify(passwordEncoder, times(1)).encode("password");
         verify(userFeignClient, times(1)).signUp(user);
@@ -103,10 +107,85 @@ class UserServiceImplTest {
     @Test
     void getUser_withInvalidId() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
-    
         UserNotFoundException answer = assertThrows(UserNotFoundException.class, () -> userService.getUser(this.user.getId()));
         
         assertThat(answer).hasMessage(String.format("User with id %d not found", this.user.getId()));
+    }
     
+    @Test
+    void editUser() {
+        UserModel userModel = UserUtil.firstUser();
+        UserDto userDto = UserUtil.firstUserDto();
+        UserModel newUserModel = UserModel.builder()
+                .id(userModel.getId())
+                .firstName("newName")
+                .lastName("newLastName")
+                .emailConfirm("kek@kek.kek")
+                .email("kek@kek.kek")
+                .username("kek")
+                .password("kek")
+                .passwordConfirm("kek").build();
+        
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userMapper.userModelToUserDto(newUserModel)).thenReturn(userDto);
+        ResponseEntity<Void> responseEntity = ResponseEntity.ok().build();
+        when(userFeignClient.editUser(userDto.getId(), userDto)).thenReturn(responseEntity);
+        when(userRepository.findById(userModel.getId())).thenReturn(Optional.of(user));
+    
+        userService.editUser(newUserModel);
+        
+        verify(passwordEncoder, times(1)).encode(anyString());
+        verify(userMapper, times(1)).userModelToUserDto(newUserModel);
+        verify(userFeignClient, times(1)).editUser(anyLong(), eq(userDto));
+        verify(userRepository, times(1)).findById(user.getId());
+        verify(userRepository, times(1)).saveAndFlush(user);
+    }
+    
+    @Test
+    void editUser_mismatchingId() {
+        UserDto userDto = UserUtil.firstUserDto();
+        UserModel newUserModel = UserModel.builder()
+                .id(44444L)
+                .firstName("newName")
+                .lastName("newLastName")
+                .emailConfirm("kek@kek.kek")
+                .email("kek@kek.kek")
+                .username("kek")
+                .password("kek")
+                .passwordConfirm("kek").build();
+    
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userMapper.userModelToUserDto(newUserModel)).thenReturn(userDto);
+        ResponseEntity<Void> responseEntity = ResponseEntity.ok().build();
+        when(userFeignClient.editUser(newUserModel.getId(), userDto)).thenReturn(responseEntity);
+        when(userRepository.findById(newUserModel.getId())).thenReturn(Optional.of(user));
+    
+        IdNotFoundException idNotFoundException = assertThrows(IdNotFoundException.class, () -> userService.editUser(newUserModel));
+        
+        assertThat(idNotFoundException.getMessage()).isEqualTo(String.format("Id of user to edit does not match given id. User id = %d, and given id = %d", user.getId(), newUserModel.getId()));
+    
+        verify(passwordEncoder, times(1)).encode(anyString());
+        verify(userMapper, times(1)).userModelToUserDto(newUserModel);
+        verify(userFeignClient, times(1)).editUser(anyLong(), eq(userDto));
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(userRepository, times(0)).saveAndFlush(user);
+    }
+    
+    @Test
+    void editUser_backendError() {
+        UserModel userModel = UserUtil.firstUser();
+        UserDto userDto = UserUtil.firstUserDto();
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userMapper.userModelToUserDto(userModel)).thenReturn(userDto);
+        ResponseEntity<Void> responseEntity = ResponseEntity.badRequest().build();
+        when(userFeignClient.editUser(anyLong(), eq(userDto))).thenReturn(responseEntity);
+    
+        assertThrows(SomethingWentWrongException.class, () -> userService.editUser(userModel));
+    
+        verify(passwordEncoder, times(1)).encode(anyString());
+        verify(userMapper, times(1)).userModelToUserDto(userModel);
+        verify(userFeignClient, times(1)).editUser(anyLong(), eq(userDto));
+        verify(userRepository, times(0)).findById(user.getId());
+        verify(userRepository, times(0)).saveAndFlush(user);
     }
 }
