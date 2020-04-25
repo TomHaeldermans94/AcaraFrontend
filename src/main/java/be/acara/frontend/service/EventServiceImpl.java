@@ -27,8 +27,8 @@ public class EventServiceImpl implements EventService {
     }
     
     @Override
-    public EventDtoList findAllEvents(int page, int size) {
-        return eventFeignClient.getEvents(page, size);
+    public EventDtoList findAllEvents(int page, int size, String sort) {
+        return eventFeignClient.getEvents(page, size, sort);
     }
     
     @Override

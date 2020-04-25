@@ -124,7 +124,7 @@ class EventControllerTest {
     @Test
     void findAllEvents() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
-        when(eventService.findAllEvents(anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
         
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
