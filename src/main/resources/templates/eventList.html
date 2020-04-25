@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
     <title>Acara</title>
 </head>
 
@@ -20,21 +24,33 @@
         </div>
         <!--Events-->
         <div class="col" style="display: table-cell">
-            <div class="row">
-                <div class="col-2">
+            <div class="row justify-content-between">
+                <div class="col">
                     <h1>Events</h1>
                 </div>
-                <div class="col mt-2">
-                    <a class="btn btn-dark" href="/events" th:href="@{/events}">Refresh</a>
+                <div class="col align-self-center">
+                    <div class="dropdown float-right col-4">
+                        <button class="btn btn-info dropdown-toggle btn-block " type="button" id="sortButton" data-toggle="dropdown">
+                            Sort
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'name,asc'})}">Name (ascending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'name,desc'})}">Name (descending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'eventDate,asc'})}">Date (ascending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'eventDate,desc'})}">Date (descending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,asc'})}">Price (ascending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,desc'})}">Price (descending)</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="list-group">
                 <div class="list-group-item border-dark rounded mb-1" th:each="event,image : ${events}">
                     <div class="float-left w-75">
-                    <p th:text="'Name: ' + ${event.name}">Name</p>
-                    <p th:text="'Date: ' + ${event.eventDate}">Date</p>
-                    <p th:text="'Location: ' + ${event.location}">Location</p>
-                    <p th:text="'Price: ' + ${event.price}">Price</p>
+                        <p th:text="'Name: ' + ${event.name}">Name</p>
+                        <p th:text="'Date: ' + ${event.eventDate}">Date</p>
+                        <p th:text="'Location: ' + ${event.location}">Location</p>
+                        <p th:text="'Price: ' + ${event.price}">Price</p>
                         <div>
                             <a href="/events/detail"
                                th:href="@{|/events/detail/${event.id}|}"
@@ -46,27 +62,27 @@
                         </div>
                     </div>
                     <div class="float-left">
-                    <img style="height: 25vh" th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
+                        <img style="height: 25vh" th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
                     </div>
                 </div>
             </div>
             <nav aria-label="Page navigation" th:if="${events.totalPages > 0}">
                 <ul class="pagination">
                     <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
-                        <a th:href="@{/events(size=${events.size}, page=${events.number})}"
+                        <a th:href="@{/events(size=${events.size}, page=${events.number}, sort=${#httpServletRequest.getParameter('sort')})}"
                            th:class="page-link">
                             Previous
                         </a>
                     </li>
                     <li class="page-item" th:each="pageNumber : ${pageNumbers}"
                         th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
-                        <a class="page-link" th:href="@{/events(size=${events.size}, page=${pageNumber})}"
+                        <a class="page-link" th:href="@{/events(size=${events.size}, page=${pageNumber}, sort=${#httpServletRequest.getParameter('sort')})}"
                            th:text="${pageNumber}"
                            th:class="page-link">
                         </a>
                     </li>
                     <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
-                        <a th:class="page-link" th:href="@{/events(size=${events.size}, page=${events.number+2})}">
+                        <a th:class="page-link" th:href="@{/events(size=${events.size},page=${events.number+2}, sort=${#httpServletRequest.getParameter('sort')})}">
                             Next
                         </a>
                     </li>

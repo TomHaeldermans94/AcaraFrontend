@@ -12,7 +12,7 @@ import java.util.Map;
 public interface EventFeignClient {
 
     @GetMapping
-    EventDtoList getEvents(@RequestParam("page") int page, @RequestParam("size") int size);
+    EventDtoList getEvents(@RequestParam("page") int page, @RequestParam("size") int size, @RequestParam("sort") String sort);
     
     @GetMapping("/{id}")
     EventDto getEventById(@PathVariable("id") Long id);

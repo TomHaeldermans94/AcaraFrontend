@@ -48,9 +48,13 @@ public class EventController {
     @GetMapping
     public String findAllEvents(Model model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-                                @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
+                                @RequestParam(name = "size", defaultValue = "20", required = false) int size,
+                                @RequestParam(name = "sort", defaultValue = "eventDate", required = false) String sort) {
         addCategories(model);
-        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size);
+        if ("UNSORTED".equals(sort)) {
+            sort="";
+        }
+        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort);
         int totalPages = eventDtoList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -73,6 +77,7 @@ public class EventController {
     public String handleAddEventForm(@Valid @ModelAttribute(ATTRIBUTE_EVENT) EventModel event, BindingResult br, @RequestParam(ATTRIBUTE_EVENT_IMAGE) MultipartFile eventImage, Model model) throws IOException {
         if (br.hasErrors()) {
             addCategories(model);
+            br.getFieldErrors().forEach(System.out::println);
             return "addEvent";
         }
         event.setImage(eventImage.getBytes());
