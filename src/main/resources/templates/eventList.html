@@ -40,6 +40,8 @@
                             <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'eventDate,desc'})}">Date (descending)</a>
                             <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,asc'})}">Price (ascending)</a>
                             <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,desc'})}">Price (descending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'location,asc'})}">Location (ascending)</a>
+                            <a class="dropdown-item" th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'location,desc'})}">Location (descending)</a>
                         </div>
                     </div>
                 </div>
