@@ -217,6 +217,19 @@ public class UserControllerTest {
     
         mockMvc.perform(post("/users/registration")
                 .flashAttr("userForm", userModel))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registration"));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void registerWithUnequalPasswords() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setPasswordConfirm("not the password");
+        
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registration"));
     }
 }
