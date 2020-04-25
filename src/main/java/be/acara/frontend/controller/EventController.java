@@ -77,7 +77,6 @@ public class EventController {
     public String handleAddEventForm(@Valid @ModelAttribute(ATTRIBUTE_EVENT) EventModel event, BindingResult br, @RequestParam(ATTRIBUTE_EVENT_IMAGE) MultipartFile eventImage, Model model) throws IOException {
         if (br.hasErrors()) {
             addCategories(model);
-            br.getFieldErrors().forEach(System.out::println);
             return "addEvent";
         }
         event.setImage(eventImage.getBytes());
