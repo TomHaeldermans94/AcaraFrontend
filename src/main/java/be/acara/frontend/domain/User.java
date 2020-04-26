@@ -24,5 +24,6 @@ public class User {
     private Set<Role> roles;
     private String firstName;
     private String lastName;
+    private String email;
 }
 

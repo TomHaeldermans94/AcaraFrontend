@@ -78,14 +78,13 @@ public class UserController {
     @GetMapping("/{id}")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
         UserModel user = userMapper.userToUserModel(userService.getUser(id));
-        model.addAttribute("editUser", user);
+        model.addAttribute(ATTRIBUTE_USER_FORM, user);
         return ATTRIBUTE_EDIT_USER_REDIRECT;
     }
     
     @PostMapping("/{id}")
-    public String handleEditEventForm(@ModelAttribute("editUser") @Valid UserModel user, BindingResult br) {
-        boolean passwordEquals = user.getPassword().equals(user.getPasswordConfirm());
-        if (br.hasErrors() || !passwordEquals) {
+    public String handleEditUserForm(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel user, BindingResult br) {
+        if (br.hasErrors()) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
         }
         userService.editUser(user);

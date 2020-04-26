@@ -12,7 +12,7 @@ public interface EventService {
     
     void delete(Long id);
     
-    EventDtoList findAllEvents(int page, int size);
+    EventDtoList findAllEvents(int page, int size, String sort);
     
     List<CategoryDto> getCategories();
     

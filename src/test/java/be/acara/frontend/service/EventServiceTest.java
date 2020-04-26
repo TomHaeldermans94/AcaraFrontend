@@ -59,13 +59,14 @@ public class EventServiceTest {
         EventDtoList eventDtoList = createEventDtoList();
         int page = eventDtoList.getNumber();
         int size = eventDtoList.getSize();
+        String sort = "";
         
-        when(eventFeignClient.getEvents(page, size)).thenReturn(eventDtoList);
+        when(eventFeignClient.getEvents(page, size, sort)).thenReturn(eventDtoList);
     
-        EventDtoList answer = eventService.findAllEvents(page, size);
+        EventDtoList answer = eventService.findAllEvents(page, size, sort);
         
         assertThat(answer).isEqualTo(eventDtoList);
-        verifyOnce().getEvents(page, size);
+        verifyOnce().getEvents(page, size, sort);
     }
     
     @Test

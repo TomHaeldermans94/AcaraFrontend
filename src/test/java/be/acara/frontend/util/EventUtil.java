@@ -22,7 +22,7 @@ public class EventUtil {
                 .description("event description")
                 .eventDate(LocalDateTime.now().plusYears(1L).truncatedTo(ChronoUnit.MINUTES))
                 .location("location")
-                .name("event name")
+                .name("Event name")
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
                 .build();
@@ -35,7 +35,7 @@ public class EventUtil {
                 .description("event description")
                 .eventDate(LocalDateTime.now().plusYears(1L).truncatedTo(ChronoUnit.MINUTES))
                 .location("location")
-                .name("event name")
+                .name("Event name")
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
                 .build();
@@ -48,7 +48,7 @@ public class EventUtil {
                 .description("another event description")
                 .eventDate(LocalDateTime.now().plusMonths(6).truncatedTo(ChronoUnit.MINUTES))
                 .location("home")
-                .name("the name of this event")
+                .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
                 .build();
@@ -61,7 +61,7 @@ public class EventUtil {
                 .description("another event description")
                 .eventDate(LocalDateTime.now().plusMonths(6).truncatedTo(ChronoUnit.MINUTES))
                 .location("home")
-                .name("the name of this event")
+                .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
                 .build();
@@ -74,7 +74,7 @@ public class EventUtil {
                 .description("another event description")
                 .eventDate(LocalDateTime.now().plusMonths(3).truncatedTo(ChronoUnit.MINUTES))
                 .location("home")
-                .name("the name of this event")
+                .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
                 .build();
@@ -87,7 +87,7 @@ public class EventUtil {
                 .description("another event description")
                 .eventDate(LocalDateTime.now().plusMonths(3).truncatedTo(ChronoUnit.MINUTES))
                 .location("home")
-                .name("the name of this event")
+                .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
                 .build();

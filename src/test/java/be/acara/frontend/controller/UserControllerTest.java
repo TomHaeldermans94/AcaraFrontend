@@ -139,7 +139,7 @@ public class UserControllerTest {
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/editUser"))
-                .andExpect(model().attribute("editUser", userModel));
+                .andExpect(model().attribute("userForm", userModel));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class UserControllerTest {
         doNothing().when(userService).editUser(any());
 
         mockMvc.perform(post("/users/{id}", id)
-                .flashAttr("editUser", firstUser()))
+                .flashAttr("userForm", firstUser()))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
@@ -189,7 +189,7 @@ public class UserControllerTest {
                 .flashAttr("editUser", userModel))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/editUser"))
-                .andExpect(model().attributeHasFieldErrors("editUser","firstName"));
+                .andExpect(model().attributeHasFieldErrors("userForm","firstName"));
     }
     
     @Test
@@ -217,6 +217,19 @@ public class UserControllerTest {
     
         mockMvc.perform(post("/users/registration")
                 .flashAttr("userForm", userModel))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registration"));
+    }
+    
+    @Test
+    @WithAnonymousUser
+    void registerWithUnequalPasswords() throws Exception {
+        UserModel userModel = firstUser();
+        userModel.setPasswordConfirm("not the password");
+        
+        mockMvc.perform(post("/users/registration")
+                .flashAttr("userForm", userModel))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/registration"));
     }
 }

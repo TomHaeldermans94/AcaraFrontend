@@ -3,6 +3,7 @@ package be.acara.frontend.service;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.exception.IdNotFoundException;
+import be.acara.frontend.exception.SomethingWentWrongException;
 import be.acara.frontend.exception.UserNotFoundException;
 import be.acara.frontend.model.UserModel;
 import be.acara.frontend.repository.RoleRepository;
@@ -37,9 +38,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         ResponseEntity<Void> signUpResponse = userFeignClient.signUp(user);
         if (!signUpResponse.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("Something went wrong!");
+            throw new SomethingWentWrongException();
         }
-        user.setRoles(Set.of(roleRepository.findByName("USER")));
+        user.setRoles(Set.of(roleRepository.findByName("ROLE_USER")));
         userRepository.save(user);
     }
     
@@ -50,25 +51,23 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(RuntimeException::new);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", id)));
     }
     
     @Override
     public void editUser(UserModel user) {
-        try {
-            editBackEndUser(user);
-            editFrontEndUser(user);
-        } catch (Exception e) {
-            //todo: any possibilities on a rollback method?
-        } finally {
-            jwtTokenService.remove(user.getUsername());
-        }
+        editBackEndUser(user);
+        editFrontEndUser(user);
+        jwtTokenService.remove(user.getUsername());
     }
     
     private void editBackEndUser(UserModel user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserDto userDto = userMapper.userModelToUserDto(user);
-        userFeignClient.editUser(user.getId(), userDto);
+        ResponseEntity<Void> response = userFeignClient.editUser(user.getId(), userDto);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new SomethingWentWrongException();
+        }
     }
     
     private void editFrontEndUser(UserModel user) {
