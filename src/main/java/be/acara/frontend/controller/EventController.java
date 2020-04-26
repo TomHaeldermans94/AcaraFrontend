@@ -45,6 +45,14 @@ public class EventController {
         return "eventDetails";
     }
 
+    @PostMapping("/detail/{id}")
+    public String purchaseOrder(@PathVariable("id") Long id, ModelMap model){
+        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
+        model.addAttribute(ATTRIBUTE_EVENT, event);
+        model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
+        return "eventDetails";
+    }
+
     @GetMapping
     public String findAllEvents(Model model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,

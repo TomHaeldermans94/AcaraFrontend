@@ -56,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/events/search/**").permitAll()
                 .antMatchers("/events/delete/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/new").hasRole(ROLE_ADMIN)
+                .antMatchers("/orders/**").authenticated()
                 .antMatchers("/events/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/users/detail/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/users/{\\d+}").hasRole(ROLE_ADMIN)
