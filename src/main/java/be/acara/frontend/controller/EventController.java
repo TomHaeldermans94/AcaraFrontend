@@ -30,6 +30,7 @@ public class EventController {
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
+    private static final String ATTRIBUTE_EVENT_URL = "youtubeUrl";
 
     @Autowired
     public EventController(EventMapper mapper, EventService eventService) {

@@ -61,7 +61,7 @@
                             </a>
                             <p sec:authorize="hasRole('ADMIN')" th:insert="deleteEvent :: deleteEvent"
                                class="float-left mr-3"></p>
-                            <a href="/orders/buyOrder/event.id" th:href="@{/orders/buyOrder(event=${event.id})}" class="btn btn-primary mr-3">Buy Ticket</a>
+                            <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}" class="btn btn-primary mr-3">Buy Ticket</a>
                         </div>
 
                     </div>
