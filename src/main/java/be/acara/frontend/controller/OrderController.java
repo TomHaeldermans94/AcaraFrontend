@@ -29,13 +29,13 @@ public class OrderController {
         this.eventService = eventService;
     }
 
-    @PostMapping("/buyOrder")
+    @PostMapping()
     public String createOrder(@RequestParam(name = "event", required = true) Long eventId) {
         orderService.create(eventId);
         return "redirect:/events";
     }
 
-    @GetMapping("/buyOrder")
+    @GetMapping()
     public String displayOrderForm(@RequestParam(name = "event", required = true) Long eventId, ModelMap model) {
         EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(eventId));
         model.addAttribute(ATTRIBUTE_EVENT, event);

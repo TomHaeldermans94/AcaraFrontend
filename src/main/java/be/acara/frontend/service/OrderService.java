@@ -12,7 +12,4 @@ public interface OrderService {
 
     void remove(Long id);
 
-    CreateOrderDto findById(Long id);
-
-    Page<CreateOrderDto> getAllOrders(Pageable pageable);
 }

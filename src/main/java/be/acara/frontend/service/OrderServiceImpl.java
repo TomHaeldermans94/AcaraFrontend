@@ -36,13 +36,4 @@ public class OrderServiceImpl implements OrderService {
         orderFeignClient.remove(id);
     }
 
-    @Override
-    public CreateOrderDto findById(Long id) {
-        return null;
-    }
-
-    @Override
-    public Page<CreateOrderDto> getAllOrders(Pageable pageable) {
-        return null;
-    }
 }
