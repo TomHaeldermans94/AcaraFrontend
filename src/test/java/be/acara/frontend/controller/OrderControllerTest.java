@@ -54,7 +54,7 @@ public class OrderControllerTest {
     void displayOrderForm_asUser() throws Exception {
         Long eventId = 1L;
         when(mapper.eventDtoToEventModel(any())).thenReturn(EventUtil.firstEvent());
-        mockMvc.perform(get("/orders/buyOrder")
+        mockMvc.perform(get("/orders")
                 .param("event", String.valueOf(eventId)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("buyOrder"));
@@ -63,7 +63,7 @@ public class OrderControllerTest {
     @Test
     @WithAnonymousUser
     void displayOrderForm_asAnonymousUser() throws Exception {
-        mockMvc.perform(get("/orders/buyOrder"))
+        mockMvc.perform(get("/orders"))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
@@ -74,7 +74,7 @@ public class OrderControllerTest {
         Long eventId = 1L;
         doNothing().when(orderService).create(eventId);
 
-        mockMvc.perform(post("/orders/buyOrder")
+        mockMvc.perform(post("/orders")
                 .param("event", String.valueOf(eventId))
         )
                 .andExpect(status().isFound())
