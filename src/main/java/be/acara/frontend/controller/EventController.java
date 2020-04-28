@@ -30,6 +30,7 @@ public class EventController {
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
+    private static final String ATTRIBUTE_EVENT_URL = "youtubeUrl";
 
     @Autowired
     public EventController(EventMapper mapper, EventService eventService) {
@@ -39,6 +40,14 @@ public class EventController {
 
     @GetMapping("/detail/{id}")
     public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
+        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
+        model.addAttribute(ATTRIBUTE_EVENT, event);
+        model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
+        return "eventDetails";
+    }
+
+    @PostMapping("/detail/{id}")
+    public String purchaseOrder(@PathVariable("id") Long id, ModelMap model){
         EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));

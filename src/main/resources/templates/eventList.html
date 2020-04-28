@@ -60,8 +60,10 @@
                                 Detail
                             </a>
                             <p sec:authorize="hasRole('ADMIN')" th:insert="deleteEvent :: deleteEvent"
-                               class="float-left"></p>
+                               class="float-left mr-3"></p>
+                            <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}" class="btn btn-primary mr-3">Buy Ticket</a>
                         </div>
+
                     </div>
                     <div class="float-left">
                     <img style="max-height: 25vw; max-width: 15vw" th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
