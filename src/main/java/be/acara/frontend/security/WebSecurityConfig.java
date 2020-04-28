@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,6 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
@@ -47,7 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new CustomAccessDeniedHandler();
     }
     
-    
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -57,8 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/events/delete/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/new").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/{\\d+}").hasRole(ROLE_ADMIN)
-                .antMatchers("/users/detail/{\\d+}").hasRole(ROLE_ADMIN)
-                .antMatchers("/users/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/users/profile").authenticated()
+                .antMatchers("/users/{\\d+}").authenticated()
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")
