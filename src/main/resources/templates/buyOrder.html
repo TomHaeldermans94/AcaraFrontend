@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Buy order</title>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<form th:insert="orderForm :: orderForm" th:method="post" enctype="multipart/form-data"></form>
+</body>
+</html>
