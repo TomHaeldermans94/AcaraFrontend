@@ -157,8 +157,11 @@ public class UserControllerTest {
     @WithMockUser
     void handleEditUserForm_asUser() throws Exception {
         Long id = 1L;
-        
-        mockMvc.perform(post("/users/{id}", id))
+    
+        UserModel userModel = firstUser();
+    
+        mockMvc.perform(post("/users/{id}", id)
+                .flashAttr("userModel", userModel))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
