@@ -25,6 +25,7 @@ public class ExceptionController {
     
     @ExceptionHandler(Exception.class)
     public String genericErrorPage(Exception e) {
+        log.error("Error", e);
         return "error/genericError";
     }
     

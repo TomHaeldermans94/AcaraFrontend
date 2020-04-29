@@ -60,7 +60,7 @@ public class UserController {
     }
     
     @GetMapping("/detail/{id}")
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("@userServiceImpl.hasUserId(authentication, #id) or hasRole('admin')")
     public String displayUser(@PathVariable("id") Long id, ModelMap model,
                               @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
@@ -79,7 +79,7 @@ public class UserController {
     }
     
     @GetMapping("/{id}")
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("@userServiceImpl.hasUserId(authentication, #id) or hasRole('admin')")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
         UserModel user = userMapper.userToUserModel(userService.getUser(id));
         model.addAttribute(ATTRIBUTE_USER_FORM, user);
@@ -87,7 +87,7 @@ public class UserController {
     }
     
     @PostMapping("/{id}")
-    @PreAuthorize("#id == principal.id or hasRole('ADMIN')")
+    @PreAuthorize("@userServiceImpl.hasUserId(authentication, #id) or hasRole('admin')")
     public String handleEditUserForm(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel user, BindingResult br) {
         if (br.hasErrors()) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;

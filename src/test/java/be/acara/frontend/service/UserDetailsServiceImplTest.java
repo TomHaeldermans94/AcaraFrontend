@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -19,6 +21,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,16 +70,18 @@ class UserDetailsServiceImplTest {
         Role role = new Role();
         role.setId(1L);
         role.setName("USER");
-        when(user.getRoles()).thenReturn(Set.of(role));
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(role.getName());
         
+        doReturn(Set.of(simpleGrantedAuthority)).when(user).getAuthorities();
     
         UserDetails answer = userDetailsService.loadUserByUsername("admin");
     
         
         assertThat(answer).isNotNull();
-        assertThat(answer).isInstanceOf(org.springframework.security.core.userdetails.User.class);
+        assertThat(answer).isInstanceOf(User.class);
         assertThat(answer.getUsername()).isEqualTo("username");
         assertThat(answer.getPassword()).isEqualTo("password");
-        assertThat(answer.getAuthorities()).extracting("role").contains(role.getName());
+        assertThat(answer.getAuthorities()).isNotEmpty();
+        assertThat(answer.getAuthorities()).extracting(GrantedAuthority::getAuthority).contains(role.getName());
     }
 }

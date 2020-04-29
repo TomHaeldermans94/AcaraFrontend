@@ -6,12 +6,11 @@ import be.acara.frontend.model.UserModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
-import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
-import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(value = {UserController.class})
 public class UserControllerTest {
     @MockBean
     @Qualifier("userDetailsServiceImpl")
@@ -51,14 +50,13 @@ public class UserControllerTest {
     private UserMapper userMapper;
     @MockBean
     private EventService eventService;
-    
-    @MockBean
-    private UserFeignClient userFeignClient;
-    @MockBean
-    private EventMapper eventMapper;
 
     @Autowired
     private MockMvc mockMvc;
+    
+    @BeforeEach
+    void setUp() {
+    }
     
     @AfterEach
     void tearDown() {
