@@ -1,6 +1,7 @@
 package be.acara.frontend.security;
 
 import be.acara.frontend.exception.CustomAccessDeniedHandler;
+import be.acara.frontend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,21 +10,24 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     
     private static final String ROLE_ADMIN = "ADMIN";
     
     @Autowired
     private TokenLogoutHandler tokenLogoutHandler;
+    
+    public WebSecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+    }
     
     @Bean
     public AuthenticationManager customAuthenticationManager() throws Exception {
@@ -32,12 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
     
     @Bean

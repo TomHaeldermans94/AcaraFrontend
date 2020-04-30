@@ -87,7 +87,7 @@ public class UserController {
     }
     
     @PostMapping("/{id}")
-    @PreAuthorize("@userServiceImpl.hasUserId(authentication, #id) or hasRole('admin')")
+    @PreAuthorize("@userServiceImpl.hasUserId(authentication, #user.id) or hasRole('admin')")
     public String handleEditUserForm(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel user, BindingResult br) {
         if (br.hasErrors()) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;

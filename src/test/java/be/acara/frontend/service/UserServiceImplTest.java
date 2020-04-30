@@ -18,6 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -187,5 +190,45 @@ class UserServiceImplTest {
         verify(userFeignClient, times(1)).editUser(anyLong(), eq(userDto));
         verify(userRepository, times(0)).findById(user.getId());
         verify(userRepository, times(0)).saveAndFlush(user);
+    }
+    
+    @Test
+    void loadUserByUsername_notFound() {
+        when(userRepository.findByUsername(anyString())).thenReturn(null);
+        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("admin"));
+    }
+    
+    @Test
+    void loadUserByUsername_doesNotContainAuthHeader() {
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
+        ResponseEntity<Void> responseEntity = ResponseEntity.ok().build();
+        when(userFeignClient.login(anyString())).thenReturn(responseEntity);
+        
+        UserDetails answer = userService.loadUserByUsername("admin");
+        
+        assertThat(answer).isNull();
+    }
+    
+    @Test
+    void loadUserByUsername() {
+        when(userRepository.findByUsername(anyString())).thenReturn(user);
+        ResponseEntity<Void> responseEntity = ResponseEntity.ok()
+                .header("Authorization", "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.uOb7Wfaoew2r7cVrjuCLybLC4AzDGGgJ33MraoobnVeWrHJcuQeaAQCl7Yxligf5BpV68zLwpmVjFeM8MxJCyw")
+                .build();
+        when(userFeignClient.login(anyString())).thenReturn(responseEntity);
+
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("USER");
+        
+        UserDetails answer = userService.loadUserByUsername("admin");
+        
+        
+        assertThat(answer).isNotNull();
+        assertThat(answer).isInstanceOf(User.class);
+        assertThat(answer.getUsername()).isEqualTo("username");
+        assertThat(answer.getPassword()).isEqualTo("password");
+        assertThat(answer.getAuthorities()).isNotEmpty();
+        assertThat(answer.getAuthorities()).extracting(GrantedAuthority::getAuthority).contains(role.getName());
     }
 }

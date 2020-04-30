@@ -13,11 +13,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,12 +36,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(value = {UserController.class})
 public class UserControllerTest {
     @MockBean
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
-    @MockBean
     private AuthenticationProvider authenticationProvider;
     @MockBean
     private TokenLogoutHandler tokenLogoutHandler;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
     
     @MockBean
     private UserService userService;
@@ -90,13 +90,21 @@ public class UserControllerTest {
     }
     
     @Test
-    @WithMockUser
+//    @WithMockUser
     void shouldNotBeAbleToDisplayUser_asNormalUser() throws Exception {
-        Long id = 1L;
+        Long id = 100L;
+    
+        User user = firstUserDomain();
+        user.setId(8888L);
+    
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     
         mockMvc.perform(get("/users/detail/{id}", id))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
+        
+        verify(userService, times(1)).hasUserId(any(), anyLong());
     }
     
     @Test
