@@ -161,9 +161,9 @@ public class UserControllerTest {
         UserModel userModel = firstUser();
     
         mockMvc.perform(post("/users/{id}", id)
-                .flashAttr("userModel", userModel))
+                .flashAttr("userForm", userModel))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/forbidden"));
+                .andExpect(redirectedUrl("/events"));
     }
     
     @Test
