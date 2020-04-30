@@ -90,6 +90,9 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public boolean hasUserId(Authentication authentication, Long userId) {
+        if (authentication.getPrincipal() instanceof User) {
             return ((User) authentication.getPrincipal()).getId().equals(userId);
+        }
+        return false;
     }
 }
