@@ -12,8 +12,8 @@ import be.acara.frontend.repository.UserRepository;
 import be.acara.frontend.service.mapper.UserMapper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +26,7 @@ import static be.acara.frontend.security.SecurityConstants.SECRET;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 @Service
+@Primary
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -97,13 +98,7 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(userFromDb);
     }
     
-    @Override
-    public boolean hasUserId(Authentication authentication, Long userId) {
-        if (authentication.getPrincipal() instanceof User) {
-            return ((User) authentication.getPrincipal()).getId().equals(userId);
-        }
-        return false;
-    }
+    
     
     @Override
     @Transactional(readOnly = true)

@@ -49,6 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/login").not().authenticated()
                 .antMatchers("/users/registration").not().authenticated()
+                .antMatchers("/users/detail/{userId}").authenticated()
                 .antMatchers("/events/search/**").permitAll()
                 .antMatchers("/events/delete/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/new").hasRole(ROLE_ADMIN)

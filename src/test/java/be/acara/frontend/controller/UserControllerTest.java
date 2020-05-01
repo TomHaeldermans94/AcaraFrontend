@@ -3,6 +3,7 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.UserModel;
+import be.acara.frontend.security.MethodSecurityConfigurer;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
@@ -15,17 +16,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -34,6 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(value = {UserController.class})
+@Import({MethodSecurityConfigurer.class, SecurityService.class})
 public class UserControllerTest {
     @MockBean
     private AuthenticationProvider authenticationProvider;
@@ -42,10 +46,10 @@ public class UserControllerTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
     
+    @MockBean(name = "securityService")
+    private SecurityService securityService;
     @MockBean
     private UserService userService;
-    @MockBean
-    private SecurityService securityService;
     @MockBean
     private UserMapper userMapper;
     @MockBean
@@ -71,6 +75,7 @@ public class UserControllerTest {
         EventDtoList eventDtoList = createEventDtoList();
         when(userService.getUser(id)).thenReturn(user);
         when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
@@ -90,21 +95,20 @@ public class UserControllerTest {
     }
     
     @Test
-//    @WithMockUser
-    void shouldNotBeAbleToDisplayUser_asNormalUser() throws Exception {
-        Long id = 100L;
+    @WithMockUser(roles = {"USER","ADMIN"})
+    void shouldNotBeAbleToDisplayUser_asNormalUser_withIdOfOtherUser() throws Exception {
+        Long id = 1000000000000L;
     
-        User user = firstUserDomain();
-        user.setId(8888L);
+        MvcResult mvcResult = mockMvc.perform(get("/users/detail/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(MvcResult::getResolvedException)
+                .andReturn();
     
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        Exception resolvedException = mvcResult.getResolvedException();
+        assertThat(resolvedException).isInstanceOf(AccessDeniedException.class);
     
-        mockMvc.perform(get("/users/detail/{id}", id))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/forbidden"));
-        
-        verify(userService, times(1)).hasUserId(any(), anyLong());
+    
+        verify(securityService, times(1)).hasUserId(any(), anyLong());
     }
     
     @Test
@@ -141,6 +145,7 @@ public class UserControllerTest {
         UserModel userModel = firstUser();
         when(userService.getUser(id)).thenReturn(user);
         when(userMapper.userToUserModel(user)).thenReturn(userModel);
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isOk())
@@ -153,6 +158,7 @@ public class UserControllerTest {
     void handleEditUserForm() throws Exception{
         Long id = 1L;
         doNothing().when(userService).editUser(any());
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("userForm", firstUser()))
@@ -167,6 +173,7 @@ public class UserControllerTest {
         Long id = 1L;
     
         UserModel userModel = firstUser();
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
     
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("userForm", userModel))
@@ -193,6 +200,7 @@ public class UserControllerTest {
         UserModel userModel = UserMapper.INSTANCE.userToUserModel(user);
         userModel.setPassword("pw");
         userModel.setPasswordConfirm("pw");
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
         
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", userModel))
