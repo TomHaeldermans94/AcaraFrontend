@@ -11,4 +11,8 @@ public interface UserService {
     User getUser(Long id);
     
     void editUser(UserModel user);
+
+    void like(Long id);
+
+    void dislike(Long id);
 }

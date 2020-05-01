@@ -25,6 +25,4 @@ public interface EventService {
     EventDtoList getEventsFromUser(Long id, int page, int size);
 
     EventDtoList getEventsThatUserLiked(Long id,  int page, int size);
-
-    void like(Long id);
 }

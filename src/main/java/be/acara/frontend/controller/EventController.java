@@ -154,19 +154,6 @@ public class EventController {
         return REDIRECT_EVENTS;
     }
 
-    @GetMapping("/like/{id}")
-    public String likeEvent(@PathVariable("id") Long id) {
-        eventService.like(id);
-        String targetUrl = "";
-        if(true) {
-            targetUrl = REDIRECT_EVENTS;
-        }
-        else {
-            targetUrl = "redirect:/events/detail/" + id;
-        }
-        return targetUrl;
-    }
-
 
     private void addCategories(Model model) {
         model.addAttribute("categoryList", eventService.getCategories());

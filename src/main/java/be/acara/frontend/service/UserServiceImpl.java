@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.exception.IdNotFoundException;
@@ -18,14 +19,16 @@ import java.util.Set;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final EventService eventService;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserFeignClient userFeignClient;
     private final UserMapper userMapper;
     private final JwtTokenService jwtTokenService;
     
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper, JwtTokenService jwtTokenService) {
+    public UserServiceImpl(UserRepository userRepository, EventService eventService, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper, JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
+        this.eventService = eventService;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.userFeignClient = userFeignClient;
@@ -59,6 +62,18 @@ public class UserServiceImpl implements UserService {
         editBackEndUser(user);
         editFrontEndUser(user);
         jwtTokenService.remove(user.getUsername());
+    }
+
+    @Override
+    public void like(Long id) {
+        EventDto eventDto = eventService.getEvent(id);
+        userFeignClient.likeEvent(id, eventDto);
+    }
+
+    @Override
+    public void dislike(Long id) {
+        EventDto eventDto = eventService.getEvent(id);
+        userFeignClient.dislikeEvent(id, eventDto);
     }
     
     private void editBackEndUser(UserModel user) {

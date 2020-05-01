@@ -63,7 +63,7 @@
                         </a>
                         <a sec:authorize="isAuthenticated()"
                            href="/events/like"
-                           th:href="@{|/events/like/${event.id}|}"
+                           th:href="@{|/users/${event.id}/details/likes|}"
                            class="btn btn-light">
                             <span th:text="${event.amountOfLikes}"></span>
                             <i class="fas fa-thumbs-up ml-2"

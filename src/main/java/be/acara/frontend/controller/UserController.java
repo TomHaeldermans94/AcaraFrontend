@@ -28,6 +28,7 @@ public class UserController {
     private final EventService eventService;
     
     private static final String ATTRIBUTE_USER_FORM = "userForm";
+    private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
     private static final String ATTRIBUTE_USER = "user";
     private static final String ATTRIBUTE_EVENTS = "events";
@@ -103,5 +104,15 @@ public class UserController {
         }
         userService.editUser(user);
         return "redirect:/events";
+    }
+
+    @GetMapping("/{id}/{location}/likes")
+    public String likeEvent(@PathVariable("id") Long id, @PathVariable("location") String location) {
+        userService.like(id);
+        String targetUrl = REDIRECT_EVENTS;
+        if("details".equals(location)) {
+            targetUrl = "redirect:/events/detail/" + id;
+        }
+        return targetUrl;
     }
 }

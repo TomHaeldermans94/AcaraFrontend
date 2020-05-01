@@ -60,9 +60,4 @@ public class EventServiceImpl implements EventService {
     public EventDtoList getEventsThatUserLiked(Long id, int page, int size) {
         return eventFeignClient.getAllEventsThatUserLiked(id, page, size);
     }
-
-    @Override
-    public void like(Long id) {
-        eventFeignClient.likeEvent(id);
-    }
 }
