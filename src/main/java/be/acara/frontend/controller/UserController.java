@@ -61,16 +61,27 @@ public class UserController {
                               @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                               @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
         User user = userService.getUser(id);
-        EventDtoList events = eventService.getEventsFromUser(id, page-1, size);
-        int totalPages = events.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+        EventDtoList subscribedEvents = eventService.getEventsFromUser(id, page-1, size);
+        int totalPagesSubscribedEvents = subscribedEvents.getTotalPages();
+        if (totalPagesSubscribedEvents > 0) {
+            List<Integer> pageNumbersSubscribedEvent = IntStream.rangeClosed(1, totalPagesSubscribedEvents)
                     .boxed()
                     .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute("pageNumbersSubscribedEvents", pageNumbersSubscribedEvent);
         }
+
+        EventDtoList likedEvents = eventService.getEventsThatUserLiked(id, page-1, size);
+        int totalPagesLikedEvents = likedEvents.getTotalPages();
+        if (totalPagesLikedEvents > 0) {
+            List<Integer> pageNumbersLikedEvents = IntStream.rangeClosed(1, totalPagesLikedEvents)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbersLikedEvents", pageNumbersLikedEvents);
+        }
+
         model.addAttribute(ATTRIBUTE_USER, user);
-        model.addAttribute(ATTRIBUTE_EVENTS, events);
+        model.addAttribute("subscribedEvents", subscribedEvents);
+        model.addAttribute("likedEvents", likedEvents);
         return "user/userDetails";
     }
     
