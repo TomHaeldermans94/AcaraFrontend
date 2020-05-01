@@ -4,9 +4,11 @@ import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.service.EventService;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -26,16 +28,21 @@ import java.util.stream.IntStream;
 public class EventController {
     private final EventMapper mapper;
     private final EventService eventService;
+    private final UserService userService;
 
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
+    private static final String ATTRIBUTE_EVENTS = "events";
+    private static final String ATTRIBUTE_LIKED_EVENTS = "likedEvents";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
     private static final String ATTRIBUTE_EVENT_URL = "youtubeUrl";
 
+
     @Autowired
-    public EventController(EventMapper mapper, EventService eventService) {
+    public EventController(EventMapper mapper, EventService eventService, UserService userService) {
         this.mapper = mapper;
         this.eventService = eventService;
+        this.userService = userService;
     }
 
     @GetMapping("/detail/{id}")
@@ -43,6 +50,12 @@ public class EventController {
         EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!username.equals("anonymousUser")) {
+            Long userId = userService.findByUsername(username).getId();
+            EventDtoList likedEventDtoList = eventService.getEventsThatUserLiked(userId, 1, 20);
+            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventDtoList);
+        }
         return "eventDetails";
     }
 
@@ -71,7 +84,13 @@ public class EventController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        model.addAttribute("events", eventDtoList);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(!username.equals("anonymousUser")) {
+            Long id = userService.findByUsername(username).getId();
+            EventDtoList likedEventDtoList = eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size);
+            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventDtoList);
+        }
+        model.addAttribute(ATTRIBUTE_EVENTS, eventDtoList);
         return "eventList";
     }
 
@@ -134,6 +153,20 @@ public class EventController {
         eventService.delete(id);
         return REDIRECT_EVENTS;
     }
+
+    @GetMapping("/like/{id}")
+    public String likeEvent(@PathVariable("id") Long id) {
+        eventService.like(id);
+        String targetUrl = "";
+        if(true) {
+            targetUrl = REDIRECT_EVENTS;
+        }
+        else {
+            targetUrl = "redirect:/events/detail/" + id;
+        }
+        return targetUrl;
+    }
+
 
     private void addCategories(Model model) {
         model.addAttribute("categoryList", eventService.getCategories());

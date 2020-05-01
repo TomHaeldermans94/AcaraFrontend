@@ -50,7 +50,6 @@ public class UserController {
         if (br.hasErrors()) {
             return "user/registration";
         }
-        
         User user = userMapper.userModelToUser(userForm);
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());

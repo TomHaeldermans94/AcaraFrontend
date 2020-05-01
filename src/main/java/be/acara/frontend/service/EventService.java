@@ -23,4 +23,8 @@ public interface EventService {
     EventDtoList search(Map<String, String> params);
     
     EventDtoList getEventsFromUser(Long id, int page, int size);
+
+    EventDtoList getEventsThatUserLiked(Long id,  int page, int size);
+
+    void like(Long id);
 }

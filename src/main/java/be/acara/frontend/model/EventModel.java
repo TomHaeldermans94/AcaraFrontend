@@ -22,6 +22,8 @@ public class EventModel {
 
     private Long id;
 
+    private int amountOfLikes;
+
     @Future(message = "Date must be in the future")
     @NotNull(message = "Field cannot be empty")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
