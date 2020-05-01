@@ -24,9 +24,12 @@ public interface UserFeignClient {
     @GetMapping("/api/users/username/{username}")
     boolean checkUsername(@PathVariable("username") String username);
 
+    @GetMapping("/api/users/{id}/likes")
+    boolean checkIfUserLikesThisEvent(Long id);
+
     @PostMapping("/api/users/{id}/likes")
     void likeEvent(@PathVariable("id") Long id);
 
-    @DeleteMapping("/api/users/{id}/dislikes")
+    @DeleteMapping("/api/users/{id}/likes")
     void dislikeEvent(@PathVariable("id") Long id);
 }

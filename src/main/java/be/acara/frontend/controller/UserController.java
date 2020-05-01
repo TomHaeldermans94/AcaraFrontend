@@ -107,8 +107,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/{location}/likes")
-    public String likeEvent(@PathVariable("id") Long id, @PathVariable("location") String location) {
-        userService.like(id);
+    public String likeOrDislikeEvent(@PathVariable("id") Long id, @PathVariable("location") String location) {
+        userService.likeOrDislike(id);
         String targetUrl = REDIRECT_EVENTS;
         if("details".equals(location)) {
             targetUrl = "redirect:/events/detail/" + id;
