@@ -36,8 +36,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(value = {UserController.class})
-@Import({MethodSecurityConfigurer.class, SecurityService.class})
+@WebMvcTest(UserController.class)
+@Import(MethodSecurityConfigurer.class)
 public class UserControllerTest {
     @MockBean
     private AuthenticationProvider authenticationProvider;
@@ -46,7 +46,7 @@ public class UserControllerTest {
     @MockBean
     private PasswordEncoder passwordEncoder;
     
-    @MockBean(name = "securityService")
+    @MockBean(name = "securityService") // name is required or it WILL break the method security methods!
     private SecurityService securityService;
     @MockBean
     private UserService userService;
