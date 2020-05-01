@@ -62,27 +62,31 @@ public class UserController {
                               @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
         User user = userService.getUser(id);
         EventDtoList subscribedEvents = eventService.getEventsFromUser(id, page-1, size);
-        int totalPagesSubscribedEvents = subscribedEvents.getTotalPages();
-        if (totalPagesSubscribedEvents > 0) {
-            List<Integer> pageNumbersSubscribedEvent = IntStream.rangeClosed(1, totalPagesSubscribedEvents)
-                    .boxed()
-                    .collect(Collectors.toList());
+        List<Integer> pageNumbersSubscribedEvent = getPageNumbers(subscribedEvents);
+        if(pageNumbersSubscribedEvent != null) {
             model.addAttribute("pageNumbersSubscribedEvents", pageNumbersSubscribedEvent);
         }
-
         EventDtoList likedEvents = eventService.getEventsThatUserLiked(id, page-1, size);
-        int totalPagesLikedEvents = likedEvents.getTotalPages();
-        if (totalPagesLikedEvents > 0) {
-            List<Integer> pageNumbersLikedEvents = IntStream.rangeClosed(1, totalPagesLikedEvents)
-                    .boxed()
-                    .collect(Collectors.toList());
+        List<Integer> pageNumbersLikedEvents = getPageNumbers(likedEvents);
+        if(pageNumbersLikedEvents != null) {
             model.addAttribute("pageNumbersLikedEvents", pageNumbersLikedEvents);
-        }
 
+        }
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
         model.addAttribute("likedEvents", likedEvents);
         return "user/userDetails";
+    }
+
+    private List<Integer> getPageNumbers(EventDtoList events) {
+        int totalPagesLikedEvents = events.getTotalPages();
+        List<Integer> pageNumbers = null;
+        if (totalPagesLikedEvents > 0) {
+            pageNumbers = IntStream.rangeClosed(1, totalPagesLikedEvents)
+                    .boxed()
+                    .collect(Collectors.toList());
+        }
+        return pageNumbers;
     }
     
     @GetMapping("/{id}")
