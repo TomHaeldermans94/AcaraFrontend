@@ -62,23 +62,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void likeOrDislike(Long id) {
+    public void likeOrDislikeEvent(Long id) {
         if(userFeignClient.checkIfUserLikesThisEvent(id)){
-            like(id);
+            likeEvent(id);
         }
         else{
-            dislike(id);
+            dislikeEvent(id);
         }
     }
 
 
     @Override
-    public void like(Long id) {
+    public void likeEvent(Long id) {
         userFeignClient.likeEvent(id);
     }
 
     @Override
-    public void dislike(Long id) {
+    public void dislikeEvent(Long id) {
         userFeignClient.dislikeEvent(id);
     }
     

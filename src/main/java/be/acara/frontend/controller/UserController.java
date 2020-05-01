@@ -60,7 +60,7 @@ public class UserController {
     @GetMapping("/detail/{id}")
     public String displayUser(@PathVariable("id") Long id, ModelMap model,
                               @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-                              @RequestParam(name = "size", defaultValue = "20", required = false) int size) {
+                              @RequestParam(name = "size", defaultValue = "5", required = false) int size) {
         User user = userService.getUser(id);
         EventDtoList subscribedEvents = eventService.getEventsFromUser(id, page-1, size);
         List<Integer> pageNumbersSubscribedEvent = getPageNumbers(subscribedEvents);
@@ -108,7 +108,7 @@ public class UserController {
 
     @GetMapping("/{id}/{location}/likes")
     public String likeOrDislikeEvent(@PathVariable("id") Long id, @PathVariable("location") String location) {
-        userService.likeOrDislike(id);
+        userService.likeOrDislikeEvent(id);
         String targetUrl = REDIRECT_EVENTS;
         if("details".equals(location)) {
             targetUrl = "redirect:/events/detail/" + id;

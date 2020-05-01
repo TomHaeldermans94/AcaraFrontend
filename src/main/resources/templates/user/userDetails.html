@@ -37,12 +37,18 @@
                                 <div class="font-weight-bold">Subscribed Events</div>
                             </li>
 
-                            <li class="list-group-item bg-white" th:each="event : ${subscribedEvents}">
-                                <div th:text="${event.name}">name</div>
+                            <li class="list-group-item bg-white d-inline-block" th:each="event : ${subscribedEvents}">
+                                    <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                    <a href="/events/detail"
+                                       th:href="@{|/events/detail/${event.id}|}"
+                                       class="btn btn-dark float-right">
+                                        Detail
+                                    </a>
                             </li>
                         </ul>
 
-                        <nav class="offset-3 pt-2" aria-label="Page navigation" th:if="${subscribedEvents.totalPages > 0}">
+                        <nav class="offset-3 pt-2" aria-label="Page navigation"
+                             th:if="${subscribedEvents.totalPages > 0}">
                             <ul class="pagination">
                                 <li th:class="page-item + ' ' + (${subscribedEvents.number <= 0} ? disabled)">
                                     <a th:href="@{/users/details/${user.id}(size=${subscribedEvents.size}, page=${subscribedEvents.number})}"
@@ -74,8 +80,13 @@
                                 <div class="font-weight-bold">Liked Events</div>
                             </li>
 
-                            <li class="list-group-item bg-white" th:each="event : ${likedEvents}">
-                                <div th:text="${event.name}">name</div>
+                            <li class="list-group-item bg-white d-inline-block" th:each="event : ${likedEvents}">
+                                <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                <a href="/events/detail"
+                                   th:href="@{|/events/detail/${event.id}|}"
+                                   class="btn btn-dark float-right">
+                                    Detail
+                                </a>
                             </li>
                         </ul>
 

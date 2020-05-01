@@ -25,7 +25,7 @@ public interface UserFeignClient {
     boolean checkUsername(@PathVariable("username") String username);
 
     @GetMapping("/api/users/{id}/likes")
-    boolean checkIfUserLikesThisEvent(Long id);
+    boolean checkIfUserLikesThisEvent(@PathVariable("id") Long id);
 
     @PostMapping("/api/users/{id}/likes")
     void likeEvent(@PathVariable("id") Long id);
