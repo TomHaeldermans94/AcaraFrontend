@@ -20,7 +20,4 @@ public interface UserFeignClient {
 
     @PutMapping("/api/users/{id}")
     ResponseEntity<Void> editUser(@PathVariable("id") Long id, UserDto userDto);
-
-    @GetMapping("/api/users/username/{username}")
-    boolean checkUsername(@PathVariable("username") String username);
 }
