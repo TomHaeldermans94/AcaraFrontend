@@ -5,6 +5,7 @@ import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.hamcrest.Matchers;
@@ -39,6 +40,8 @@ class EventControllerTest {
     private TokenLogoutHandler tokenLogoutHandler;
     @MockBean
     private EventService eventService;
+    @MockBean
+    private UserService userService;
     @MockBean
     private EventMapper mapper;
     
