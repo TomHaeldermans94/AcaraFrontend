@@ -60,7 +60,7 @@ public class UserController {
     @GetMapping("/detail/{id}")
     public String displayUser(@PathVariable("id") Long id, ModelMap model,
                               @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-                              @RequestParam(name = "size", defaultValue = "5", required = false) int size) {
+                              @RequestParam(name = "size", defaultValue = "3", required = false) int size) {
         User user = userService.getUser(id);
         EventDtoList subscribedEvents = eventService.getEventsFromUser(id, page-1, size);
         List<Integer> pageNumbersSubscribedEvent = getPageNumbers(subscribedEvents);
@@ -71,7 +71,6 @@ public class UserController {
         List<Integer> pageNumbersLikedEvents = getPageNumbers(likedEvents);
         if(pageNumbersLikedEvents != null) {
             model.addAttribute("pageNumbersLikedEvents", pageNumbersLikedEvents);
-
         }
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
@@ -80,8 +79,8 @@ public class UserController {
     }
 
     private List<Integer> getPageNumbers(EventDtoList events) {
-        int totalPagesLikedEvents = events.getTotalPages();
         List<Integer> pageNumbers = null;
+        int totalPagesLikedEvents = events.getTotalPages();
         if (totalPagesLikedEvents > 0) {
             pageNumbers = IntStream.rangeClosed(1, totalPagesLikedEvents)
                     .boxed()
