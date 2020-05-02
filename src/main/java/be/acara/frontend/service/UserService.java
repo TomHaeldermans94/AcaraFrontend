@@ -12,6 +12,8 @@ public interface UserService {
     
     void editUser(UserModel user);
 
+    boolean doesUserLikeThisEven(Long id);
+
     void likeOrDislikeEvent(Long id);
 
     void likeEvent(Long id);

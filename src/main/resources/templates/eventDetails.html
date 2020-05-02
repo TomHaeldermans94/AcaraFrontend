@@ -71,7 +71,7 @@
                            class="btn btn-light">
                             <span th:text="${event.amountOfLikes}"></span>
                             <i class="fas fa-thumbs-up ml-2"
-                               th:style="${likedEvents.content.contains(event)} ? 'color: #0275d8' : 'color: grey'"></i>
+                               th:style="${!isEventLiked} ? 'color: #0275d8' : 'color: grey'"></i>
                         </a>
                         <a class="btn btn-dark" href="/events" th:href="@{|/events/${event.id}|}"
                            sec:authorize="hasRole('ADMIN')">Edit</a>

@@ -35,6 +35,7 @@ public class EventController {
     private static final String ATTRIBUTE_EVENTS = "events";
     private static final String ATTRIBUTE_LIKED_EVENTS = "likedEvents";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
+    private static final String ATTRIBUTE_IS_EVENT_LIKED = "isEventLiked";
     private static final String ATTRIBUTE_EVENT_URL = "youtubeUrl";
 
 
@@ -52,9 +53,7 @@ public class EventController {
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if(!username.equals("anonymousUser")) {
-            Long userId = userService.findByUsername(username).getId();
-            EventDtoList likedEventDtoList = eventService.getEventsThatUserLiked(userId, 1, 20);
-            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventDtoList);
+            model.addAttribute(ATTRIBUTE_IS_EVENT_LIKED,userService.doesUserLikeThisEven(id));
         }
         return "eventDetails";
     }

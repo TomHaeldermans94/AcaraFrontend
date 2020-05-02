@@ -73,11 +73,13 @@ public class UserControllerTest {
         EventDtoList eventDtoList = createEventDtoList();
         when(userService.getUser(id)).thenReturn(user);
         when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/userDetails"))
-                .andExpect(model().attribute("events", eventDtoList))
+                .andExpect(model().attribute("subscribedEvents", eventDtoList))
+                .andExpect(model().attribute("likedEvents", eventDtoList))
                 .andExpect(model().attribute("user", user));
     }
     
