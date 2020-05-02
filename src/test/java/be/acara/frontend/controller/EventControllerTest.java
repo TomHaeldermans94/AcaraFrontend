@@ -2,6 +2,7 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
@@ -23,6 +24,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.*;
+import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -44,30 +46,30 @@ class EventControllerTest {
     private UserService userService;
     @MockBean
     private EventMapper mapper;
-    
+
     @Autowired
     private MockMvc mockMvc;
-    
+
     @AfterEach
     void tearDown() {
         reset(eventService);
     }
-    
+
     @Test
     void displayEvent() throws Exception {
         Long id = 1L;
         EventDto eventDto = firstEventDto();
         when(eventService.getEvent(id)).thenReturn(eventDto);
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
-        
-        
+
+
         mockMvc.perform(get("/events/detail/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventDetails"))
                 .andExpect(model().attributeExists("event"))
                 .andExpect(model().attribute("event", mapper.eventDtoToEventModel(eventDto)));
     }
-    
+
     @Test
     @WithMockAdmin
     void displayAddEventForm() throws Exception {
@@ -76,7 +78,7 @@ class EventControllerTest {
                 .andExpect(view().name("addEvent"))
                 .andExpect(model().attribute("event", new EventModel()));
     }
-    
+
     @Test
     @WithMockUser
     void displayAddEventForm_asUser() throws Exception {
@@ -84,7 +86,7 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
-    
+
     @Test
     @WithAnonymousUser
     void displayAddEventForm_asAnonymous() throws Exception {
@@ -92,20 +94,20 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
-    
+
     @Test
     @WithMockAdmin
     void displayEditEventForm() throws Exception {
         Long id = 1L;
         when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
-        
+
         mockMvc.perform(get("/events/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("editEvent"))
                 .andExpect(model().attribute("event", firstEvent()));
     }
-    
+
     @Test
     @WithMockUser
     void displayEditEventForm_asUser() throws Exception {
@@ -114,7 +116,7 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
-    
+
     @Test
     @WithAnonymousUser
     void displayEditEventForm_asAnonymous() throws Exception {
@@ -123,24 +125,40 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
-    
+
     @Test
-    void findAllEvents() throws Exception {
+    void findAllEventsWithAnonymousUser() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
         when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
-        
+
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
                 .andExpect(model().attribute("events", eventDtoList));
     }
-    
+
+    @Test
+    @WithMockUser
+    void findAllEventsWithUser() throws Exception {
+        User user = firstUserDomain();
+        EventDtoList eventDtoList = createEventDtoList();
+        when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
+        when(userService.findByUsername(anyString())).thenReturn(user);
+        when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+
+        mockMvc.perform(get("/events"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("eventList"))
+                .andExpect(model().attribute("events", eventDtoList))
+                .andExpect(model().attribute("likedEvents", eventDtoList));
+    }
+
     @Test
     @WithMockAdmin
     void handleAddEventForm() throws Exception {
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
         doNothing().when(eventService).addEvent(firstEventDto());
-        
+
         mockMvc.perform(multipart("/events/new")
                 .file(image)
                 .flashAttr("event", firstEvent())
@@ -149,12 +167,12 @@ class EventControllerTest {
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
     }
-    
+
     @Test
     @WithMockUser
     void handleAddEventForm_withUser() throws Exception {
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/new")
                 .file(image)
                 .flashAttr("event", firstEvent())
@@ -162,12 +180,12 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
-    
+
     @Test
     @WithAnonymousUser
     void handleAddEventForm_withAnonymous() throws Exception {
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/new")
                 .file(image)
                 .flashAttr("event", firstEvent())
@@ -175,7 +193,7 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
-    
+
     @Test
     @WithMockAdmin
     void handleEditEventForm() throws Exception {
@@ -183,7 +201,7 @@ class EventControllerTest {
         when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
                 .flashAttr("event", firstEvent()))
@@ -191,43 +209,43 @@ class EventControllerTest {
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
     }
-    
+
     @Test
     @WithMockUser
     void handleEditEventForm_withUser() throws Exception {
         Long id = 1L;
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
                 .flashAttr("event", firstEvent()))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
-    
+
     @Test
     @WithAnonymousUser
     void handleEditEventForm_withAnonymous() throws Exception {
         Long id = 1L;
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
                 .flashAttr("event", firstEvent()))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
-    
+
     @Test
     @WithMockAdmin
     void handleEditEventForm_withUnchangedImage() throws Exception {
         Long id = 1L;
         EventModel event = firstEvent();
         MockMultipartFile image = new MockMultipartFile("eventImage", new byte[0]);
-        
+
         when(eventService.getEvent(id)).thenReturn(firstEventDto());
         when(mapper.eventDtoToEventModel(firstEventDto())).thenReturn(firstEvent());
-        
+
         mockMvc.perform(multipart("/events/{id}", id)
                 .file(image)
                 .flashAttr("event", event))
@@ -235,7 +253,7 @@ class EventControllerTest {
                 .andExpect(view().name("redirect:/events"))
                 .andExpect(model().hasNoErrors());
     }
-    
+
     @Test
     @WithMockAdmin
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNullImage_whenAddEvent() throws Exception {
@@ -244,7 +262,7 @@ class EventControllerTest {
         EventDto eventDto = firstEventDto();
         eventDto.setImage(null);
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/new")
                 .file(image)
                 .flashAttr("event", event))
@@ -252,7 +270,7 @@ class EventControllerTest {
                 .andExpect(view().name("addEvent"))
                 .andExpect(model().attributeHasFieldErrors("event", "name"));
     }
-    
+
     @Test
     @WithMockAdmin
     void showNewModelAndViewInCaseOfErrorsInAddOrEditEvents_withNonNullImage_whenEditEvent() throws Exception {
@@ -261,9 +279,9 @@ class EventControllerTest {
         EventDto eventFromDb = firstEventDto();
         when(eventService.getEvent(anyLong())).thenReturn(eventFromDb);
         when(mapper.eventDtoToEventModel(eventFromDb)).thenReturn(firstEvent());
-        
+
         MockMultipartFile image = new MockMultipartFile("eventImage", getImage1AsBytes());
-        
+
         mockMvc.perform(multipart("/events/{id}", 1L)
                 .file(image)
                 .flashAttr("event", event)
@@ -272,21 +290,21 @@ class EventControllerTest {
                 .andExpect(view().name("editEvent"))
                 .andExpect(model().attributeHasFieldErrors("event", "name"));
     }
-    
+
     @Test
     @WithMockAdmin
     void deleteEvent() throws Exception {
         Long id = 1L;
-        
+
         doNothing().when(eventService).delete(id);
-        
+
         mockMvc.perform(get("/events/delete/{id}", id))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
-        
+
         verify(eventService, times(1)).delete(id);
     }
-    
+
     @Test
     @WithMockUser
     void deleteEvent_asUser() throws Exception {
@@ -295,11 +313,11 @@ class EventControllerTest {
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/forbidden"));
     }
-    
+
     @Test
     void search() throws Exception {
         when(eventService.search(anyMap())).thenReturn(createEventDtoList());
-        
+
         mockMvc.perform(get("/events/search").queryParam("location", "genk"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))

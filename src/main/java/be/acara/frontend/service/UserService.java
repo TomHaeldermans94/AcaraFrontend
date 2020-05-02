@@ -12,7 +12,7 @@ public interface UserService {
     
     void editUser(UserModel user);
 
-    boolean doesUserLikeThisEven(Long id);
+    boolean doesUserLikeThisEvent(Long id);
 
     void likeOrDislikeEvent(Long id);
 

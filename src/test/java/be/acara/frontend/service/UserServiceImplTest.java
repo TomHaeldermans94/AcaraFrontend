@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -187,5 +188,12 @@ class UserServiceImplTest {
         verify(userFeignClient, times(1)).editUser(anyLong(), eq(userDto));
         verify(userRepository, times(0)).findById(user.getId());
         verify(userRepository, times(0)).saveAndFlush(user);
+    }
+
+    @Test
+    void doesUserLikeThisEvent(){
+        when(userFeignClient.checkIfUserLikesThisEvent(1L)).thenReturn(true);
+        assertTrue(userFeignClient.checkIfUserLikesThisEvent(1L));
+        verify(userFeignClient, times(1)).checkIfUserLikesThisEvent(1L);
     }
 }

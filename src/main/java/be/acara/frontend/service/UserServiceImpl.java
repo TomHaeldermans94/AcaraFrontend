@@ -62,13 +62,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean doesUserLikeThisEven(Long id) {
+    public boolean doesUserLikeThisEvent(Long id) {
         return userFeignClient.checkIfUserLikesThisEvent(id);
     }
 
     @Override
     public void likeOrDislikeEvent(Long id) {
-        if(doesUserLikeThisEven(id)){
+        if(doesUserLikeThisEvent(id)){
             likeEvent(id);
         }
         else{

@@ -53,7 +53,7 @@ public class EventController {
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if(!username.equals("anonymousUser")) {
-            model.addAttribute(ATTRIBUTE_IS_EVENT_LIKED,userService.doesUserLikeThisEven(id));
+            model.addAttribute(ATTRIBUTE_IS_EVENT_LIKED,userService.doesUserLikeThisEvent(id));
         }
         return "eventDetails";
     }
