@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class ExceptionController {
     
+    private static final String UNAUTHORIZED = "error/unauthorized";
+    
     @ExceptionHandler(FeignException.class)
     public String handleFeignClientExceptions(FeignException fe) {
         switch (fe.status()) {
             case 401:
-            case 403: return "error/unauthorized";
+            case 403: return UNAUTHORIZED;
             case 404: return "error/notFound";
             default: return "error/genericError";
         }
@@ -31,7 +33,7 @@ public class ExceptionController {
     
     @ExceptionHandler(AccessDeniedException.class)
     public String unauthorized() {
-        return "error/unauthorized";
+        return UNAUTHORIZED;
     }
     
     @ExceptionHandler(NotFoundException.class)
@@ -41,6 +43,6 @@ public class ExceptionController {
     
     @GetMapping("/forbidden")
     public String forbiddenPage() {
-        return "error/unauthorized";
+        return UNAUTHORIZED;
     }
 }
