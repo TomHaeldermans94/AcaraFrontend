@@ -12,6 +12,7 @@ import be.acara.frontend.repository.UserRepository;
 import be.acara.frontend.service.mapper.UserMapper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtTokenService jwtTokenService;
     
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper, JwtTokenService jwtTokenService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, @Lazy PasswordEncoder passwordEncoder, UserFeignClient userFeignClient, UserMapper userMapper, JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;

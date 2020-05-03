@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -17,16 +18,19 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     
     private static final String ROLE_ADMIN = "ADMIN";
     
-    @Autowired
-    private TokenLogoutHandler tokenLogoutHandler;
+    private final TokenLogoutHandler tokenLogoutHandler;
     
-    public WebSecurityConfig(UserService userService, PasswordEncoder passwordEncoder) {
+    public WebSecurityConfig(UserService userService, TokenLogoutHandler tokenLogoutHandler) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
+        this.tokenLogoutHandler = tokenLogoutHandler;
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
     
     @Bean
@@ -36,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
     
     @Bean
