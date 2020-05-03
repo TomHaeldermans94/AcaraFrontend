@@ -59,15 +59,17 @@ public class UserController {
     
     @GetMapping("/detail/{id}")
     public String displayUser(@PathVariable("id") Long id, ModelMap model,
-                              @RequestParam(name = "page", defaultValue = "1", required = false) int page,
-                              @RequestParam(name = "size", defaultValue = "3", required = false) int size) {
+                              @RequestParam(name = "pageSubscribedEvents", defaultValue = "1", required = false) int pageSubscribedEvents,
+                              @RequestParam(name = "sizeSubscribedEvents", defaultValue = "3", required = false) int sizeSubscribedEvents,
+                              @RequestParam(name = "pageLikedEvents", defaultValue = "1", required = false) int pageLikedEvents,
+                              @RequestParam(name = "sizeLikedEvents", defaultValue = "3", required = false) int sizeLikedEvents) {
         User user = userService.getUser(id);
-        EventDtoList subscribedEvents = eventService.getEventsFromUser(id, page-1, size);
+        EventDtoList subscribedEvents = eventService.getEventsFromUser(id, pageSubscribedEvents-1, sizeSubscribedEvents);
         List<Integer> pageNumbersSubscribedEvent = getPageNumbers(subscribedEvents);
         if(pageNumbersSubscribedEvent != null) {
             model.addAttribute("pageNumbersSubscribedEvents", pageNumbersSubscribedEvent);
         }
-        EventDtoList likedEvents = eventService.getEventsThatUserLiked(id, page-1, size);
+        EventDtoList likedEvents = eventService.getEventsThatUserLiked(id, pageLikedEvents-1, sizeLikedEvents);
         List<Integer> pageNumbersLikedEvents = getPageNumbers(likedEvents);
         if(pageNumbersLikedEvents != null) {
             model.addAttribute("pageNumbersLikedEvents", pageNumbersLikedEvents);

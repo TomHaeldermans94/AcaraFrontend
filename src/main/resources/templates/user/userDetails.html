@@ -51,22 +51,22 @@
                              th:if="${subscribedEvents.totalPages > 0}">
                             <ul class="pagination">
                                 <li th:class="page-item + ' ' + (${subscribedEvents.number <= 0} ? disabled)">
-                                    <a th:href="@{/users/details/${user.id}(size=${subscribedEvents.size}, page=${subscribedEvents.number})}"
+                                    <a th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
                                        th:class="page-link">
                                         Previous
                                     </a>
                                 </li>
-                                <li class="page-item" th:each="pageNumber : ${pageNumbersSubscribedEvents}"
-                                    th:class="'page-item ' + (${pageNumber==subscribedEvents.number + 1} ? active : '')">
+                                <li class="page-item" th:each="pageNumberSubscribedEvents : ${pageNumbersSubscribedEvents}"
+                                    th:class="'page-item ' + (${pageNumberSubscribedEvents==subscribedEvents.number + 1} ? active : '')">
                                     <a class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${subscribedEvents.size}, page=${pageNumber})}"
-                                       th:text="${pageNumber}"
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${pageNumberSubscribedEvents}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
+                                       th:text="${pageNumberSubscribedEvents}"
                                        th:class="page-link">
                                     </a>
                                 </li>
                                 <li th:class="page-item + ' ' + (${subscribedEvents.number + 1 >= subscribedEvents.totalPages} ? disabled)">
                                     <a th:class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${subscribedEvents.size}, page=${subscribedEvents.number+2})}">
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number+2}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}">
                                         Next
                                     </a>
                                 </li>
@@ -93,22 +93,22 @@
                         <nav class="offset-3 pt-2" aria-label="Page navigation" th:if="${likedEvents.totalPages > 0}">
                             <ul class="pagination">
                                 <li th:class="page-item + ' ' + (${likedEvents.number <= 0} ? disabled)">
-                                    <a th:href="@{/users/details/${user.id}(size=${likedEvents.size}, page=${likedEvents.number})}"
+                                    <a th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
                                        th:class="page-link">
                                         Previous
                                     </a>
                                 </li>
-                                <li class="page-item" th:each="pageNumber : ${pageNumbersLikedEvents}"
-                                    th:class="'page-item ' + (${pageNumber==likedEvents.number + 1} ? active : '')">
+                                <li class="page-item" th:each="pageNumberLikedEvents : ${pageNumbersLikedEvents}"
+                                    th:class="'page-item ' + (${pageNumberLikedEvents==likedEvents.number + 1} ? active : '')">
                                     <a class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${likedEvents.size}, page=${pageNumber})}"
-                                       th:text="${pageNumber}"
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${pageNumberLikedEvents})}"
+                                       th:text="${pageNumberLikedEvents}"
                                        th:class="page-link">
                                     </a>
                                 </li>
                                 <li th:class="page-item + ' ' + (${likedEvents.number + 1 >= likedEvents.totalPages} ? disabled)">
                                     <a th:class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${likedEvents.size}, page=${likedEvents.number+2})}">
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number +2})}">
                                         Next
                                     </a>
                                 </li>
