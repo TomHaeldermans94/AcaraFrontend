@@ -1,6 +1,5 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.controller.dto.CreateOrderDto;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;

@@ -1,8 +1,6 @@
 package be.acara.frontend.service;
 
 import be.acara.frontend.controller.dto.CreateOrderDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
 

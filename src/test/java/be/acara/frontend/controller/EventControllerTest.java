@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.*;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
