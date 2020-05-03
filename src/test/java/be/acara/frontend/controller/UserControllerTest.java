@@ -3,22 +3,16 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.UserModel;
-import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
-import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
-import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,14 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
     @MockBean
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
-    @MockBean
-    private AuthenticationProvider authenticationProvider;
-    @MockBean
-    private TokenLogoutHandler tokenLogoutHandler;
-    
-    @MockBean
     private UserService userService;
     @MockBean
     private SecurityService securityService;
@@ -50,11 +36,6 @@ public class UserControllerTest {
     private UserMapper userMapper;
     @MockBean
     private EventService eventService;
-    
-    @MockBean
-    private UserFeignClient userFeignClient;
-    @MockBean
-    private EventMapper eventMapper;
 
     @Autowired
     private MockMvc mockMvc;
