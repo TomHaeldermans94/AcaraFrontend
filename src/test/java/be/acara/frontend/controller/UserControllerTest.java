@@ -97,7 +97,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(roles = {"USER","ADMIN"})
     void shouldNotBeAbleToDisplayUser_asNormalUser_withIdOfOtherUser() throws Exception {
-        Long id = 1000000000000L;
+        Long id = Long.MAX_VALUE;
     
         MvcResult mvcResult = mockMvc.perform(get("/users/detail/{id}", id))
                 .andExpect(status().isOk())
