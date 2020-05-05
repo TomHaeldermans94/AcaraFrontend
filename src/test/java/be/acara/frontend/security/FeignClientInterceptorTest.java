@@ -47,6 +47,8 @@ class FeignClientInterceptorTest {
         when(securityContext.getAuthentication()).thenReturn(null);
         SecurityContextHolder.setContext(securityContext);
         feignClientInterceptor.apply(requestTemplate);
+    
+        assertThat(requestTemplate.headers()).doesNotContainKey("Authorization");
     }
     
     @Test

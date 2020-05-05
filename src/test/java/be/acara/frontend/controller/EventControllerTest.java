@@ -5,18 +5,18 @@ import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,8 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(EventController.class)
 class EventControllerTest {
     @MockBean
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
+    private UserService userDetailsService;
     @MockBean
     private AuthenticationProvider authenticationProvider;
     @MockBean
@@ -41,6 +40,8 @@ class EventControllerTest {
     private EventService eventService;
     @MockBean
     private EventMapper mapper;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
     
     @Autowired
     private MockMvc mockMvc;
