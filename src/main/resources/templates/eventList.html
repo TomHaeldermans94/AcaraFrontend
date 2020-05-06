@@ -6,9 +6,15 @@
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
     <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
     <title>Acara</title>
 </head>
@@ -76,14 +82,15 @@
                                 <span th:text="${event.amountOfLikes}"></span>
                                 <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
                             </a>
-                            <a sec:authorize="isAuthenticated()"
-                               href="/events/like"
-                               th:href="@{|/users/${event.id}/events/likes|}"
-                               class="btn btn-light float-left mr-3">
-                                <span th:text="${event.amountOfLikes}"></span>
-                                <i class="fas fa-thumbs-up ml-2"
-                                   th:style="${likedEvents.content.contains(event)} ? 'color: #0275d8' : 'color: grey'"></i>
-                            </a>
+                            <form sec:authorize="isAuthenticated()" method="post" th:action="@{|/users/events/likes/${event.id}/|}">
+                                <input type="hidden" name="liked" th:value="${event.liked}">
+                                <button type="submit"
+                                        class="btn btn-light float-left mr-3">
+                                    <span th:text="${event.amountOfLikes}"></span>
+                                    <i class="fas fa-thumbs-up ml-2"
+                                       th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                                </button>
+                            </form>
                             <a href="/events/detail"
                                th:href="@{|/events/detail/${event.id}|}"
                                class="btn btn-dark float-left mr-3">

@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import org.springframework.cloud.openfeign.FeignClient;

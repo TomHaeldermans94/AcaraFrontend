@@ -3,6 +3,7 @@ package be.acara.frontend.controller;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
@@ -75,8 +76,8 @@ public class EventController {
         if ("UNSORTED".equals(sort)) {
             sort="";
         }
-        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort);
-        int totalPages = eventDtoList.getTotalPages();
+        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort));
+        int totalPages = eventModelList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
@@ -86,10 +87,10 @@ public class EventController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         if(!username.equals("anonymousUser")) {
             Long id = userService.findByUsername(username).getId();
-            EventDtoList likedEventDtoList = eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size);
-            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventDtoList);
+            EventModelList likedEventModelList = mapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size));
+            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventModelList);
         }
-        model.addAttribute(ATTRIBUTE_EVENTS, eventDtoList);
+        model.addAttribute(ATTRIBUTE_EVENTS, eventModelList);
         return "eventList";
     }
 
@@ -113,8 +114,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     public String displayEditEventForm(@PathVariable("id") Long id, Model model) {
-        EventDto eventDto = eventService.getEvent(id);
-        EventModel event = mapper.eventDtoToEventModel(eventDto);
+        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         addCategories(model);
@@ -142,7 +142,7 @@ public class EventController {
         if (params.isEmpty()) {
             return "redirect:";
         }
-        EventDtoList searchResults = eventService.search(params);
+        EventModelList searchResults = mapper.eventDtoListToEventModelList(eventService.search(params));
         model.addAttribute("events", searchResults);
         return "eventList";
     }
