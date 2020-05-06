@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.LikeEventDto;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.exception.IdNotFoundException;
@@ -10,6 +11,7 @@ import be.acara.frontend.repository.RoleRepository;
 import be.acara.frontend.repository.UserRepository;
 import be.acara.frontend.service.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,30 +63,18 @@ public class UserServiceImpl implements UserService {
         jwtTokenService.remove(user.getUsername());
     }
 
-    @Override
-    public boolean doesUserLikeThisEvent(Long id) {
-        return userFeignClient.checkIfUserLikesThisEvent(id);
-    }
-
-    @Override
-    public void likeOrDislikeEvent(Long id) {
-        if(doesUserLikeThisEvent(id)){
-            likeEvent(id);
-        }
-        else{
-            dislikeEvent(id);
-        }
-    }
-
 
     @Override
     public void likeEvent(Long id) {
-        userFeignClient.likeEvent(id);
+        Long userId = getCurrentUser().getId();
+        LikeEventDto likeEventDto = new LikeEventDto(id);
+        userFeignClient.likeEvent(userId, likeEventDto);
     }
 
     @Override
-    public void dislikeEvent(Long id) {
-        userFeignClient.dislikeEvent(id);
+    public void dislikeEvent(Long eventId) {
+        Long userId = getCurrentUser().getId();
+        userFeignClient.dislikeEvent(userId, eventId);
     }
     
     private void editBackEndUser(UserModel user) {
@@ -111,5 +101,11 @@ public class UserServiceImpl implements UserService {
             userFromDb.setPassword(user.getPassword());
         }
         userRepository.saveAndFlush(userFromDb);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        return findByUsername(userName);
     }
 }

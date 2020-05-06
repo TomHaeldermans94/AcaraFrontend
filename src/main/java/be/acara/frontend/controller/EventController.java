@@ -1,7 +1,6 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDto;
-import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
 import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.service.EventService;
@@ -36,7 +35,6 @@ public class EventController {
     private static final String ATTRIBUTE_EVENTS = "events";
     private static final String ATTRIBUTE_LIKED_EVENTS = "likedEvents";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
-    private static final String ATTRIBUTE_IS_EVENT_LIKED = "isEventLiked";
     private static final String ATTRIBUTE_EVENT_URL = "youtubeUrl";
 
 
@@ -52,10 +50,6 @@ public class EventController {
         EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!username.equals("anonymousUser")) {
-            model.addAttribute(ATTRIBUTE_IS_EVENT_LIKED,userService.doesUserLikeThisEvent(id));
-        }
         return "eventDetails";
     }
 
