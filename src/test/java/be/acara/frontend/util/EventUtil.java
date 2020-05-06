@@ -3,6 +3,7 @@ package be.acara.frontend.util;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,6 +98,14 @@ public class EventUtil {
                 firstEventDto(),
                 secondEventDto(),
                 thirdEventDto()
+        ));
+    }
+
+    public static EventModelList createEventModelList() {
+        return new EventModelList(List.of(
+                firstEvent(),
+                secondEvent(),
+                thirdEvent()
         ));
     }
     

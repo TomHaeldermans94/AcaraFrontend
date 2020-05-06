@@ -2,6 +2,7 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.model.UserModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
@@ -24,6 +25,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
+import static be.acara.frontend.util.EventUtil.createEventModelList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.hamcrest.Matchers.containsString;
@@ -50,7 +52,6 @@ public class UserControllerTest {
     private UserMapper userMapper;
     @MockBean
     private EventService eventService;
-
     @MockBean
     private UserFeignClient userFeignClient;
     @MockBean
@@ -70,15 +71,17 @@ public class UserControllerTest {
         Long id = 1L;
         User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModelList = createEventModelList();
         when(userService.getUser(id)).thenReturn(user);
+        when(eventMapper.eventDtoListToEventModelList(any())).thenReturn(eventModelList);
         when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
         when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/userDetails"))
-                .andExpect(model().attribute("subscribedEvents", eventDtoList))
-                .andExpect(model().attribute("likedEvents", eventDtoList))
+                .andExpect(model().attribute("subscribedEvents", eventModelList))
+                .andExpect(model().attribute("likedEvents", eventModelList))
                 .andExpect(model().attribute("user", user));
     }
     
