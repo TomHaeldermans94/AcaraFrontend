@@ -4,6 +4,7 @@ import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.UserService;
@@ -128,12 +129,14 @@ class EventControllerTest {
     @Test
     void findAllEventsWithAnonymousUser() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModels = createEventModelList();
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
         when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
 
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", eventDtoList));
+                .andExpect(model().attribute("events", eventModels));
     }
 
     @Test
@@ -141,6 +144,8 @@ class EventControllerTest {
     void findAllEventsWithUser() throws Exception {
         User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModels = createEventModelList();
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
         when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
         when(userService.findByUsername(anyString())).thenReturn(user);
         when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
@@ -148,8 +153,8 @@ class EventControllerTest {
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", eventDtoList))
-                .andExpect(model().attribute("likedEvents", eventDtoList));
+                .andExpect(model().attribute("events", eventModels))
+                .andExpect(model().attribute("likedEvents", eventModels));
     }
 
     @Test
@@ -316,11 +321,11 @@ class EventControllerTest {
     @Test
     void search() throws Exception {
         when(eventService.search(anyMap())).thenReturn(createEventDtoList());
-
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(createEventModelList());
         mockMvc.perform(get("/events/search").queryParam("location", "genk"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", Matchers.equalTo(createEventDtoList())));
+                .andExpect(model().attribute("events", Matchers.equalTo(createEventModelList())));
     }
 
     @Test

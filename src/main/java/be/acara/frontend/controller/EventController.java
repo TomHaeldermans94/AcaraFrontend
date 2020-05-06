@@ -137,7 +137,7 @@ public class EventController {
             return "redirect:";
         }
         EventModelList searchResults = mapper.eventDtoListToEventModelList(eventService.search(params));
-        model.addAttribute("events", searchResults);
+        model.addAttribute(ATTRIBUTE_EVENTS, searchResults);
         return "eventList";
     }
 
