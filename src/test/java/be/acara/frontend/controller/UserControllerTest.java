@@ -4,6 +4,7 @@ import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.model.UserModel;
+import be.acara.frontend.security.MethodSecurityConfigurer;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
@@ -13,21 +14,25 @@ import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.EventUtil.createEventModelList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,19 +40,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
+@Import(MethodSecurityConfigurer.class)
 public class UserControllerTest {
-    @MockBean
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
     @MockBean
     private AuthenticationProvider authenticationProvider;
     @MockBean
     private TokenLogoutHandler tokenLogoutHandler;
 
     @MockBean
-    private UserService userService;
-    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean(name = "securityService") // name is required or it WILL break the method security methods!
     private SecurityService securityService;
+    @MockBean
+    private UserService userService;
     @MockBean
     private UserMapper userMapper;
     @MockBean
@@ -60,6 +66,10 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     
+    @BeforeEach
+    void setUp() {
+    }
+
     @AfterEach
     void tearDown() {
         reset(userService);
@@ -76,6 +86,7 @@ public class UserControllerTest {
         when(eventMapper.eventDtoListToEventModelList(any())).thenReturn(eventModelList);
         when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
         when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
@@ -96,13 +107,20 @@ public class UserControllerTest {
     }
     
     @Test
-    @WithMockUser
-    void shouldNotBeAbleToDisplayUser_asNormalUser() throws Exception {
-        Long id = 1L;
+    @WithMockUser(roles = {"USER","ADMIN"})
+    void shouldNotBeAbleToDisplayUser_asNormalUser_withIdOfOtherUser() throws Exception {
+        Long id = Long.MAX_VALUE;
+
+        MvcResult mvcResult = mockMvc.perform(get("/users/detail/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(MvcResult::getResolvedException)
+                .andReturn();
     
-        mockMvc.perform(get("/users/detail/{id}", id))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/forbidden"));
+        Exception resolvedException = mvcResult.getResolvedException();
+        assertThat(resolvedException).isInstanceOf(AccessDeniedException.class);
+
+
+        verify(securityService, times(1)).hasUserId(any(), anyLong());
     }
     
     @Test
@@ -139,6 +157,7 @@ public class UserControllerTest {
         UserModel userModel = firstUser();
         when(userService.getUser(id)).thenReturn(user);
         when(userMapper.userToUserModel(user)).thenReturn(userModel);
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(get("/users/{id}", id))
                 .andExpect(status().isOk())
@@ -151,6 +170,7 @@ public class UserControllerTest {
     void handleEditUserForm() throws Exception{
         Long id = 1L;
         doNothing().when(userService).editUser(any());
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("userForm", firstUser()))
@@ -163,10 +183,14 @@ public class UserControllerTest {
     @WithMockUser
     void handleEditUserForm_asUser() throws Exception {
         Long id = 1L;
-        
-        mockMvc.perform(post("/users/{id}", id))
+
+        UserModel userModel = firstUser();
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
+
+        mockMvc.perform(post("/users/{id}", id)
+                .flashAttr("userForm", userModel))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/forbidden"));
+                .andExpect(redirectedUrl("/events"));
     }
     
     @Test
@@ -188,7 +212,8 @@ public class UserControllerTest {
         UserModel userModel = UserMapper.INSTANCE.userToUserModel(user);
         userModel.setPassword("pw");
         userModel.setPasswordConfirm("pw");
-        
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
+
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", userModel))
                 .andExpect(status().isOk())

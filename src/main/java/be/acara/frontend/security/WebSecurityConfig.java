@@ -1,8 +1,8 @@
 package be.acara.frontend.security;
 
 import be.acara.frontend.exception.CustomAccessDeniedHandler;
+import be.acara.frontend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -18,23 +17,15 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    @Qualifier("userDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
+    private final UserService userService;
     
     private static final String ROLE_ADMIN = "ADMIN";
     
-    @Autowired
-    private TokenLogoutHandler tokenLogoutHandler;
+    private final TokenLogoutHandler tokenLogoutHandler;
     
-    @Bean
-    public AuthenticationManager customAuthenticationManager() throws Exception {
-        return authenticationManager();
-    }
-    
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    public WebSecurityConfig(UserService userService, TokenLogoutHandler tokenLogoutHandler) {
+        this.userService = userService;
+        this.tokenLogoutHandler = tokenLogoutHandler;
     }
     
     @Bean
@@ -43,23 +34,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     @Bean
+    public AuthenticationManager customAuthenticationManager() throws Exception {
+        return authenticationManager();
+    }
+    
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+    
+    @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
-    
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/login").not().authenticated()
                 .antMatchers("/users/registration").not().authenticated()
+                .antMatchers("/users/detail/{userId}").authenticated()
                 .antMatchers("/events/search/**").permitAll()
                 .antMatchers("/events/delete/{\\d+}").hasRole(ROLE_ADMIN)
                 .antMatchers("/events/new").hasRole(ROLE_ADMIN)
                 .antMatchers("/orders/**").authenticated()
                 .antMatchers("/events/{\\d+}").hasRole(ROLE_ADMIN)
-                .antMatchers("/users/detail/{\\d+}").hasRole(ROLE_ADMIN)
-                .antMatchers("/users/{\\d+}").hasRole(ROLE_ADMIN)
+                .antMatchers("/users/profile").authenticated()
+                .antMatchers("/users/{\\d+}").authenticated()
                 .and()
                 .formLogin()
                 .defaultSuccessUrl("/events")

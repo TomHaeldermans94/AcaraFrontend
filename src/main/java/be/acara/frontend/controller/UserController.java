@@ -9,6 +9,7 @@ import be.acara.frontend.service.SecurityService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,6 +17,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -62,6 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/detail/{id}")
+    @PreAuthorize("@securityService.hasUserId(authentication, #id) or hasRole('admin')")
     public String displayUser(@PathVariable("id") Long id, ModelMap model,
                               @RequestParam(name = "pageSubscribedEvents", defaultValue = "1", required = false) int pageSubscribedEvents,
                               @RequestParam(name = "sizeSubscribedEvents", defaultValue = "3", required = false) int sizeSubscribedEvents,
@@ -79,6 +83,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@securityService.hasUserId(authentication, #id) or hasRole('admin')")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
         UserModel user = userMapper.userToUserModel(userService.getUser(id));
         model.addAttribute(ATTRIBUTE_USER_FORM, user);
@@ -86,6 +91,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("@securityService.hasUserId(authentication, #user.id) or hasRole('admin')")
     public String handleEditUserForm(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel user, BindingResult br) {
         if (br.hasErrors()) {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
@@ -108,6 +114,10 @@ public class UserController {
         return targetUrl;
     }
 
+    @GetMapping("/profile")
+    public String getProfile(Principal principal) {
+        return String.format("forward:/users/detail/%d", userService.findByUsername(principal.getName()).getId());
+    }
 
     private void addPageNumbers(EventModelList events, ModelMap modelMap, String attribute) {
         if (events.getTotalPages() == 0) {

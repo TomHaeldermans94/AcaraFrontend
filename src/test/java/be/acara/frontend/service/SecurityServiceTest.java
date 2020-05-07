@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -24,7 +23,7 @@ class SecurityServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private UserDetailsService userDetailsService;
+    private UserService userService;
     @Mock
     private Authentication authentication;
     @Mock
@@ -74,9 +73,11 @@ class SecurityServiceTest {
     void autoLogin() {
         String username = "username";
         String password = "password";
-        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
+        when(userService.loadUserByUsername(username)).thenReturn(userDetails);
         when(authenticationManager.authenticate(any())).thenReturn(usernamePasswordAuthenticationToken);
         
         securityService.autoLogin(username, password);
+        
+        verify(userService, times(1)).loadUserByUsername(username);
     }
 }

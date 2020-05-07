@@ -1,10 +1,12 @@
 package be.acara.frontend.controller.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LikeEventDto {
     private Long id;
 }
