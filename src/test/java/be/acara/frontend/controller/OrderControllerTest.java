@@ -1,5 +1,6 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
@@ -17,8 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -70,7 +70,8 @@ public class OrderControllerTest {
     @WithMockUser
     void handlecreateOrderForm() throws Exception {
         Long eventId = 1L;
-        doNothing().when(orderService).create(eventId);
+        CreateOrderModel createOrderModel = mock(CreateOrderModel.class);
+        doNothing().when(orderService).create(createOrderModel);
 
         mockMvc.perform(post("/orders")
                 .param("event", String.valueOf(eventId))

@@ -1,16 +1,13 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/orders")
@@ -19,7 +16,7 @@ public class OrderController {
     private final EventMapper mapper;
     private final EventService eventService;
 
-    private static final String ATTRIBUTE_EVENT = "event";
+    private static final String ATTRIBUTE_CREATE_ORDER_MODEL = "createOrderModel";
 
     @Autowired
     public OrderController(OrderService orderService, EventMapper mapper, EventService eventService) {
@@ -28,16 +25,18 @@ public class OrderController {
         this.eventService = eventService;
     }
 
-    @PostMapping()
-    public String createOrder(@RequestParam(name = "event") Long eventId) {
-        orderService.create(eventId);
+    @PostMapping("/new")
+    public String createOrder(@ModelAttribute("createOrderModel") CreateOrderModel createOrderModel) {
+        orderService.create(createOrderModel);
         return "redirect:/events";
     }
 
-    @GetMapping()
-    public String displayOrderForm(@RequestParam(name = "event") Long eventId, ModelMap model) {
-        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(eventId));
-        model.addAttribute(ATTRIBUTE_EVENT, event);
+    @GetMapping("/new/{eventId}")
+    public String displayOrderForm(@PathVariable("eventId") Long eventId, ModelMap model) {
+        model.addAttribute(
+                ATTRIBUTE_CREATE_ORDER_MODEL,
+                new CreateOrderModel(mapper.eventDtoToEventModel(eventService.getEvent(eventId)), 1)
+        );
         return "buyOrder";
     }
 }

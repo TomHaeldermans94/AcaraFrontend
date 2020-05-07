@@ -11,6 +11,6 @@
 </head>
 <body>
 <div th:insert="navbar :: navbar"></div>
-<form th:insert="orderForm :: orderForm" th:method="post"></form>
+<form th:insert="orderForm :: orderForm" th:method="post" th:action="@{~/orders/new}" ></form>
 </body>
 </html>

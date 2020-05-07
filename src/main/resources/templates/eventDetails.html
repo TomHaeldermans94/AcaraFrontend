@@ -55,7 +55,7 @@
                     <div class="col-9 ml-3 my-2" >
                         <a class="btn btn-dark" href="/events" th:href="@{|/events/${event.id}|}" sec:authorize="hasRole('ADMIN')">Edit</a>
                         <span th:insert="deleteEvent :: deleteEvent" sec:authorize="hasRole('ADMIN')"></span>
-                        <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}" class="btn btn-primary mr-3">Buy Ticket</a>
+                        <a href="/orders/event.id" th:href="@{|/orders/new/${event.id})|}" class="btn btn-primary mr-3">Buy Ticket</a>
                     </div>
                 </div>
 
