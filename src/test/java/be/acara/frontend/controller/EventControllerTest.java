@@ -127,7 +127,8 @@ class EventControllerTest {
     }
 
     @Test
-    void findAllEventsWithAnonymousUser() throws Exception {
+    @WithAnonymousUser
+    void findAllEvents_WithAnonymousUser() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
         EventModelList eventModels = createEventModelList();
         when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
@@ -141,7 +142,7 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void findAllEventsWithUser() throws Exception {
+    void findAllEvents_WithUser() throws Exception {
         User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
         EventModelList eventModels = createEventModelList();
