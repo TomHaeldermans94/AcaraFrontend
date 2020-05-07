@@ -34,12 +34,12 @@
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Date:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toString().substring(0,10)}">event date</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}">event date</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Time:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toString().substring(11)}">event date</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}">event date</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">

@@ -8,6 +8,7 @@ import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -69,9 +70,8 @@ public class EventController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        if(!username.equals("anonymousUser")) {
-            Long id = userService.findByUsername(username).getId();
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+            Long id = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             EventModelList likedEventModelList = mapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size));
             model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventModelList);
         }
