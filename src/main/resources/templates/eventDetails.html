@@ -88,6 +88,13 @@
             <img class="img-fluid mt-5" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
         </div>
     </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <iframe class="my-3" width="700" height="393,75" th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
+        </div>
+    </div>
+
 </div>
 
 <!-- Modal -->

@@ -49,6 +49,8 @@ public class EventModel {
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
 
+    private String youtubeId;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
