@@ -1,12 +1,15 @@
 package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDto;
-import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.service.EventService;
+import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -26,15 +29,20 @@ import java.util.stream.IntStream;
 public class EventController {
     private final EventMapper mapper;
     private final EventService eventService;
+    private final UserService userService;
 
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
+    private static final String ATTRIBUTE_EVENTS = "events";
+    private static final String ATTRIBUTE_LIKED_EVENTS = "likedEvents";
     private static final String ATTRIBUTE_EVENT_IMAGE = "eventImage";
 
+
     @Autowired
-    public EventController(EventMapper mapper, EventService eventService) {
+    public EventController(EventMapper mapper, EventService eventService, UserService userService) {
         this.mapper = mapper;
         this.eventService = eventService;
+        this.userService = userService;
     }
 
     @GetMapping("/detail/{id}")
@@ -54,15 +62,20 @@ public class EventController {
         if ("UNSORTED".equals(sort)) {
             sort="";
         }
-        EventDtoList eventDtoList = eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort);
-        int totalPages = eventDtoList.getTotalPages();
+        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort));
+        int totalPages = eventModelList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
                     .boxed()
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        model.addAttribute("events", eventDtoList);
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
+            Long id = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+            EventModelList likedEventModelList = mapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size));
+            model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventModelList);
+        }
+        model.addAttribute(ATTRIBUTE_EVENTS, eventModelList);
         return "eventList";
     }
 
@@ -86,8 +99,7 @@ public class EventController {
 
     @GetMapping("/{id}")
     public String displayEditEventForm(@PathVariable("id") Long id, Model model) {
-        EventDto eventDto = eventService.getEvent(id);
-        EventModel event = mapper.eventDtoToEventModel(eventDto);
+        EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
         addCategories(model);
@@ -115,8 +127,8 @@ public class EventController {
         if (params.isEmpty()) {
             return "redirect:";
         }
-        EventDtoList searchResults = eventService.search(params);
-        model.addAttribute("events", searchResults);
+        EventModelList searchResults = mapper.eventDtoListToEventModelList(eventService.search(params));
+        model.addAttribute(ATTRIBUTE_EVENTS, searchResults);
         return "eventList";
     }
 
@@ -125,6 +137,7 @@ public class EventController {
         eventService.delete(id);
         return REDIRECT_EVENTS;
     }
+
 
     private void addCategories(Model model) {
         model.addAttribute("categoryList", eventService.getCategories());

@@ -22,6 +22,10 @@ public class EventModel {
 
     private Long id;
 
+    private int amountOfLikes;
+
+    private boolean liked;
+
     @Future(message = "Date must be in the future")
     @NotNull(message = "Field cannot be empty")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
@@ -44,6 +48,8 @@ public class EventModel {
     @NotNull(message = "Minimum price is 1 euro")
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
+
+    private String youtubeId;
 
     @Override
     public boolean equals(Object o) {

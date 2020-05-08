@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -191,24 +192,31 @@ class UserServiceImplTest {
         verify(userRepository, times(0)).findById(user.getId());
         verify(userRepository, times(0)).saveAndFlush(user);
     }
-    
+
+    @Test
+    void doesUserLikeThisEvent(){
+        when(userFeignClient.checkIfUserLikesThisEvent(1L)).thenReturn(true);
+        assertTrue(userFeignClient.checkIfUserLikesThisEvent(1L));
+        verify(userFeignClient, times(1)).checkIfUserLikesThisEvent(1L);
+    }
+
     @Test
     void loadUserByUsername_notFound() {
         when(userRepository.findByUsername(anyString())).thenReturn(null);
         assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("admin"));
     }
-    
+
     @Test
     void loadUserByUsername_doesNotContainAuthHeader() {
         when(userRepository.findByUsername(anyString())).thenReturn(user);
         ResponseEntity<Void> responseEntity = ResponseEntity.ok().build();
         when(userFeignClient.login(anyString())).thenReturn(responseEntity);
-        
+
         UserDetails answer = userService.loadUserByUsername("admin");
-        
+
         assertThat(answer).isNull();
     }
-    
+
     @Test
     void loadUserByUsername() {
         when(userRepository.findByUsername(anyString())).thenReturn(user);
@@ -220,10 +228,10 @@ class UserServiceImplTest {
         Role role = new Role();
         role.setId(1L);
         role.setName("USER");
-        
+
         UserDetails answer = userService.loadUserByUsername("admin");
-        
-        
+
+
         assertThat(answer).isNotNull();
         assertThat(answer).isInstanceOf(User.class);
         assertThat(answer.getUsername()).isEqualTo("username");

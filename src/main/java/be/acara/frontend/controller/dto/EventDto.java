@@ -15,6 +15,8 @@ import java.util.Set;
 @Builder
 public class EventDto {
     private Long id;
+    private int amountOfLikes;
+    private boolean liked;
     private LocalDateTime eventDate;
     private String name;
     private String description;
@@ -23,5 +25,5 @@ public class EventDto {
     private String category;
     private Set<UserDto> attendees;
     private BigDecimal price;
-    private String youtubeUrl;
+    private String youtubeId;
 }

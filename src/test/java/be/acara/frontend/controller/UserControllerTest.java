@@ -2,16 +2,18 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.model.UserModel;
 import be.acara.frontend.security.MethodSecurityConfigurer;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
+import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
+import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,11 +28,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
+import static be.acara.frontend.util.EventUtil.createEventModelList;
 import static be.acara.frontend.util.UserUtil.firstUser;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,9 +45,10 @@ public class UserControllerTest {
     private AuthenticationProvider authenticationProvider;
     @MockBean
     private TokenLogoutHandler tokenLogoutHandler;
+
     @MockBean
     private PasswordEncoder passwordEncoder;
-    
+
     @MockBean(name = "securityService") // name is required or it WILL break the method security methods!
     private SecurityService securityService;
     @MockBean
@@ -54,14 +57,14 @@ public class UserControllerTest {
     private UserMapper userMapper;
     @MockBean
     private EventService eventService;
+    @MockBean
+    private UserFeignClient userFeignClient;
+    @MockBean
+    private EventMapper eventMapper;
 
     @Autowired
     private MockMvc mockMvc;
-    
-    @BeforeEach
-    void setUp() {
-    }
-    
+
     @AfterEach
     void tearDown() {
         reset(userService);
@@ -73,14 +76,18 @@ public class UserControllerTest {
         Long id = 1L;
         User user = firstUserDomain();
         EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModelList = createEventModelList();
         when(userService.getUser(id)).thenReturn(user);
+        when(eventMapper.eventDtoListToEventModelList(any())).thenReturn(eventModelList);
         when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
         when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/userDetails"))
-                .andExpect(model().attribute("events", eventDtoList))
+                .andExpect(model().attribute("subscribedEvents", eventModelList))
+                .andExpect(model().attribute("likedEvents", eventModelList))
                 .andExpect(model().attribute("user", user));
     }
     
@@ -98,7 +105,7 @@ public class UserControllerTest {
     @WithMockUser(roles = {"USER","ADMIN"})
     void shouldNotBeAbleToDisplayUser_asNormalUser_withIdOfOtherUser() throws Exception {
         Long id = Long.MAX_VALUE;
-    
+
         MvcResult mvcResult = mockMvc.perform(get("/users/detail/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(MvcResult::getResolvedException)
@@ -106,8 +113,8 @@ public class UserControllerTest {
     
         Exception resolvedException = mvcResult.getResolvedException();
         assertThat(resolvedException).isInstanceOf(AccessDeniedException.class);
-    
-    
+
+
         verify(securityService, times(1)).hasUserId(any(), anyLong());
     }
     
@@ -171,10 +178,10 @@ public class UserControllerTest {
     @WithMockUser
     void handleEditUserForm_asUser() throws Exception {
         Long id = 1L;
-    
+
         UserModel userModel = firstUser();
         when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
-    
+
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("userForm", userModel))
                 .andExpect(status().isFound())
@@ -201,7 +208,7 @@ public class UserControllerTest {
         userModel.setPassword("pw");
         userModel.setPasswordConfirm("pw");
         when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
-        
+
         mockMvc.perform(post("/users/{id}", id)
                 .flashAttr("editUser", userModel))
                 .andExpect(status().isOk())

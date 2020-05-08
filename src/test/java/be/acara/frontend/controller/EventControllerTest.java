@@ -2,7 +2,9 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.UserService;
@@ -16,13 +18,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static be.acara.frontend.util.EventUtil.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -42,7 +45,7 @@ class EventControllerTest {
     private EventMapper mapper;
     @MockBean
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private MockMvc mockMvc;
     
@@ -125,14 +128,34 @@ class EventControllerTest {
     @Test
     void findAllEvents() throws Exception {
         EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModels = createEventModelList();
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
+        when(userDetailsService.findByUsername(anyString())).thenReturn(firstUserDomain());
         when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
-        
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", eventDtoList));
+                .andExpect(model().attribute("events", eventModels));
     }
-    
+
+    @Test
+    @WithMockUser
+    void findAllEvents_WithUser() throws Exception {
+        User user = firstUserDomain();
+        EventDtoList eventDtoList = createEventDtoList();
+        EventModelList eventModels = createEventModelList();
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
+        when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
+        when(userDetailsService.findByUsername(anyString())).thenReturn(user);
+        when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+
+        mockMvc.perform(get("/events"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("eventList"))
+                .andExpect(model().attribute("events", eventModels))
+                .andExpect(model().attribute("likedEvents", eventModels));
+    }
+
     @Test
     @WithMockAdmin
     void handleAddEventForm() throws Exception {
@@ -297,11 +320,11 @@ class EventControllerTest {
     @Test
     void search() throws Exception {
         when(eventService.search(anyMap())).thenReturn(createEventDtoList());
-        
+        when(mapper.eventDtoListToEventModelList(any())).thenReturn(createEventModelList());
         mockMvc.perform(get("/events/search").queryParam("location", "genk"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))
-                .andExpect(model().attribute("events", Matchers.equalTo(createEventDtoList())));
+                .andExpect(model().attribute("events", Matchers.equalTo(createEventModelList())));
     }
 
     @Test

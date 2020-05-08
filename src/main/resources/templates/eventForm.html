@@ -122,13 +122,25 @@
 
             <div class="form-group row">
                 <div class="col-3">
+                    <label class="control-label float-left" for="youtubeId"
+                           th:for="${#ids.next('youtubeId')}">URL: </label>
+                </div>
+                <div class="col-9">
+                    <input class="form-control-lg w-75" type="text" id="youtubeId" placeholder="URL"
+                           th:field="${event.youtubeId}"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-3">
                     <label class="control-label float-left" for="eventImage">Image: </label>
                 </div>
                 <div class="col-9">
                     <div class="row">
                         <div class="upload-btn-wrapper ml-3">
                             <button type="button" class="btn btn-primary">Upload</button>
-                            <input type="file" name="eventImage" id="eventImage" multiple accept="image/*" th:value="${eventImage}"
+                            <input type="file" name="eventImage" id="eventImage" multiple accept="image/*"
+                                   th:value="${eventImage}"
                                    onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])"/>
                         </div>
                         <div class="ml-2">
@@ -147,6 +159,7 @@
             </div>
 
 
+
             <div class="form-group row">
                 <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
                 <a class="btn btn-dark btn-lg" href="/events" role="button">Cancel</a>
@@ -158,7 +171,8 @@
                 <div class="col">
                     <h1 class="row">Current event image</h1>
                     <div class="row">
-                        <img src="" th:src="@{'data:image/png;base64,'+${eventImage}}" class="img-fluid rounded max-height" alt=""/>
+                        <img src="" th:src="@{'data:image/png;base64,'+${eventImage}}"
+                             class="img-fluid rounded max-height" alt=""/>
                     </div>
                 </div>
             </div>
@@ -171,7 +185,7 @@
                 </div>
             </div>
         </div>
-
+    </div>
     </div>
 </form>
 </body>
