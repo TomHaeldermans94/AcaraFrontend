@@ -14,7 +14,13 @@ public interface UserService extends UserDetailsService {
     User getUser(Long id);
     
     void editUser(UserModel user);
-    
+
     @Transactional(readOnly = true)
     UserDetails loadUserByUsername(String username);
+
+    void likeEvent(Long id);
+
+    void dislikeEvent(Long id);
+
+    User getCurrentUser();
 }

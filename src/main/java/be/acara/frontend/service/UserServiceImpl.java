@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.LikeEventDto;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.JwtToken;
 import be.acara.frontend.domain.User;
@@ -15,6 +16,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,7 +74,21 @@ public class UserServiceImpl implements UserService {
         editFrontEndUser(user);
         jwtTokenService.remove(user.getUsername());
     }
-    
+
+
+    @Override
+    public void likeEvent(Long id) {
+        Long userId = getCurrentUser().getId();
+        LikeEventDto likeEventDto = new LikeEventDto(id);
+        userFeignClient.likeEvent(userId, likeEventDto);
+    }
+
+    @Override
+    public void dislikeEvent(Long eventId) {
+        Long userId = getCurrentUser().getId();
+        userFeignClient.dislikeEvent(userId, eventId);
+    }
+
     private void editBackEndUser(UserModel user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserDto userDto = userMapper.userModelToUserDto(user);
@@ -98,9 +114,16 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.saveAndFlush(userFromDb);
     }
-    
-    
-    
+
+    @Override
+    public User getCurrentUser() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        if ("anonymousUser".equals(userName)) {
+            return null;
+        }
+        return findByUsername(userName);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
@@ -108,7 +131,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        
+
         ResponseEntity<Void> login = userFeignClient.login(String.format("{\"username\": \"%s\", \"password\": \"%s\"}", user.getUsername(), user.getPassword()));
         if (!login.getHeaders().containsKey("Authorization")) {
             return null;
@@ -123,7 +146,7 @@ public class UserServiceImpl implements UserService {
                 .expirationDate(token.getExpiresAt())
                 .build();
         jwtTokenService.save(jwtToken);
-        
+
         return user;
     }
 }

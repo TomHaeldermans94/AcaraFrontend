@@ -15,66 +15,113 @@
 
 <div class="container-fluid">
     <div class="row" align="center">
-        <div class="col-12 mx-2 my-2">
+        <div class="col">
 
-            <p class="sr-only" th:text="'ID: ' + ${user.id}">ID</p>
-
-            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
-                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">First name:</div>
+            <div class="form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 text-right">First name:</div>
                 <span class="col-6 text-left" th:text="${user.firstName}">firstName</span>
             </div>
 
 
-            <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
-                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Last name:</div>
+            <div class="form-group row justify-content-center" style="font-size: x-large">
+                <div class="font-weight-bold col-6 text-right">Last name:</div>
                 <span class="col-6 text-left" th:text="${user.lastName}">lastName</span>
             </div>
 
-            <div class="row">
-                <div class="col justify-content-center">
-                    <div class="col-4 align-self-center table-borderless">
-                        <ul class="list-group bg-transparent">
-                            <li class="list-group-item bg-transparent" style="font-size: x-large">
-                                <div class="font-weight-bold" style="color: red">Subscribed Events</div>
+            <div class="row justify-content-center">
+                <div class="col-9 justify-content-center">
+
+                    <div class="col-5 align-self-center table d-inline-block float-left">
+                        <ul class="list-group">
+                            <li class="list-group-item bg-white" style="font-size: x-large">
+                                <div class="font-weight-bold">Subscribed Events</div>
                             </li>
 
-                            <li class="list-group-item bg-transparent" th:each="event : ${events}">
-                                <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event name:</div>
-                                <span th:text="${event.name}">name</span>
+                            <li class="list-group-item bg-white d-inline-block" th:each="event : ${subscribedEvents}">
+                                    <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                    <a href="/events/detail"
+                                       th:href="@{|/events/detail/${event.id}|}"
+                                       class="btn btn-dark float-right">
+                                        Detail
+                                    </a>
                             </li>
                         </ul>
 
-                        <nav class="offset-4 pt-2" aria-label="Page navigation" th:if="${events.totalPages > 0}">
+                        <nav class="offset-3 pt-2" aria-label="Page navigation"
+                             th:if="${subscribedEvents.totalPages > 0}">
                             <ul class="pagination">
-                                <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
-                                    <a th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number})}"
+                                <li th:class="page-item + ' ' + (${subscribedEvents.number <= 0} ? disabled)">
+                                    <a th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
                                        th:class="page-link">
                                         Previous
                                     </a>
                                 </li>
-                                <li class="page-item" th:each="pageNumber : ${pageNumbers}"
-                                    th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
+                                <li class="page-item" th:each="pageNumberSubscribedEvents : ${pageNumbersSubscribedEvents}"
+                                    th:class="'page-item ' + (${pageNumberSubscribedEvents==subscribedEvents.number + 1} ? active : '')">
                                     <a class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${events.size}, page=${pageNumber})}"
-                                       th:text="${pageNumber}"
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${pageNumberSubscribedEvents}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
+                                       th:text="${pageNumberSubscribedEvents}"
                                        th:class="page-link">
                                     </a>
                                 </li>
-                                <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
+                                <li th:class="page-item + ' ' + (${subscribedEvents.number + 1 >= subscribedEvents.totalPages} ? disabled)">
                                     <a th:class="page-link"
-                                       th:href="@{/users/details/${user.id}(size=${events.size}, page=${events.number+2})}">
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number+2}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}">
                                         Next
                                     </a>
                                 </li>
                             </ul>
                         </nav>
-                        <a href="userDetails.html"
-                           th:href="@{|/users/${user.id}|}">
-                            Edit
-                        </a>
                     </div>
+
+                    <div class="col-5 align-self-center table d-inline-block float-right">
+                        <ul class="list-group">
+                            <li class="list-group-item bg-white" style="font-size: x-large">
+                                <div class="font-weight-bold">Liked Events</div>
+                            </li>
+
+                            <li class="list-group-item bg-white d-inline-block" th:each="event : ${likedEvents}">
+                                <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                <a href="/events/detail"
+                                   th:href="@{|/events/detail/${event.id}|}"
+                                   class="btn btn-dark float-right">
+                                    Detail
+                                </a>
+                            </li>
+                        </ul>
+
+                        <nav class="offset-3 pt-2" aria-label="Page navigation" th:if="${likedEvents.totalPages > 0}">
+                            <ul class="pagination">
+                                <li th:class="page-item + ' ' + (${likedEvents.number <= 0} ? disabled)">
+                                    <a th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number})}"
+                                       th:class="page-link">
+                                        Previous
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="pageNumberLikedEvents : ${pageNumbersLikedEvents}"
+                                    th:class="'page-item ' + (${pageNumberLikedEvents==likedEvents.number + 1} ? active : '')">
+                                    <a class="page-link"
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${pageNumberLikedEvents})}"
+                                       th:text="${pageNumberLikedEvents}"
+                                       th:class="page-link">
+                                    </a>
+                                </li>
+                                <li th:class="page-item + ' ' + (${likedEvents.number + 1 >= likedEvents.totalPages} ? disabled)">
+                                    <a th:class="page-link"
+                                       th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${subscribedEvents.number}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${likedEvents.number +2})}">
+                                        Next
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
+            <a class="btn btn-primary" href="userDetails.html"
+               th:href="@{|/users/${user.id}|}">
+                Edit
+            </a>
         </div>
     </div>
 </div>

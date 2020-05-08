@@ -15,6 +15,8 @@ import java.util.Set;
 @Builder
 public class EventDto {
     private Long id;
+    private int amountOfLikes;
+    private boolean liked;
     private LocalDateTime eventDate;
     private String name;
     private String description;

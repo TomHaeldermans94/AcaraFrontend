@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Event detail</title>
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
-    <link rel="stylesheet" href="../static/css/eventDetail.css" th:href="@{~/css/eventDetail.css}"/>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
 </head>
 
 <!--/*@thymesVar id="event" type="be.acara.frontend.model.EventModel"*/-->
@@ -17,53 +20,72 @@
 <div class="container-fluid align-content-center">
 
     <div class="row">
-        <div class="col-md-4">
-            <div class="container mx-2 my-2" align="center">
-                <p class="sr-only" th:text="'ID: ' + ${event.id}">ID</p>
+        <div class="col-8">
+            <div class="container">
 
-                <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
-                    <span class="sr-only">Name:</span>
+                <div class="form-group row justify-content-center align-items-center">
                     <h1 th:text="${event.name}">name</h1>
                 </div>
 
-                <div class="my-3 lead form-group row" style="font-size: x-large">
-                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Description:</div>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Description:</div>
                     <span class="col-6 text-left" th:text="${event.description}">description</span>
                 </div>
 
-                <div class=" my-3 lead form-group row" style="font-size: x-large">
-                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event date:</div>
-                    <span class="col-6 text-left"  th:text="${event.eventDate}">event date</span>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Date:</div>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}">event date</span>
                 </div>
 
-                <div class="my-3 lead form-group row" style="font-size: x-large">
-                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Price:</div>
-                    <span class="col-6 text-left"  th:text="${event.price}">price</span>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Time:</div>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}">event date</span>
                 </div>
 
-                <div class="my-3 lead form-group row " style="font-size: x-large">
-                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Category:</div>
-                    <span class="col-6 text-left" th:text="${event.category}">category</span>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Price:</div>
+                    <span class="col-6 text-left" th:text="${event.price}">price</span>
                 </div>
 
-                <div class="my-3 lead form-group row " style="font-size: x-large">
-                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Location:</div>
-                    <span class="col-6 text-left"  th:text="${event.location}">location</span>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Category:</div>
+                    <span class="col-6 text-left" th:text="${event.category.substring(0,1) + event.category.substring(1).toLowerCase()}">category</span>
                 </div>
 
-                <div class="form-group row justify-content-center" >
-                    <div class="col-9 ml-3 my-2" >
-                        <a class="btn btn-dark" href="/events" th:href="@{|/events/${event.id}|}" sec:authorize="hasRole('ADMIN')">Edit</a>
-                        <span th:insert="deleteEvent :: deleteEvent" sec:authorize="hasRole('ADMIN')"></span>
-                        <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}" class="btn btn-primary mr-3">Buy Ticket</a>
+                <div class="form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 text-right">Location:</div>
+                    <span class="col-6 text-left" th:text="${event.location}">location</span>
+                </div>
+
+                <div class="form-group row justify-content-center w-100">
+                    <div>
+                        <a sec:authorize="isAnonymous()"
+                           data-toggle="modal" data-target="#likeModal"
+                           class="btn btn-light float-left mr-3">
+                            <span th:text="${event.amountOfLikes}"></span>
+                            <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                        </a>
+                        <form sec:authorize="isAuthenticated()" method="post" th:action="@{|/users/details/likes/${event.id}/|}">
+                            <input type="hidden" name="liked" th:value="${event.liked}">
+                            <button type="submit"
+                                    class="btn btn-light float-left mr-3">
+                                <span th:text="${event.amountOfLikes}"></span>
+                                <i class="fas fa-thumbs-up ml-2"
+                                   th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                            </button>
+                        </form>
+                        <a class="btn btn-dark float-left mr-3" href="/events" th:href="@{|/events/${event.id}|}"
+                           sec:authorize="hasRole('ADMIN')">Edit</a>
+                        <span class="float-left mr-3" th:insert="deleteEvent :: deleteEvent" sec:authorize="hasRole('ADMIN')"></span>
+                        <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}"
+                           class="btn btn-primary float-left">Buy Ticket</a>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <div class="col-md-4">
-            <img class="img-small mt-3 px-2 py-2" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+        <div class="col-4">
+            <img class="img-fluid mt-5" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
         </div>
     </div>
 
@@ -74,5 +96,10 @@
     </div>
 
 </div>
+
+<!-- Modal -->
+<div id="likeModal" class="modal fade" role="dialog" th:insert="likeModal">
+</div>
+
 </body>
 </html>
