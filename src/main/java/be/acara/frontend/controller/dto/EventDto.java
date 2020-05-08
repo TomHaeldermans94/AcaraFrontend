@@ -23,5 +23,5 @@ public class EventDto {
     private String category;
     private Set<UserDto> attendees;
     private BigDecimal price;
-    private String youtubeUrl;
+    private String youtubeId;
 }

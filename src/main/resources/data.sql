@@ -1,4 +1,4 @@
-/* gebruik hier de online bcrypt encoder! https://bcrypt-generator.com/*/
+/* gebruik hier de online bcrypt encoder! https://bcrypt-generator.com/ */
 insert into user(id, username, password, first_name, last_name)
 values (1, 'admin', '$2y$10$14ux7BShikxkMJ2.qVyXOOIur8Q0Br58RzfdxYpC9k5DqEXqzEdx.', 'admin', 'admin'); /* admin admin */
 insert into user(id, username, password, first_name, last_name)
