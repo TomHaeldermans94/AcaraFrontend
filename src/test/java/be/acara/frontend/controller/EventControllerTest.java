@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -129,8 +130,8 @@ class EventControllerTest {
         EventDtoList eventDtoList = createEventDtoList();
         EventModelList eventModels = createEventModelList();
         when(mapper.eventDtoListToEventModelList(any())).thenReturn(eventModels);
+        when(userDetailsService.findByUsername(anyString())).thenReturn(firstUserDomain());
         when(eventService.findAllEvents(anyInt(), anyInt(), anyString())).thenReturn(eventDtoList);
-        
         mockMvc.perform(get("/events"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("eventList"))

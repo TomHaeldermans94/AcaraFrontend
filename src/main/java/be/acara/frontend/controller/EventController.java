@@ -70,7 +70,7 @@ public class EventController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) {
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             Long id = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             EventModelList likedEventModelList = mapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size));
             model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventModelList);

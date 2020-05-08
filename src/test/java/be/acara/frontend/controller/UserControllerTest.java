@@ -14,7 +14,6 @@ import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -65,10 +64,6 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    
-    @BeforeEach
-    void setUp() {
-    }
 
     @AfterEach
     void tearDown() {

@@ -1,6 +1,5 @@
 package be.acara.frontend.model;
 
-import be.acara.frontend.controller.dto.EventDto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;

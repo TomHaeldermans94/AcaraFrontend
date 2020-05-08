@@ -1,6 +1,5 @@
 package be.acara.frontend.controller;
 
-import be.acara.frontend.controller.dto.EventDtoList;
 import be.acara.frontend.domain.User;
 import be.acara.frontend.model.EventModelList;
 import be.acara.frontend.model.UserModel;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
