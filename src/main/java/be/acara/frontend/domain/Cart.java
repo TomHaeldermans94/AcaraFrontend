@@ -22,7 +22,7 @@ public class Cart {
     @OneToOne
     private User user;
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @EqualsAndHashCode.Exclude
     private Set<CartItem> items = new HashSet<>();
     
