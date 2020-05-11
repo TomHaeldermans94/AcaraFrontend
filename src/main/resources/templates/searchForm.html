@@ -7,50 +7,58 @@
     <title>Search</title>
 </head>
 <!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
+<!--/*@thymesVar id="searchModel" type="be.acara.frontend.model.SearchModel"*/-->
 <body>
 <form th:method="get" th:fragment="searchForm" th:action="@{/events/search}">
     <h1 class="text-center text-white">Search</h1>
     <div>
         <label th:for="name" class="text-white">Name</label>
-        <input id="name" name="name" th:type="text" placeholder="Name" class="form-control"/>
+        <input type=text id="name" name="name" placeholder="Name" class="form-control" th:value="${searchModel.name}"/>
     </div>
 
     <div>
         <label th:for="location" class="text-white">Location</label>
-        <input id="location" name="location" th:type="text" placeholder="Location" class="form-control w-100"/>
+        <input type=text id="location" name="location" placeholder="Location" class="form-control w-100"
+               th:value="${searchModel.location}"/>
     </div>
 
     <div>
         <label th:for="minPrice" class="text-white">Minimum price</label>
-        <input id="minPrice" name="minPrice" type="text"
+        <input type=text id="minPrice" name="minPrice"
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                class="form-control w-100"
-               placeholder="0"/>
+               placeholder="0"
+               th:value="${searchModel.minPrice}"/>
         <label th:for="maxPrice" class="text-white">Maximum price</label>
-        <input id="maxPrice" name="maxPrice" type="text"
+        <input type=text id="maxPrice" name="maxPrice"
                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                class="form-control w-100"
-               placeholder="100"/>
+               placeholder="100"
+               th:value="${searchModel.maxPrice}"/>
     </div>
     <div>
         <label th:for="eventCategory" class="text-white">Category</label>
-        <select name="category" id="eventCategory" th:type="text" class="form-control w-100">
-            <option hidden disabled selected value=""> -- select an option -- </option>
-            <option th:each="category: ${categoryList}"
-                    th:value="${category.name}"
-                    th:text="${category.webDisplay}">
+        <select type=text name="category" id="eventCategory" class="form-control w-100">
+            <option value=""> -- select an option --</option>
+            <option th:each="catOption: ${categoryList}"
+                    th:value="${catOption.name}"
+                    th:text="${catOption.webDisplay}"
+                    th:selected="${catOption.name} == ${searchModel.category}">
             </option>
         </select>
     </div>
     <div>
         <label th:for="startDate" class="text-white">From</label>
-        <input id="startDate" name="startDate" th:type="date" class="form-control w-100"/>
+        <input type=date id="startDate" name="startDate" class="form-control w-100"
+               th:value="${searchModel.startDate}"/>
         <label th:for="endDate" class="text-white">Until</label>
-        <input id="endDate" name="endDate" th:type="date" class="form-control w-100"/>
+        <input type="date" id="endDate" name="endDate" class="form-control w-100" th:value="${searchModel.endDate}"/>
     </div>
     <div class="mt-3">
         <button type="submit" value="submit" class="btn btn-primary mr-3" style="width: 42.5%">Confirm</button>
-        <button type="reset" value="submit" class="btn btn-danger" style="width: 42.5%">Reset</button>
+        <button type="reset" value="submit" class="btn btn-danger" style="width: 42.5%" onclick="clearLocalStorage()">
+            Reset
+        </button>
     </div>
 </form>
 </body>
