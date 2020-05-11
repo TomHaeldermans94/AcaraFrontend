@@ -33,6 +33,13 @@ public class OrderController {
         cartService.addToCart(createOrderModel);
         return "redirect:/events";
     }
+    
+    @PostMapping("/payment")
+    public String handlePayment() {
+        orderService.create(cartService.getCart());
+        cartService.clearCart();
+        return "redirect:/events";
+    }
 
     @GetMapping("/new/{eventId}")
     public String displayOrderForm(@PathVariable("eventId") Long eventId, ModelMap model) {

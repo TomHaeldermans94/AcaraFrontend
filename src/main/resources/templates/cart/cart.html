@@ -47,7 +47,11 @@
     </table>
     <div class="col-3 float-right">
         <h5 th:text="'Grand total: ' + ${cartModel.total}"></h5>
+        <form th:action="@{~/orders/payment}" method="post">
+            <button class="btn btn-dark mx-2 btn-lg" type="submit" value="submit">Confirm</button>
+        </form>
     </div>
+
 </div>
 </body>
 </html>

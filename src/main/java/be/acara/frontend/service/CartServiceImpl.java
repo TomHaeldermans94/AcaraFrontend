@@ -48,4 +48,12 @@ public class CartServiceImpl implements CartService {
         cartRepository.saveAndFlush(cart);
         return cart;
     }
+    
+    @Override
+    public void clearCart() {
+        Cart cart = getCart();
+        cart.getItems().clear();
+        cart.setTotal(BigDecimal.ZERO);
+        cartRepository.saveAndFlush(cart);
+    }
 }

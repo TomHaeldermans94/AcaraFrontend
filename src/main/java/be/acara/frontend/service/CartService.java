@@ -6,4 +6,6 @@ import be.acara.frontend.model.CreateOrderModel;
 public interface CartService {
     Cart getCart();
     Cart addToCart(CreateOrderModel createOrderModel);
+    
+    void clearCart();
 }
