@@ -2,6 +2,7 @@ package be.acara.frontend.controller;
 
 import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.security.TokenLogoutHandler;
+import be.acara.frontend.service.CartService;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.UserService;
@@ -25,6 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(OrderController.class)
 public class OrderControllerTest {
+    
+    @MockBean
+    private CartService cartService;
 
     @MockBean
     private OrderService orderService;
@@ -52,8 +56,7 @@ public class OrderControllerTest {
     void displayOrderForm_asUser() throws Exception {
         Long eventId = 1L;
         when(mapper.eventDtoToEventModel(any())).thenReturn(EventUtil.firstEvent());
-        mockMvc.perform(get("/orders")
-                .param("event", String.valueOf(eventId)))
+        mockMvc.perform(get("/orders/new/{id}", eventId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("buyOrder"));
     }
@@ -73,8 +76,8 @@ public class OrderControllerTest {
         CreateOrderModel createOrderModel = mock(CreateOrderModel.class);
         doNothing().when(orderService).create(createOrderModel);
 
-        mockMvc.perform(post("/orders")
-                .param("event", String.valueOf(eventId))
+        mockMvc.perform(post("/orders/new")
+                .flashAttr("createOrderModel", createOrderModel)
         )
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
