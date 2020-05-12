@@ -30,7 +30,10 @@
                 <i class="fa fa-sign-in-alt fa-3x" aria-hidden="true" style="color: #0275d8"></i>
             </a>
         </div>
-        <div sec:authorize="isAuthenticated()">
+        <div sec:authorize="isAuthenticated()" class="row">
+            <a class="nav-link" th:href="@{/cart}">
+                <i class="fas fa-shopping-cart fa-3x" aria-hidden="true" style="color: white"></i>
+            </a>
             <a class="nav-link" th:href="@{/logout}">
                 <i class="fa fa-sign-out-alt fa-3x" aria-hidden="true" style="color: firebrick"></i>
             </a>
