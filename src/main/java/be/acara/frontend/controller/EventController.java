@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +48,8 @@ public class EventController {
     }
 
     @GetMapping("/detail/{id}")
-    public String displayEvent(@PathVariable("id") Long id, ModelMap model) {
+    public String displayEvent(@PathVariable("id") Long id, Model model) {
+        addLocalDateTime(model);
         EventModel event = mapper.eventDtoToEventModel(eventService.getEvent(id));
         model.addAttribute(ATTRIBUTE_EVENT, event);
         model.addAttribute(ATTRIBUTE_EVENT_IMAGE, ImageUtil.convertToBase64(event.getImage()));
@@ -60,6 +62,7 @@ public class EventController {
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size,
                                 @RequestParam(name = "sort", defaultValue = "eventDate", required = false) String sort) {
         addCategories(model);
+        addLocalDateTime(model);
         model.addAttribute("searchModel", new SearchModel());
         if ("UNSORTED".equals(sort)) {
             sort="";
@@ -127,6 +130,7 @@ public class EventController {
     public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
         params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         addCategories(model);
+        addLocalDateTime(model);
         model.addAttribute("searchModel",createSearchModel(params));
         if (params.isEmpty()) {
             return "redirect:";
@@ -159,4 +163,5 @@ public class EventController {
     private void addCategories(Model model) {
         model.addAttribute("categoryList", eventService.getCategories());
     }
+    private void addLocalDateTime(Model model) {model.addAttribute("now", LocalDateTime.now());}
 }
