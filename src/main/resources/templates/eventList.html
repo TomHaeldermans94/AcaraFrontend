@@ -71,18 +71,21 @@
             <div class="list-group">
                 <div class="list-group-item border-dark rounded mb-1" th:each="event,image : ${events}">
                     <div class="float-left w-75">
+                        <p th:if="${event.eventDate.isBefore(now)}" style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
                         <p th:text="'Name: ' + ${event.name}">Name</p>
                         <p th:text="'Date: ' + ${event.eventDate}">Date</p>
                         <p th:text="'Location: ' + ${event.location}">Location</p>
                         <p th:text="'Price: ' + ${event.price}">Price</p>
                         <div>
-                            <a sec:authorize="isAnonymous()"
+                            <a th:if="${event.eventDate.isAfter(now)}"
+                               sec:authorize="isAnonymous()"
                                data-toggle="modal" data-target="#likeModal"
                                class="btn btn-light float-left mr-3">
                                 <span th:text="${event.amountOfLikes}"></span>
                                 <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
                             </a>
-                            <form sec:authorize="isAuthenticated()" method="post" th:action="@{|/users/events/likes/${event.id}/|}">
+                            <form th:if="${event.eventDate.isAfter(now)}"
+                                  sec:authorize="isAuthenticated()" method="post" th:action="@{|/users/events/likes/${event.id}/|}">
                                 <input type="hidden" name="liked" th:value="${event.liked}">
                                 <button type="submit"
                                         class="btn btn-light float-left mr-3">
@@ -98,7 +101,7 @@
                             </a>
                             <p sec:authorize="hasRole('ADMIN')" th:insert="deleteEvent :: deleteEvent"
                                class="float-left mr-3"></p>
-                            <a href="/orders/event.id"  th:href="@{|/orders/new/${event.id}|}"
+                            <a th:if="${event.eventDate.isAfter(now)}" href="/orders/event.id"  th:href="@{|/orders/new/${event.id}|}"
                                class="btn btn-primary mr-3">Buy Ticket</a>
                         </div>
 
