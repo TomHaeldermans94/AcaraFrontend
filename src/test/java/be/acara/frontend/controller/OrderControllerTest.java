@@ -1,5 +1,6 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.domain.Cart;
 import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.CartService;
@@ -7,6 +8,7 @@ import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
+import be.acara.frontend.util.CartUtil;
 import be.acara.frontend.util.EventUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,19 @@ public class OrderControllerTest {
         mockMvc.perform(post("/orders/new")
                 .flashAttr("createOrderModel", createOrderModel)
         )
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"));
+    }
+    
+    @Test
+    @WithMockUser
+    void handlePayment() throws Exception {
+        Cart cart = CartUtil.cart();
+        when(cartService.getCart()).thenReturn(cart);
+        doNothing().when(orderService).create(cart);
+        doNothing().when(cartService).clearCart();
+        
+        mockMvc.perform(post("/orders/payment"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
     }
