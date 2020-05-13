@@ -43,7 +43,7 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userDetailsService;
+    private UserService userService;
     @MockBean
     private AuthenticationProvider authenticationProvider;
     @MockBean
