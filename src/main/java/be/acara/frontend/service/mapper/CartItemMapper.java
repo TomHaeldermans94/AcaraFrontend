@@ -9,12 +9,12 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {EventService.class})
 @SuppressWarnings("java:S1214") // remove the warning for the INSTANCE variable
-public abstract class CartItemMapper {
+public interface CartItemMapper {
     
-    public static final  CartItemMapper INSTANCE = Mappers.getMapper(CartItemMapper.class);
+    CartItemMapper INSTANCE = Mappers.getMapper(CartItemMapper.class);
     
     @Mapping(source = "cartItem.eventId", target = "eventDto")
-    public abstract CartItemModel cartItemToCartItemModel(CartItem cartItem);
+    CartItemModel cartItemToCartItemModel(CartItem cartItem);
     @Mapping(source = "cartItemModel.eventDto.id", target = "eventId")
-    public abstract CartItem cartItemModelToCartItem(CartItemModel cartItemModel);
+    CartItem cartItemModelToCartItem(CartItemModel cartItemModel);
 }
