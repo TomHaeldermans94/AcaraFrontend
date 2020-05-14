@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,14 +59,16 @@ public class EventController {
     public String findAllEvents(Model model,
                                 @RequestParam(name = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(name = "size", defaultValue = "20", required = false) int size,
-                                @RequestParam(name = "sort", defaultValue = "eventDate", required = false) String sort) {
+                                @RequestParam(name = "sort", defaultValue = "eventDate", required = false) String sort,
+                                @RequestParam Map<String, String> params) {
+        params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
         addCategories(model);
         addLocalDateTime(model);
-        model.addAttribute("searchModel", new SearchModel());
+        model.addAttribute("searchModel", createSearchModel(params));
         if ("UNSORTED".equals(sort)) {
             sort="";
         }
-        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(page - 1, size < 1 ? 1 : size, sort));
+        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(params,page - 1, size < 1 ? 1 : size, sort));
         int totalPages = eventModelList.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
@@ -124,20 +125,6 @@ public class EventController {
         event.setImage(eventImage.getBytes());
         eventService.editEvent(eventFromDb.getId(), mapper.eventModelToEventDto(event));
         return REDIRECT_EVENTS;
-    }
-
-    @GetMapping("/search")
-    public String getSearchForm(Model model, @RequestParam Map<String, String> params) {
-        params.entrySet().removeIf(e -> e.getValue().isEmpty()); //remove empty values from the set to avoid errors when parsing dates or bigDecimals
-        addCategories(model);
-        addLocalDateTime(model);
-        model.addAttribute("searchModel",createSearchModel(params));
-        if (params.isEmpty()) {
-            return "redirect:";
-        }
-        EventModelList searchResults = mapper.eventDtoListToEventModelList(eventService.search(params));
-        model.addAttribute(ATTRIBUTE_EVENTS, searchResults);
-        return "eventList";
     }
 
     private SearchModel createSearchModel(Map<String,String> params) {

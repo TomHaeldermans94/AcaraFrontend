@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,13 +60,14 @@ public class EventServiceTest {
         int page = eventDtoList.getNumber();
         int size = eventDtoList.getSize();
         String sort = "";
+        Map<String, String> emptyParams = Collections.emptyMap();
         
-        when(eventFeignClient.getEvents(page, size, sort)).thenReturn(eventDtoList);
+        when(eventFeignClient.getEvents(emptyParams, page, size, sort)).thenReturn(eventDtoList);
     
-        EventDtoList answer = eventService.findAllEvents(page, size, sort);
+        EventDtoList answer = eventService.findAllEvents(emptyParams, page, size, sort);
         
         assertThat(answer).isEqualTo(eventDtoList);
-        verifyOnce().getEvents(page, size, sort);
+        verifyOnce().getEvents(emptyParams, page, size, sort);
     }
     
     @Test
@@ -100,19 +101,6 @@ public class EventServiceTest {
         eventService.editEvent(id, eventDto);
     
         verifyOnce().editEvent(id,eventDto);
-    }
-    
-    @Test
-    void search() {
-        Map<String, String> params = new HashMap<>();
-        EventDtoList eventDtos = createEventDtoList();
-        when(eventFeignClient.search(params)).thenReturn(eventDtos);
-    
-        EventDtoList answer = eventService.search(params);
-        
-        assertThat(answer).isEqualTo(eventDtos);
-        
-        verifyOnce().search(params);
     }
     
     @Test

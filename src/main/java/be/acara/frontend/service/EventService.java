@@ -12,15 +12,13 @@ public interface EventService {
     
     void delete(Long id);
     
-    EventDtoList findAllEvents(int page, int size, String sort);
+    EventDtoList findAllEvents(Map<String, String> params, int page, int size, String sort);
     
     List<CategoryDto> getCategories();
     
     void addEvent(EventDto eventDto);
     
     void editEvent(Long id, EventDto eventDto);
-    
-    EventDtoList search(Map<String, String> params);
     
     EventDtoList getEventsFromUser(Long id, int page, int size);
 
