@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -26,4 +27,5 @@ public class EventDto {
     private Set<UserDto> attendees;
     private BigDecimal price;
     private String youtubeId;
+    private Set<EventDto> relatedEvents;
 }

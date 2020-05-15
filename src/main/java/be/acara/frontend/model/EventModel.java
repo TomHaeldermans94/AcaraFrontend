@@ -1,5 +1,6 @@
 package be.acara.frontend.model;
 
+import be.acara.frontend.controller.dto.EventDto;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Getter
@@ -25,6 +27,8 @@ public class EventModel {
     private int amountOfLikes;
 
     private boolean liked;
+
+    private Set<EventDto> relatedEvents;
 
     @Future(message = "Date must be in the future")
     @NotNull(message = "Field cannot be empty")
