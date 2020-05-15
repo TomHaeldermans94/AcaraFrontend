@@ -1,10 +1,14 @@
 package be.acara.frontend.controller;
 
+import be.acara.frontend.domain.Cart;
+import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.security.TokenLogoutHandler;
+import be.acara.frontend.service.CartService;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
+import be.acara.frontend.util.CartUtil;
 import be.acara.frontend.util.EventUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +21,16 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(OrderController.class)
 public class OrderControllerTest {
+    
+    @MockBean
+    private CartService cartService;
 
     @MockBean
     private OrderService orderService;
@@ -39,7 +45,7 @@ public class OrderControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userDetailsService;
+    private UserService userService;
     @MockBean
     private AuthenticationProvider authenticationProvider;
     @MockBean
@@ -52,8 +58,7 @@ public class OrderControllerTest {
     void displayOrderForm_asUser() throws Exception {
         Long eventId = 1L;
         when(mapper.eventDtoToEventModel(any())).thenReturn(EventUtil.firstEvent());
-        mockMvc.perform(get("/orders")
-                .param("event", String.valueOf(eventId)))
+        mockMvc.perform(get("/orders/new/{id}", eventId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("buyOrder"));
     }
@@ -70,11 +75,25 @@ public class OrderControllerTest {
     @WithMockUser
     void handlecreateOrderForm() throws Exception {
         Long eventId = 1L;
-        doNothing().when(orderService).create(eventId);
+        CreateOrderModel createOrderModel = mock(CreateOrderModel.class);
+        doNothing().when(orderService).create(createOrderModel);
 
-        mockMvc.perform(post("/orders")
-                .param("event", String.valueOf(eventId))
+        mockMvc.perform(post("/orders/new")
+                .flashAttr("createOrderModel", createOrderModel)
         )
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"));
+    }
+    
+    @Test
+    @WithMockUser
+    void handlePayment() throws Exception {
+        Cart cart = CartUtil.cart();
+        when(cartService.getCart()).thenReturn(cart);
+        doNothing().when(orderService).create(cart);
+        doNothing().when(cartService).clearCart();
+        
+        mockMvc.perform(post("/orders/payment"))
                 .andExpect(status().isFound())
                 .andExpect(view().name("redirect:/events"));
     }

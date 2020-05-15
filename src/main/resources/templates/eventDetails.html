@@ -8,9 +8,15 @@
     <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
     <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
           type="text/css"/>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
     <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
 </head>
 
@@ -22,6 +28,10 @@
     <div class="row">
         <div class="col-8">
             <div class="container">
+
+                <div th:if="${event.eventDate.isBefore(now)}" class="form-group row justify-content-center align-items-center">
+                    <h1 style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</h1>
+                </div>
 
                 <div class="form-group row justify-content-center align-items-center">
                     <h1 th:text="${event.name}">name</h1>
@@ -49,7 +59,8 @@
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Category:</div>
-                    <span class="col-6 text-left" th:text="${event.category.substring(0,1) + event.category.substring(1).toLowerCase()}">category</span>
+                    <span class="col-6 text-left"
+                          th:text="${event.category.substring(0,1) + event.category.substring(1).toLowerCase()}">category</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
@@ -59,13 +70,16 @@
 
                 <div class="form-group row justify-content-center w-100">
                     <div>
-                        <a sec:authorize="isAnonymous()"
+                        <a th:if="${event.eventDate.isAfter(now)}"
+                           sec:authorize="isAnonymous()"
                            data-toggle="modal" data-target="#likeModal"
                            class="btn btn-light float-left mr-3">
                             <span th:text="${event.amountOfLikes}"></span>
                             <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
                         </a>
-                        <form sec:authorize="isAuthenticated()" method="post" th:action="@{|/users/details/likes/${event.id}/|}">
+                        <form th:if="${event.eventDate.isAfter(now)}"
+                              sec:authorize="isAuthenticated()" method="post"
+                              th:action="@{|/users/details/likes/${event.id}/|}">
                             <input type="hidden" name="liked" th:value="${event.liked}">
                             <button type="submit"
                                     class="btn btn-light float-left mr-3">
@@ -76,8 +90,10 @@
                         </form>
                         <a class="btn btn-dark float-left mr-3" href="/events" th:href="@{|/events/${event.id}|}"
                            sec:authorize="hasRole('ADMIN')">Edit</a>
-                        <span class="float-left mr-3" th:insert="deleteEvent :: deleteEvent" sec:authorize="hasRole('ADMIN')"></span>
-                        <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}"
+                        <span class="float-left mr-3" th:insert="deleteEvent :: deleteEvent"
+                              sec:authorize="hasRole('ADMIN')"></span>
+                        <a th:if="${event.eventDate.isAfter(now)}" href="/orders/event.id"
+                           th:href="@{|/orders/new/${event.id}|}"
                            class="btn btn-primary float-left">Buy Ticket</a>
                     </div>
                 </div>
@@ -91,7 +107,8 @@
 
     <div class="row justify-content-center">
         <div class="col-md-4">
-            <iframe class="my-3" width="700" height="393,75" th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
+            <iframe class="my-3" width="700" height="393,75"
+                    th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
         </div>
     </div>
 

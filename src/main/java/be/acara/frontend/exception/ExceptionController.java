@@ -19,6 +19,7 @@ public class ExceptionController {
     
     @ExceptionHandler(FeignException.class)
     public String handleFeignClientExceptions(FeignException fe) {
+        log.error(fe.getMessage(), fe);
         switch (fe.status()) {
             case 401:
             case 403: return UNAUTHORIZED;
@@ -40,6 +41,7 @@ public class ExceptionController {
     
     @ExceptionHandler(NotFoundException.class)
     public String notFound(NotFoundException nfe) {
+        log.error(nfe.getMessage(), nfe);
         return NOT_FOUND;
     }
     

@@ -1,6 +1,7 @@
 package be.acara.frontend.service;
 
 import be.acara.frontend.controller.dto.CreateOrderDto;
+import be.acara.frontend.controller.dto.CreateOrderList;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,4 +20,7 @@ public interface OrderFeignClient {
 
     @DeleteMapping("/api/orders/{id}")
     void remove(@PathVariable("id") Long id);
+    
+    @PostMapping("/api/orders/batch")
+    void create(CreateOrderList createOrderList);
 }
