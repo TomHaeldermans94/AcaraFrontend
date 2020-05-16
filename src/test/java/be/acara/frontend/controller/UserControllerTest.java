@@ -8,10 +8,10 @@ import be.acara.frontend.security.MethodSecurityConfigurer;
 import be.acara.frontend.security.TokenLogoutHandler;
 import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.SecurityService;
-import be.acara.frontend.service.UserFeignClient;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
+import be.acara.frontend.util.UserUtil;
 import be.acara.frontend.util.WithMockAdmin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,9 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.security.Principal;
+import java.util.Collections;
 
 import static be.acara.frontend.util.EventUtil.createEventDtoList;
 import static be.acara.frontend.util.EventUtil.createEventModelList;
@@ -58,8 +62,6 @@ public class UserControllerTest {
     @MockBean
     private EventService eventService;
     @MockBean
-    private UserFeignClient userFeignClient;
-    @MockBean
     private EventMapper eventMapper;
 
     @Autowired
@@ -83,6 +85,27 @@ public class UserControllerTest {
         when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
         when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
 
+        mockMvc.perform(get("/users/detail/{id}",id))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/userDetails"))
+                .andExpect(model().attribute("subscribedEvents", eventModelList))
+                .andExpect(model().attribute("likedEvents", eventModelList))
+                .andExpect(model().attribute("user", user));
+    }
+    
+    @Test
+    @WithMockAdmin
+    void displayUser_withEmptyPage() throws Exception {
+        Long id = 1L;
+        User user = firstUserDomain();
+        EventDtoList eventDtoList = new EventDtoList(Collections.emptyList());
+        EventModelList eventModelList = new EventModelList(Collections.emptyList(), Pageable.unpaged(), 0);
+        when(userService.getUser(id)).thenReturn(user);
+        when(eventMapper.eventDtoListToEventModelList(any())).thenReturn(eventModelList);
+        when(eventService.getEventsFromUser(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(eventService.getEventsThatUserLiked(anyLong(), anyInt(), anyInt())).thenReturn(eventDtoList);
+        when(securityService.hasUserId(any(), anyLong())).thenReturn(true);
+        
         mockMvc.perform(get("/users/detail/{id}",id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/userDetails"))
@@ -255,5 +278,50 @@ public class UserControllerTest {
                 .flashAttr("userForm", userModel))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/registration"));
+    }
+    
+    @Test
+    @WithMockUser
+    void getUserProfile() throws Exception {
+        Principal mockPrincipal = mock(Principal.class);
+        when(mockPrincipal.getName()).thenReturn(firstUserDomain().getUsername());
+        when(userService.findByUsername(any())).thenReturn(UserUtil.firstUserDomain());
+        
+        mockMvc.perform(get("/users/profile"))
+                .andExpect(forwardedUrl(String.format("/users/detail/%d", firstUserDomain().getId())));
+    }
+    
+    @Test
+    void likeOrDislikeEvent_likes() throws Exception {
+        doNothing().when(userService).dislikeEvent(anyLong());
+        
+        mockMvc.perform(post("/users/{location}/likes/{eventId}", "events", 1)
+                .param("liked", "true")
+        )
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"));
+    }
+    
+    @Test
+    void likeOrDislikeEvent_dislikes() throws Exception {
+        doNothing().when(userService).likeEvent(anyLong());
+        
+        mockMvc.perform(post("/users/{location}/likes/{eventId}", "events", 1)
+                .param("liked", "false")
+        )
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events"));
+    }
+    
+    @Test
+    void likeOrDislikeEvent_fromDetails() throws Exception {
+        Long id = 1L;
+        doNothing().when(userService).likeEvent(anyLong());
+        
+        mockMvc.perform(post("/users/{location}/likes/{eventId}", "details", id)
+                .param("liked", "false")
+        )
+                .andExpect(status().isFound())
+                .andExpect(view().name("redirect:/events/detail/" + id));
     }
 }

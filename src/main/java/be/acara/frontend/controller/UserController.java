@@ -29,13 +29,11 @@ public class UserController {
     private final UserMapper userMapper;
     private final EventService eventService;
     private final EventMapper eventMapper;
-
-    private static final String ATTRIBUTE_EVENT = "event";
+    
     private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
     private static final String ATTRIBUTE_USER = "user";
-    private static final String ATTRIBUTE_EVENTS = "events";
 
     public UserController(UserService userService, SecurityService securityService, UserMapper userMapper, EventService eventService, EventMapper eventMapper) {
         this.userService = userService;
@@ -59,7 +57,7 @@ public class UserController {
         User user = userMapper.userModelToUser(userForm);
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
-        return "redirect:/events";
+        return REDIRECT_EVENTS;
     }
 
     @GetMapping("/detail/{id}")
@@ -95,7 +93,7 @@ public class UserController {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
         }
         userService.editUser(user);
-        return "redirect:/events";
+        return REDIRECT_EVENTS;
     }
 
     @PostMapping("/{location}/likes/{eventId}")
@@ -118,7 +116,7 @@ public class UserController {
     }
 
     private void addPageNumbers(EventModelList events, ModelMap modelMap, String attribute) {
-        if (events.getTotalPages() == 0) {
+        if (events.getTotalPages() == 1) {
             return;
         }
         modelMap.addAttribute(attribute, IntStream.rangeClosed(1, events.getTotalPages())
