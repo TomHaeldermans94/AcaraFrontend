@@ -4,6 +4,7 @@ import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.util.EventUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,6 +115,21 @@ public class EventServiceTest {
         assertThat(answer).isEqualTo(eventDtoList);
         verifyOnce().getAllEventsFromSelectedUser(id, eventDtoList.getNumber(), eventDtoList.getSize());
         
+    }
+    
+    @Test
+    void getEventsThatUserLiked() {
+        Long id = 1L;
+        int page = 0;
+        int size = 0;
+        
+        when(eventFeignClient.getAllEventsThatUserLiked(id,page,size)).thenReturn(EventUtil.createEventDtoList());
+    
+        EventDtoList answer = eventService.getEventsThatUserLiked(id, page, size);
+        
+        assertThat(answer).isEqualTo(EventUtil.createEventDtoList());
+        
+        verifyOnce().getAllEventsThatUserLiked(id, page, size);
     }
     
     private EventFeignClient verifyOnce() {

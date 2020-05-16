@@ -50,7 +50,7 @@ public class EventServiceImpl implements EventService {
     public EventDtoList getEventsFromUser(Long id, int page, int size) {
         return eventFeignClient.getAllEventsFromSelectedUser(id, page, size);
     }
-
+    
     @Override
     public EventDtoList getEventsThatUserLiked(Long id, int page, int size) {
         return eventFeignClient.getAllEventsThatUserLiked(id, page, size);
