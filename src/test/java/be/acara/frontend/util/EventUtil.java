@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EventUtil {
 
@@ -26,6 +28,7 @@ public class EventUtil {
                 .name("Event name")
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
+                .relatedEvents(createEventDtoSet())
                 .build();
     }
 
@@ -110,6 +113,13 @@ public class EventUtil {
                 secondEventDto(),
                 thirdEventDto()
         ), Collections.emptySet());
+    }
+
+    public static Set<EventDto> createEventDtoSet() {
+        Set<EventDto> eventDtoSet = new HashSet<>();
+        eventDtoSet.add(secondEventDto());
+        eventDtoSet.add(thirdEventDto());
+        return eventDtoSet;
     }
 
     public static EventModelList createEventModelList() {
