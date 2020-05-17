@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +25,12 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Set;
+
 import static be.acara.frontend.util.EventUtil.*;
 import static be.acara.frontend.util.UserUtil.firstUserDomain;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -155,6 +160,7 @@ class EventControllerTest {
                 .andExpect(model().attribute("events", eventModels))
                 .andExpect(model().attribute("likedEvents", eventModels));
     }
+
 
     @Test
     @WithMockAdmin
@@ -334,4 +340,5 @@ class EventControllerTest {
                 .andExpect(redirectedUrl(""))
                 .andExpect(model().attributeDoesNotExist("events"));
     }
+
 }
