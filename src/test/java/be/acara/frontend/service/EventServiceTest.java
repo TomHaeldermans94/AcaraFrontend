@@ -51,10 +51,10 @@ public class EventServiceTest {
         when(eventFeignClient.getEventById(id)).thenReturn(eventDto);
 
         EventDto answer = eventService.getEvent(id);
-        Set<EventDto> eventDtoSet = createEventDtoSet();
+        List<EventDto> eventDtoList = createEventDtoListWithoutFirstEventDto().getContent();
 
         assertThat(answer).isEqualTo(eventDto);
-        assertThat(eventDtoSet).isEqualTo(eventDto.getRelatedEvents());
+        assertThat(eventDtoList).isEqualTo(eventDto.getRelatedEvents());
 
         verifyOnce().getEventById(id);
     }

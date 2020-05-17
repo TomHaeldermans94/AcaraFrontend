@@ -13,23 +13,23 @@ import java.util.Set;
 public class EventDtoList extends PageImpl<EventDto> {
 
 
-    private Set<EventDto> popularEvents;
+    private List<EventDto> popularEvents;
 
-    private Set<EventDto> nextAttendingEvents;
+    private List<EventDto> nextAttendingEvents;
 
-    public Set<EventDto> getPopularEvents() {
+    public List<EventDto> getPopularEvents() {
         return popularEvents;
     }
 
-    public Set<EventDto> getNextAttendingEvents() {
+    public List<EventDto> getNextAttendingEvents() {
         return nextAttendingEvents;
     }
 
-    public void setPopularEvents(Set<EventDto> popularEvents) {
+    public void setPopularEvents(List<EventDto> popularEvents) {
         this.popularEvents = popularEvents;
     }
 
-    public void setNextAttendingEvents(Set<EventDto> nextAttendingEvents) {
+    public void setNextAttendingEvents(List<EventDto> nextAttendingEvents) {
         this.nextAttendingEvents = nextAttendingEvents;
     }
 
