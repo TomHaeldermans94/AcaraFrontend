@@ -108,42 +108,43 @@
         </div>
     </div>
 
-
-    <h1>Related events</h1>
-    <div class="list-group list-group-horizontal w-100 row no-gutters">
-        <div class="list-group-item border-dark rounded mb-1 ml-1 col "
-             th:each="relatedEvent : ${event.relatedEvents}">
-            <div class="float-left ml-3 w-100">
-                <p th:text="'Name: ' + ${relatedEvent.name}">Name</p>
-                <p th:text="'Date: ' + ${relatedEvent.eventDate}">Date</p>
-                <p th:text="'Location: ' + ${relatedEvent.location}">Location</p>
-                <p th:text="'Price: ' + ${relatedEvent.price}">Price</p>
-                <div>
-                    <a th:if="${relatedEvent.eventDate.isAfter(now)}"
-                       sec:authorize="isAnonymous()"
-                       data-toggle="modal" data-target="#likeModal"
-                       class="btn btn-light float-left mr-3">
-                        <span th:text="${relatedEvent.amountOfLikes}"></span>
-                        <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
-                    </a>
-                    <form th:if="${relatedEvent.eventDate.isAfter(now)}"
-                          sec:authorize="isAuthenticated()" method="post"
-                          th:action="@{|/users/details/likes/${event.id}/${relatedEvent.id}/|}">
-                        <input type="hidden" name="liked" th:value="${relatedEvent.liked}">
-                        <button type="submit"
-                                class="btn btn-light float-left mr-3">
+    <div th:if="${event.relatedEvents != null}">
+        <h1>Related events</h1>
+        <div class="list-group list-group-horizontal w-100 row no-gutters">
+            <div class="list-group-item border-dark rounded mb-1 ml-1 col "
+                 th:each="relatedEvent : ${event.relatedEvents}">
+                <div class="float-left ml-3 w-100">
+                    <p th:text="'Name: ' + ${relatedEvent.name}">Name</p>
+                    <p th:text="'Date: ' + ${relatedEvent.eventDate}">Date</p>
+                    <p th:text="'Location: ' + ${relatedEvent.location}">Location</p>
+                    <p th:text="'Price: ' + ${relatedEvent.price}">Price</p>
+                    <div>
+                        <a th:if="${relatedEvent.eventDate.isAfter(now)}"
+                           sec:authorize="isAnonymous()"
+                           data-toggle="modal" data-target="#likeModal"
+                           class="btn btn-light float-left mr-3">
                             <span th:text="${relatedEvent.amountOfLikes}"></span>
-                            <i class="fas fa-thumbs-up ml-2"
-                               th:style="${relatedEvent.liked} ? 'color: #0275d8' : 'color: grey'"></i>
-                        </button>
-                    </form>
-                    <a href="/events/detail"
-                       th:href="@{|/events/detail/${relatedEvent.id}|}"
-                       class="btn btn-dark float-left mr-3">
-                        Detail
-                    </a>
-                    <a href="/orders/new/event.id" th:href="@{|/orders/new/${relatedEvent.id}|}"
-                       class="btn btn-primary mr-3">Buy Ticket</a>
+                            <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                        </a>
+                        <form th:if="${relatedEvent.eventDate.isAfter(now)}"
+                              sec:authorize="isAuthenticated()" method="post"
+                              th:action="@{|/users/details/likes/${event.id}/${relatedEvent.id}/|}">
+                            <input type="hidden" name="liked" th:value="${relatedEvent.liked}">
+                            <button type="submit"
+                                    class="btn btn-light float-left mr-3">
+                                <span th:text="${relatedEvent.amountOfLikes}"></span>
+                                <i class="fas fa-thumbs-up ml-2"
+                                   th:style="${relatedEvent.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                            </button>
+                        </form>
+                        <a href="/events/detail"
+                           th:href="@{|/events/detail/${relatedEvent.id}|}"
+                           class="btn btn-dark float-left mr-3">
+                            Detail
+                        </a>
+                        <a href="/orders/new/event.id" th:href="@{|/orders/new/${relatedEvent.id}|}"
+                           class="btn btn-primary mr-3">Buy Ticket</a>
+                    </div>
                 </div>
             </div>
         </div>

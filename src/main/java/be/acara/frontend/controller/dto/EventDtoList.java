@@ -15,13 +15,22 @@ public class EventDtoList extends PageImpl<EventDto> {
 
     private Set<EventDto> popularEvents;
 
+    private Set<EventDto> nextAttendingEvents;
+
     public Set<EventDto> getPopularEvents() {
         return popularEvents;
     }
 
+    public Set<EventDto> getNextAttendingEvents() {
+        return nextAttendingEvents;
+    }
 
     public void setPopularEvents(Set<EventDto> popularEvents) {
         this.popularEvents = popularEvents;
+    }
+
+    public void setNextAttendingEvents(Set<EventDto> nextAttendingEvents) {
+        this.nextAttendingEvents = nextAttendingEvents;
     }
 
     
