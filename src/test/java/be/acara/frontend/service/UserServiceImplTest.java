@@ -1,5 +1,6 @@
 package be.acara.frontend.service;
 
+import be.acara.frontend.controller.dto.LikeEventDto;
 import be.acara.frontend.controller.dto.UserDto;
 import be.acara.frontend.domain.Role;
 import be.acara.frontend.domain.User;
@@ -18,13 +19,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Optional;
 
+import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,6 +54,8 @@ class UserServiceImplTest {
     private JwtTokenService jwtTokenService;
     @Mock
     private Role role;
+    @Mock
+    private SecurityContext securityContext;
     
     private User user;
     
@@ -55,7 +63,7 @@ class UserServiceImplTest {
     
     @BeforeEach
     void setUp() {
-        user = UserUtil.firstUserDomain();
+        user = firstUserDomain();
     }
     
     @Test
@@ -238,5 +246,76 @@ class UserServiceImplTest {
         assertThat(answer.getPassword()).isEqualTo("password");
         assertThat(answer.getAuthorities()).isNotEmpty();
         assertThat(answer.getAuthorities()).extracting(GrantedAuthority::getAuthority).contains(role.getName());
+    }
+    
+    @Test
+    @WithMockUser
+    void getCurrentUser() {
+        setAuthenticationMocks(firstUserDomain());
+        
+        when(userRepository.findByUsername("user")).thenReturn(user);
+    
+        User answer = userService.getCurrentUser();
+        
+        assertThat(answer).isEqualTo(this.user);
+        
+        verify(userRepository, times(1)).findByUsername("user");
+    }
+    
+    @Test
+    @WithMockUser
+    void getCurrentUser_anonymousUser() {
+        setAuthenticationMocks(firstUserDomain(), "anonymousUser");
+        
+        User answer = userService.getCurrentUser();
+        
+        assertThat(answer).isNull();
+    
+        verify(userRepository, times(0)).findByUsername("anonymousUser");
+    }
+    
+    @Test
+    void likeEvent() {
+        Long eventId = 1L;
+        Long userId = 1L;
+        
+        setAuthenticationMocks(this.user);
+        LikeEventDto likeEventDto = new LikeEventDto(eventId);
+        
+        doNothing().when(userFeignClient).likeEvent(userId, likeEventDto);
+        
+        userService.likeEvent(eventId);
+    
+        verify(userRepository, times(1)).findByUsername("user");
+        verify(userFeignClient, times(1)).likeEvent(eventId, likeEventDto);
+    }
+    
+    @Test
+    void disLikeEvent() {
+        Long eventId = 1L;
+        setAuthenticationMocks(this.user);
+        
+        doNothing().when(userFeignClient).dislikeEvent(user.getId(), eventId);
+        
+        userService.dislikeEvent(eventId);
+        
+        verify(userRepository, times(1)).findByUsername("user");
+        verify(userFeignClient, times(1)).dislikeEvent(user.getId(), eventId);
+    }
+    
+    private void setAuthenticationMocks(User user) {
+        setAuthenticationMocks(user, "user");
+    }
+    
+    private void setAuthenticationMocks(User user, String name) {
+        Authentication auth = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(securityContext);
+        
+        when(auth.getName()).thenReturn(name);
+        
+        if (!name.equals("anonymousUser")) {
+            when(userService.findByUsername(auth.getName())).thenReturn(user);
+        }
     }
 }
