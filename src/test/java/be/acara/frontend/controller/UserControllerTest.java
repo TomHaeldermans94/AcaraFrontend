@@ -290,38 +290,4 @@ public class UserControllerTest {
         mockMvc.perform(get("/users/profile"))
                 .andExpect(forwardedUrl(String.format("/users/detail/%d", firstUserDomain().getId())));
     }
-    
-    @Test
-    void likeOrDislikeEvent_likes() throws Exception {
-        doNothing().when(userService).dislikeEvent(anyLong());
-        
-        mockMvc.perform(post("/users/{location}/likes/{eventId}", "events", 1)
-                .param("liked", "true")
-        )
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/events"));
-    }
-    
-    @Test
-    void likeOrDislikeEvent_dislikes() throws Exception {
-        doNothing().when(userService).likeEvent(anyLong());
-        
-        mockMvc.perform(post("/users/{location}/likes/{eventId}", "events", 1)
-                .param("liked", "false")
-        )
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/events"));
-    }
-    
-    @Test
-    void likeOrDislikeEvent_fromDetails() throws Exception {
-        Long id = 1L;
-        doNothing().when(userService).likeEvent(anyLong());
-        
-        mockMvc.perform(post("/users/{location}/likes/{eventId}", "details", id)
-                .param("liked", "false")
-        )
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/events/detail/" + id));
-    }
 }
