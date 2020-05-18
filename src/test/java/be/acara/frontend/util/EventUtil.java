@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 public class EventUtil {
 
@@ -110,14 +111,14 @@ public class EventUtil {
                 firstEventDto(),
                 secondEventDto(),
                 thirdEventDto()
-        ), Collections.emptySet());
+        ));
     }
 
     public static EventDtoList createEventDtoListWithoutFirstEventDto() {
         return new EventDtoList(List.of(
                 secondEventDto(),
                 thirdEventDto()
-        ), Collections.emptySet());
+        ));
     }
 
     public static EventModelList createEventModelList() {

@@ -98,7 +98,7 @@ public class UserControllerTest {
     void displayUser_withEmptyPage() throws Exception {
         Long id = 1L;
         User user = firstUserDomain();
-        EventDtoList eventDtoList = new EventDtoList(Collections.emptyList(), Collections.emptySet());
+        EventDtoList eventDtoList = new EventDtoList(Collections.emptyList());
         EventModelList eventModelList = new EventModelList(Collections.emptyList(), Pageable.unpaged(), 0);
         when(userService.getUser(id)).thenReturn(user);
         when(eventMapper.eventDtoListToEventModelList(any())).thenReturn(eventModelList);
