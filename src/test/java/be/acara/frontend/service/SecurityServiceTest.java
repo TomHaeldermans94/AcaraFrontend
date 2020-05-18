@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import static be.acara.frontend.util.UserUtil.firstUserDomain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -79,5 +80,35 @@ class SecurityServiceTest {
         securityService.autoLogin(username, password);
         
         verify(userService, times(1)).loadUserByUsername(username);
+    }
+    
+    @Test
+    void hasUserId_true() {
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(firstUserDomain());
+    
+        boolean answer = securityService.hasUserId(authentication, firstUserDomain().getId());
+        
+        assertThat(answer).isTrue();
+    }
+    
+    @Test
+    void hasUserId_false() {
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(firstUserDomain());
+        
+        boolean answer = securityService.hasUserId(authentication, firstUserDomain().getId() + 1);
+        
+        assertThat(answer).isFalse();
+    }
+    
+    @Test
+    void hasUserId_notAUserInstance() {
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn("empty string");
+        
+        boolean answer = securityService.hasUserId(authentication, firstUserDomain().getId() + 1);
+        
+        assertThat(answer).isFalse();
     }
 }

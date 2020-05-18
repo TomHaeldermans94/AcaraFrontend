@@ -29,7 +29,7 @@ public class UserController {
     private final UserMapper userMapper;
     private final EventService eventService;
     private final EventMapper eventMapper;
-
+    
     private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
@@ -104,8 +104,7 @@ public class UserController {
             userService.likeEvent(eventId);
         } else if(liked){
             userService.dislikeEvent(relatedEventId);
-        }
-        else{
+        } else{
             userService.likeEvent(relatedEventId);
         }
         String targetUrl = REDIRECT_EVENTS;
@@ -121,7 +120,7 @@ public class UserController {
     }
 
     private void addPageNumbers(EventModelList events, ModelMap modelMap, String attribute) {
-        if (events.getTotalPages() == 0) {
+        if (events.getTotalPages() == 1) {
             return;
         }
         modelMap.addAttribute(attribute, IntStream.rangeClosed(1, events.getTotalPages())

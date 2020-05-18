@@ -4,13 +4,14 @@ import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.util.EventUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -75,13 +76,14 @@ public class EventServiceTest {
         int page = eventDtoList.getNumber();
         int size = eventDtoList.getSize();
         String sort = "";
+        Map<String, String> emptyParams = Collections.emptyMap();
         
-        when(eventFeignClient.getEvents(page, size, sort)).thenReturn(eventDtoList);
+        when(eventFeignClient.getEvents(emptyParams, page, size, sort)).thenReturn(eventDtoList);
     
-        EventDtoList answer = eventService.findAllEvents(page, size, sort);
+        EventDtoList answer = eventService.findAllEvents(emptyParams, page, size, sort);
         
         assertThat(answer).isEqualTo(eventDtoList);
-        verifyOnce().getEvents(page, size, sort);
+        verifyOnce().getEvents(emptyParams, page, size, sort);
     }
     
     @Test
@@ -118,19 +120,6 @@ public class EventServiceTest {
     }
     
     @Test
-    void search() {
-        Map<String, String> params = new HashMap<>();
-        EventDtoList eventDtos = createEventDtoList();
-        when(eventFeignClient.search(params)).thenReturn(eventDtos);
-    
-        EventDtoList answer = eventService.search(params);
-        
-        assertThat(answer).isEqualTo(eventDtos);
-        
-        verifyOnce().search(params);
-    }
-    
-    @Test
     void getEventsFromUser() {
         Long id = 1L;
         EventDtoList eventDtoList = createEventDtoList();
@@ -141,6 +130,21 @@ public class EventServiceTest {
         assertThat(answer).isEqualTo(eventDtoList);
         verifyOnce().getAllEventsFromSelectedUser(id, eventDtoList.getNumber(), eventDtoList.getSize());
         
+    }
+    
+    @Test
+    void getEventsThatUserLiked() {
+        Long id = 1L;
+        int page = 0;
+        int size = 0;
+        
+        when(eventFeignClient.getAllEventsThatUserLiked(id,page,size)).thenReturn(EventUtil.createEventDtoList());
+    
+        EventDtoList answer = eventService.getEventsThatUserLiked(id, page, size);
+        
+        assertThat(answer).isEqualTo(EventUtil.createEventDtoList());
+        
+        verifyOnce().getAllEventsThatUserLiked(id, page, size);
     }
     
     private EventFeignClient verifyOnce() {

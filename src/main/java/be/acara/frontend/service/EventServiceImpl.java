@@ -27,8 +27,8 @@ public class EventServiceImpl implements EventService {
     }
     
     @Override
-    public EventDtoList findAllEvents(int page, int size, String sort) {
-        return eventFeignClient.getEvents(page, size, sort);
+    public EventDtoList findAllEvents(Map<String, String> params, int page, int size, String sort) {
+        return eventFeignClient.getEvents(params, page, size, sort);
     }
     
     @Override
@@ -47,15 +47,10 @@ public class EventServiceImpl implements EventService {
     }
     
     @Override
-    public EventDtoList search(Map<String, String> params) {
-        return eventFeignClient.search(params);
-    }
-    
-    @Override
     public EventDtoList getEventsFromUser(Long id, int page, int size) {
         return eventFeignClient.getAllEventsFromSelectedUser(id, page, size);
     }
-
+    
     @Override
     public EventDtoList getEventsThatUserLiked(Long id, int page, int size) {
         return eventFeignClient.getAllEventsThatUserLiked(id, page, size);
