@@ -29,9 +29,9 @@
         </div>
         <!--Events-->
         <div class="col" style="display: table-cell">
-            <div class="row justify-content-between">
+            <div class="row justify-content-between mt-2">
                 <div class="col">
-                    <h1>Events</h1>
+
                 </div>
                 <div class="col align-self-center">
                     <div class="dropdown float-right col-4">
@@ -68,7 +68,48 @@
                     </div>
                 </div>
             </div>
+
+            <h1>Popular events</h1>
+            <div class="list-group list-group-horizontal w-100 row no-gutters">
+                <div class="list-group-item border-dark rounded mb-1 ml-1 col "
+                     th:each="event : ${events.getPopularEvents()}">
+                    <div class="float-left ml-3 w-100">
+                        <p th:text="'Name: ' + ${event.name}">Name</p>
+                        <p th:text="'Date: ' + ${event.eventDate}">Date</p>
+                        <p th:text="'Location: ' + ${event.location}">Location</p>
+                        <p th:text="'Price: ' + ${event.price}">Price</p>
+                        <div>
+                            <a sec:authorize="isAnonymous()"
+                               data-toggle="modal" data-target="#likeModal"
+                               class="btn btn-light float-left mr-3">
+                                <span th:text="${event.amountOfLikes}"></span>
+                                <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                            </a>
+                            <form sec:authorize="isAuthenticated()" method="post"
+                                  th:action="@{|/users/events/likes/${event.id}/|}">
+                                <input type="hidden" name="liked" th:value="${event.liked}">
+                                <button type="submit"
+                                        class="btn btn-light float-left mr-2">
+                                    <span th:text="${event.amountOfLikes}"></span>
+                                    <i class="fas fa-thumbs-up ml-2"
+                                       th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                                </button>
+                            </form>
+                            <a href="/events/detail"
+                               th:href="@{|/events/detail/${event.id}|}"
+                               class="btn btn-dark float-left mr-3">
+                                Detail
+                            </a>
+                            <a href="/orders/event.id" th:href="@{/orders/(event=${event.id})}"
+                               class="btn btn-primary mr-3">Buy Ticket</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="list-group">
+                <h1>Events</h1>
                 <div class="list-group-item border-dark rounded mb-1" th:each="event,image : ${events}">
                     <div class="float-left w-75">
                         <p th:if="${event.eventDate.isBefore(now)}" style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>

@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class EventUtil {
-    
+
     public static EventDto firstEventDto() {
         return EventDto.builder()
                 .id(1L)
@@ -25,6 +27,7 @@ public class EventUtil {
                 .name("Event name")
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto(), UserUtil.firstUserDto(), UserUtil.thirdUserDto()))
                 .build();
     }
 
@@ -40,7 +43,7 @@ public class EventUtil {
                 .image(getImage1AsBytes())
                 .build();
     }
-    
+
     public static EventDto secondEventDto() {
         return EventDto.builder()
                 .id(2L)
@@ -51,6 +54,7 @@ public class EventUtil {
                 .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto()))
                 .build();
     }
 
@@ -66,7 +70,7 @@ public class EventUtil {
                 .image(getImage1AsBytes())
                 .build();
     }
-    
+
     public static EventDto thirdEventDto() {
         return EventDto.builder()
                 .id(3L)
@@ -77,6 +81,7 @@ public class EventUtil {
                 .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto(), UserUtil.firstUserDto()))
                 .build();
     }
 
@@ -92,14 +97,25 @@ public class EventUtil {
                 .image(getImage1AsBytes())
                 .build();
     }
+
+    public static List<EventModel> createListOfEventsOfSize3() {
+        return List.of(
+                firstEvent(),
+                secondEvent(),
+                thirdEvent()
+        );
+    }
+
+
     
     public static EventDtoList createEventDtoList() {
         return new EventDtoList(List.of(
                 firstEventDto(),
                 secondEventDto(),
                 thirdEventDto()
-        ));
+        ), Collections.emptySet());
     }
+
 
     public static EventModelList createEventModelList() {
         return new EventModelList(List.of(
@@ -108,7 +124,7 @@ public class EventUtil {
                 thirdEvent()
         ));
     }
-    
+
     public static byte[] getImage1AsBytes() {
         try {
             File file = new File("image_event_1.jpg");

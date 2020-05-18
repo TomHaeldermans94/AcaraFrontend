@@ -18,6 +18,25 @@ public class UserUtil {
                 .build();
     }
 
+
+    public static UserDto secondUserDto() {
+        return UserDto.builder()
+                .id(1L)
+                .firstName("firstName2")
+                .lastName("lastName2")
+                .email("email2@email.local")
+                .build();
+    }
+
+    public static UserDto thirdUserDto() {
+        return UserDto.builder()
+                .id(1L)
+                .firstName("firstName3")
+                .lastName("lastName3")
+                .email("email3@email.local")
+                .build();
+    }
+
     public static UserModel firstUser() {
         return UserModel.builder()
                 .id(1L)
@@ -30,6 +49,7 @@ public class UserUtil {
                 .emailConfirm("email@email.local")
                 .build();
     }
+
 
     public static User firstUserDomain() {
         Role role = new Role();

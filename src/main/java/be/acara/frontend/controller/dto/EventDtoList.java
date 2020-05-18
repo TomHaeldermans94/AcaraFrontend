@@ -8,8 +8,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public class EventDtoList extends PageImpl<EventDto> {
+
+
+    private Set<EventDto> popularEvents;
+
+    public Set<EventDto> getPopularEvents() {
+        return popularEvents;
+    }
+
+
+    public void setPopularEvents(Set<EventDto> popularEvents) {
+        this.popularEvents = popularEvents;
+    }
+
     
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public EventDtoList(@JsonProperty("content") List<EventDto> content,
@@ -30,7 +44,9 @@ public class EventDtoList extends PageImpl<EventDto> {
         super(content, pageable, total);
     }
     
-    public EventDtoList(List<EventDto> content) {
+    public EventDtoList(List<EventDto> content, Set<EventDto> popularEvents) {
         super(content);
     }
+
+
 }
