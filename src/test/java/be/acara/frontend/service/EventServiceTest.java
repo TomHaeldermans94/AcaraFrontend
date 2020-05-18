@@ -13,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static be.acara.frontend.util.EventUtil.createEventDtoList;
-import static be.acara.frontend.util.EventUtil.firstEventDto;
+import static be.acara.frontend.util.EventUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -41,6 +41,21 @@ public class EventServiceTest {
     
         assertThat(answer).isEqualTo(eventDto);
         
+        verifyOnce().getEventById(id);
+    }
+
+    @Test
+    void getEvent_withRelatedEvents() {
+        Long id = 1L;
+        EventDto eventDto = firstEventDto();
+        when(eventFeignClient.getEventById(id)).thenReturn(eventDto);
+
+        EventDto answer = eventService.getEvent(id);
+        List<EventDto> eventDtoList = createEventDtoListWithoutFirstEventDto().getContent();
+
+        assertThat(answer).isEqualTo(eventDto);
+        assertThat(eventDtoList).isEqualTo(eventDto.getRelatedEvents());
+
         verifyOnce().getEventById(id);
     }
     

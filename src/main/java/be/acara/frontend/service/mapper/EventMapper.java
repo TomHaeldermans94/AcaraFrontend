@@ -23,6 +23,7 @@ public interface EventMapper {
 
         EventModelList eventModels = new EventModelList(content, eventDtoList.getPageable(), eventDtoList.getTotalElements());
         eventModels.setPopularEvents(eventDtoList.getPopularEvents());
+        eventModels.setNextAttendingEvents(eventDtoList.getNextAttendingEvents());
         return eventModels;
     }
 }

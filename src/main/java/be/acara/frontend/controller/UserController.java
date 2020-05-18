@@ -30,12 +30,10 @@ public class UserController {
     private final EventService eventService;
     private final EventMapper eventMapper;
 
-    private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
     private static final String ATTRIBUTE_USER = "user";
-    private static final String ATTRIBUTE_EVENTS = "events";
 
     public UserController(UserService userService, SecurityService securityService, UserMapper userMapper, EventService eventService, EventMapper eventMapper) {
         this.userService = userService;
@@ -59,7 +57,7 @@ public class UserController {
         User user = userMapper.userModelToUser(userForm);
         userService.save(user);
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
-        return "redirect:/events";
+        return REDIRECT_EVENTS;
     }
 
     @GetMapping("/detail/{id}")
@@ -95,15 +93,20 @@ public class UserController {
             return ATTRIBUTE_EDIT_USER_REDIRECT;
         }
         userService.editUser(user);
-        return "redirect:/events";
+        return REDIRECT_EVENTS;
     }
 
-    @PostMapping("/{location}/likes/{eventId}")
-    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked, @PathVariable("location") String location, @PathVariable("eventId") Long eventId) {
-        if (liked) {
+    @PostMapping("/{location}/likes/{eventId}/{relatedEventId}")
+    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked, @PathVariable("location") String location, @PathVariable("eventId") Long eventId, @PathVariable("relatedEventId") Long relatedEventId) {
+        if (liked && relatedEventId == 0) {
             userService.dislikeEvent(eventId);
-        } else {
+        } else if(!liked && relatedEventId == 0) {
             userService.likeEvent(eventId);
+        } else if(liked){
+            userService.dislikeEvent(relatedEventId);
+        }
+        else{
+            userService.likeEvent(relatedEventId);
         }
         String targetUrl = REDIRECT_EVENTS;
         if ("details".equals(location)) {

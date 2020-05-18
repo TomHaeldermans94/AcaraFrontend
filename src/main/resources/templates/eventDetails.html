@@ -29,7 +29,8 @@
         <div class="col-8">
             <div class="container">
 
-                <div th:if="${event.eventDate.isBefore(now)}" class="form-group row justify-content-center align-items-center">
+                <div th:if="${event.eventDate.isBefore(now)}"
+                     class="form-group row justify-content-center align-items-center">
                     <h1 style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</h1>
                 </div>
 
@@ -69,49 +70,85 @@
                 </div>
 
                 <div class="form-group row justify-content-center w-100">
-                    <div>
-                        <a th:if="${event.eventDate.isAfter(now)}"
-                           sec:authorize="isAnonymous()"
-                           data-toggle="modal" data-target="#likeModal"
-                           class="btn btn-light float-left mr-3">
+                    <a th:if="${event.eventDate.isAfter(now)}"
+                       sec:authorize="isAnonymous()"
+                       data-toggle="modal" data-target="#likeModal"
+                       class="btn btn-light float-left mr-3">
+                        <span th:text="${event.amountOfLikes}"></span>
+                        <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                    </a>
+                    <form th:if="${event.eventDate.isAfter(now)}"
+                          sec:authorize="isAuthenticated()" method="post"
+                          th:action="@{|/users/details/likes/${event.id}/0|}">
+                        <input type="hidden" name="liked" th:value="${event.liked}">
+                        <button type="submit"
+                                class="btn btn-light float-left mr-3">
                             <span th:text="${event.amountOfLikes}"></span>
-                            <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
-                        </a>
-                        <form th:if="${event.eventDate.isAfter(now)}"
-                              sec:authorize="isAuthenticated()" method="post"
-                              th:action="@{|/users/details/likes/${event.id}/|}">
-                            <input type="hidden" name="liked" th:value="${event.liked}">
-                            <button type="submit"
-                                    class="btn btn-light float-left mr-3">
-                                <span th:text="${event.amountOfLikes}"></span>
-                                <i class="fas fa-thumbs-up ml-2"
-                                   th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
-                            </button>
-                        </form>
-                        <a class="btn btn-dark float-left mr-3" href="/events" th:href="@{|/events/${event.id}|}"
-                           sec:authorize="hasRole('ADMIN')">Edit</a>
-                        <span class="float-left mr-3" th:insert="deleteEvent :: deleteEvent"
-                              sec:authorize="hasRole('ADMIN')"></span>
-                        <a th:if="${event.eventDate.isAfter(now)}" href="/orders/event.id"
-                           th:href="@{|/orders/new/${event.id}|}"
-                           class="btn btn-primary float-left">Buy Ticket</a>
-                    </div>
+                            <i class="fas fa-thumbs-up ml-2"
+                               th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                        </button>
+                    </form>
+                    <a class="btn btn-dark float-left mr-3" href="/events" th:href="@{|/events/${event.id}|}"
+                       sec:authorize="hasRole('ADMIN')">Edit</a>
+                    <span class="float-left mr-3" th:insert="deleteEvent :: deleteEvent"
+                          sec:authorize="hasRole('ADMIN')"></span>
+                    <a th:if="${event.eventDate.isAfter(now)}" href="/orders/new/event.id"
+                       th:href="@{|/orders/new/${event.id}|}"
+                       class="btn btn-primary float-left">Buy Ticket</a>
                 </div>
             </div>
         </div>
 
         <div class="col-4">
-            <img class="img-fluid mt-5" th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+            <img class="img-fluid mt-3 mb-3 row" style="max-height: 30vh"
+                 th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+            <div class="row" style="max-height: 30vh">
+                <iframe th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
+            </div>
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <iframe class="my-3" width="700" height="393,75"
-                    th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
+    <div th:if="${event.relatedEvents != null}">
+        <h1>Related events</h1>
+        <div class="list-group list-group-horizontal w-100 row no-gutters">
+            <div class="list-group-item border-dark rounded mb-1 ml-1 col "
+                 th:each="relatedEvent : ${event.relatedEvents}">
+                <div class="float-left ml-3 w-100">
+                    <p th:text="'Name: ' + ${relatedEvent.name}">Name</p>
+                    <p th:text="'Date: ' + ${relatedEvent.eventDate}">Date</p>
+                    <p th:text="'Location: ' + ${relatedEvent.location}">Location</p>
+                    <p th:text="'Price: ' + ${relatedEvent.price}">Price</p>
+                    <div>
+                        <a th:if="${relatedEvent.eventDate.isAfter(now)}"
+                           sec:authorize="isAnonymous()"
+                           data-toggle="modal" data-target="#likeModal"
+                           class="btn btn-light float-left mr-3">
+                            <span th:text="${relatedEvent.amountOfLikes}"></span>
+                            <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                        </a>
+                        <form th:if="${relatedEvent.eventDate.isAfter(now)}"
+                              sec:authorize="isAuthenticated()" method="post"
+                              th:action="@{|/users/details/likes/${event.id}/${relatedEvent.id}/|}">
+                            <input type="hidden" name="liked" th:value="${relatedEvent.liked}">
+                            <button type="submit"
+                                    class="btn btn-light float-left mr-3">
+                                <span th:text="${relatedEvent.amountOfLikes}"></span>
+                                <i class="fas fa-thumbs-up ml-2"
+                                   th:style="${relatedEvent.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                            </button>
+                        </form>
+                        <a href="/events/detail"
+                           th:href="@{|/events/detail/${relatedEvent.id}|}"
+                           class="btn btn-dark float-left mr-3">
+                            Detail
+                        </a>
+                        <a href="/orders/new/event.id" th:href="@{|/orders/new/${relatedEvent.id}|}"
+                           class="btn btn-primary mr-3">Buy Ticket</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 
 <!-- Modal -->
