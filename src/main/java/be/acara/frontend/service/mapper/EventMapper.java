@@ -20,6 +20,9 @@ public interface EventMapper {
     EventModel eventDtoToEventModel(EventDto eventDto);
     default EventModelList eventDtoListToEventModelList(EventDtoList eventDtoList) {
         List<EventModel> content = eventDtoList.getContent().stream().map(this::eventDtoToEventModel).collect(Collectors.toList());
-        return new EventModelList(content, eventDtoList.getPageable(), eventDtoList.getTotalElements());
+
+        EventModelList eventModels = new EventModelList(content, eventDtoList.getPageable(), eventDtoList.getTotalElements());
+        eventModels.setPopularEvents(eventDtoList.getPopularEvents());
+        return eventModels;
     }
 }
