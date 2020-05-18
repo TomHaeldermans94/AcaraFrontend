@@ -25,6 +25,7 @@ public class EventUtil {
                 .name("Event name")
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto(), UserUtil.firstUserDto(), UserUtil.thirdUserDto()))
                 .relatedEvents(createEventDtoListWithoutFirstEventDto().getContent())
                 .build();
     }
@@ -52,6 +53,7 @@ public class EventUtil {
                 .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto()))
                 .build();
     }
 
@@ -78,6 +80,7 @@ public class EventUtil {
                 .name("The name of this event")
                 .price(BigDecimal.ONE)
                 .image(getImage1AsBytes())
+                .attendees(Set.of(UserUtil.secondUserDto(), UserUtil.firstUserDto()))
                 .build();
     }
 
