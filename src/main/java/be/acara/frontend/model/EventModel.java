@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 @Getter
@@ -28,7 +28,7 @@ public class EventModel {
 
     private boolean liked;
 
-    private Set<EventDto> relatedEvents;
+    private List<EventDto> relatedEvents;
 
     @Future(message = "Date must be in the future")
     @NotNull(message = "Field cannot be empty")
