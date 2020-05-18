@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class EventUtil {
 
@@ -28,6 +26,7 @@ public class EventUtil {
                 .price(BigDecimal.TEN)
                 .image(getImage1AsBytes())
                 .attendees(Set.of(UserUtil.secondUserDto(), UserUtil.firstUserDto(), UserUtil.thirdUserDto()))
+                .relatedEvents(createEventDtoListWithoutFirstEventDto().getContent())
                 .build();
     }
 
@@ -106,8 +105,6 @@ public class EventUtil {
         );
     }
 
-
-    
     public static EventDtoList createEventDtoList() {
         return new EventDtoList(List.of(
                 firstEventDto(),
@@ -116,6 +113,12 @@ public class EventUtil {
         ), Collections.emptySet());
     }
 
+    public static EventDtoList createEventDtoListWithoutFirstEventDto() {
+        return new EventDtoList(List.of(
+                secondEventDto(),
+                thirdEventDto()
+        ), Collections.emptySet());
+    }
 
     public static EventModelList createEventModelList() {
         return new EventModelList(List.of(

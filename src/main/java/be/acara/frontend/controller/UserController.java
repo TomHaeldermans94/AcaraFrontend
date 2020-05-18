@@ -96,12 +96,16 @@ public class UserController {
         return REDIRECT_EVENTS;
     }
 
-    @PostMapping("/{location}/likes/{eventId}")
-    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked, @PathVariable("location") String location, @PathVariable("eventId") Long eventId) {
-        if (liked) {
+    @PostMapping("/{location}/likes/{eventId}/{relatedEventId}")
+    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked, @PathVariable("location") String location, @PathVariable("eventId") Long eventId, @PathVariable("relatedEventId") Long relatedEventId) {
+        if (liked && relatedEventId == 0) {
             userService.dislikeEvent(eventId);
-        } else {
+        } else if(!liked && relatedEventId == 0) {
             userService.likeEvent(eventId);
+        } else if(liked){
+            userService.dislikeEvent(relatedEventId);
+        } else{
+            userService.likeEvent(relatedEventId);
         }
         String targetUrl = REDIRECT_EVENTS;
         if ("details".equals(location)) {

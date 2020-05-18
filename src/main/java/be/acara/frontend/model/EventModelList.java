@@ -10,12 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = false)
 public class EventModelList extends PageImpl<EventModel> {
     
-    private Set<EventDto> popularEvents;
+    private List<EventDto> popularEvents;
+    
+    private List<EventDto> nextAttendingEvents;
+    
     
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public EventModelList(@JsonProperty("content") List<EventModel> content,
@@ -40,11 +42,21 @@ public class EventModelList extends PageImpl<EventModel> {
         super(content);
     }
     
-    public Set<EventDto> getPopularEvents() {
+    public List<EventDto> getPopularEvents() {
         return popularEvents;
     }
     
-    public void setPopularEvents(Set<EventDto> popularEvents) {
+    public List<EventDto> getNextAttendingEvents() {
+        return nextAttendingEvents;
+    }
+    
+    public void setPopularEvents(List<EventDto> popularEvents) {
         this.popularEvents = popularEvents;
     }
+    
+    public void setNextAttendingEvents(List<EventDto> nextAttendingEvents) {
+        this.nextAttendingEvents = nextAttendingEvents;
+    }
+
+
 }

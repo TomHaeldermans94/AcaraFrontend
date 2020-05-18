@@ -14,7 +14,9 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 public class EventDtoList extends PageImpl<EventDto> {
     
-    private Set<EventDto> popularEvents;
+    private List<EventDto> popularEvents;
+    
+    private List<EventDto> nextAttendingEvents;
     
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public EventDtoList(@JsonProperty("content") List<EventDto> content,
@@ -35,16 +37,23 @@ public class EventDtoList extends PageImpl<EventDto> {
         super(content, pageable, total);
     }
     
-    public EventDtoList(List<EventDto> content, Set<EventDto> popularEvents) {
+    public EventDtoList(List<EventDto> content) {
         super(content);
-        this.popularEvents = popularEvents;
     }
     
-    public Set<EventDto> getPopularEvents() {
+    public List<EventDto> getPopularEvents() {
         return popularEvents;
     }
     
-    public void setPopularEvents(Set<EventDto> popularEvents) {
+    public List<EventDto> getNextAttendingEvents() {
+        return nextAttendingEvents;
+    }
+    
+    public void setPopularEvents(List<EventDto> popularEvents) {
         this.popularEvents = popularEvents;
+    }
+    
+    public void setNextAttendingEvents(List<EventDto> nextAttendingEvents) {
+        this.nextAttendingEvents = nextAttendingEvents;
     }
 }
