@@ -8,6 +8,7 @@ import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.util.ImageUtil;
+import be.acara.frontend.util.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/events")
@@ -65,23 +63,21 @@ public class EventController {
         addCategories(model);
         addLocalDateTime(model);
         model.addAttribute("searchModel", createSearchModel(params));
+    
         if ("UNSORTED".equals(sort)) {
-            sort="";
+            sort = "";
         }
-        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(params,page - 1, size < 1 ? 1 : size, sort));
-        int totalPages = eventModelList.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
+    
+        EventModelList eventModelList = mapper.eventDtoListToEventModelList(eventService.findAllEvents(params, page - 1, size < 1 ? 1 : size, sort));
+        model.addAttribute(ATTRIBUTE_EVENTS, eventModelList);
+        PaginationUtil.addPageNumbers(eventModelList, model, "pageNumbers");
+    
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             Long id = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
             EventModelList likedEventModelList = mapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, page - 1, size < 1 ? 1 : size));
             model.addAttribute(ATTRIBUTE_LIKED_EVENTS, likedEventModelList);
         }
-        model.addAttribute(ATTRIBUTE_EVENTS, eventModelList);
+    
         return "eventList";
     }
 
@@ -91,9 +87,12 @@ public class EventController {
         addCategories(model);
         return "addEvent";
     }
-
+    
     @PostMapping("/new")
-    public String handleAddEventForm(@Valid @ModelAttribute(ATTRIBUTE_EVENT) EventModel event, BindingResult br, @RequestParam(ATTRIBUTE_EVENT_IMAGE) MultipartFile eventImage, Model model) throws IOException {
+    public String handleAddEventForm(@Valid @ModelAttribute(ATTRIBUTE_EVENT) EventModel event,
+                                     BindingResult br,
+                                     @RequestParam(ATTRIBUTE_EVENT_IMAGE) MultipartFile eventImage,
+                                     Model model) throws IOException {
         if (br.hasErrors()) {
             addCategories(model);
             return "addEvent";

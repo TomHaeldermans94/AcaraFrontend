@@ -8,17 +8,15 @@ import be.acara.frontend.service.SecurityService;
 import be.acara.frontend.service.UserService;
 import be.acara.frontend.service.mapper.EventMapper;
 import be.acara.frontend.service.mapper.UserMapper;
+import be.acara.frontend.util.PaginationUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/users")
@@ -34,17 +32,21 @@ public class UserController {
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
     private static final String ATTRIBUTE_USER = "user";
-
-    public UserController(UserService userService, SecurityService securityService, UserMapper userMapper, EventService eventService, EventMapper eventMapper) {
+    
+    public UserController(UserService userService,
+                          SecurityService securityService,
+                          UserMapper userMapper,
+                          EventService eventService,
+                          EventMapper eventMapper) {
         this.userService = userService;
         this.securityService = securityService;
         this.userMapper = userMapper;
         this.eventService = eventService;
         this.eventMapper = eventMapper;
     }
-
+    
     @GetMapping("/registration")
-    public String registration(ModelMap model) {
+    public String registration(Model model) {
         model.addAttribute(ATTRIBUTE_USER_FORM, new UserModel());
         return "user/registration";
     }
@@ -59,22 +61,25 @@ public class UserController {
         securityService.autoLogin(user.getUsername(), user.getPasswordConfirm());
         return REDIRECT_EVENTS;
     }
-
+    
     @GetMapping("/detail/{id}")
     @PreAuthorize("@securityService.hasUserId(authentication, #id) or hasRole('admin')")
-    public String displayUser(@PathVariable("id") Long id, ModelMap model,
+    public String displayUser(@PathVariable("id") Long id, Model model,
                               @RequestParam(name = "pageSubscribedEvents", defaultValue = "1", required = false) int pageSubscribedEvents,
                               @RequestParam(name = "sizeSubscribedEvents", defaultValue = "3", required = false) int sizeSubscribedEvents,
                               @RequestParam(name = "pageLikedEvents", defaultValue = "1", required = false) int pageLikedEvents,
                               @RequestParam(name = "sizeLikedEvents", defaultValue = "3", required = false) int sizeLikedEvents) {
         User user = userService.getUser(id);
+        
         EventModelList subscribedEvents = eventMapper.eventDtoListToEventModelList(eventService.getEventsFromUser(id, pageSubscribedEvents - 1, sizeSubscribedEvents));
-        addPageNumbers(subscribedEvents, model, "pageNumbersSubscribedEvents");
+        PaginationUtil.addPageNumbers(subscribedEvents, model, "pageNumbersSubscribedEvents");
         EventModelList likedEvents = eventMapper.eventDtoListToEventModelList(eventService.getEventsThatUserLiked(id, pageLikedEvents - 1, sizeLikedEvents));
-        addPageNumbers(likedEvents, model, "pageNumbersLikedEvents");
+        PaginationUtil.addPageNumbers(likedEvents, model, "pageNumbersLikedEvents");
+        
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
         model.addAttribute("likedEvents", likedEvents);
+        
         return "user/userDetails";
     }
 
@@ -95,16 +100,19 @@ public class UserController {
         userService.editUser(user);
         return REDIRECT_EVENTS;
     }
-
+    
     @PostMapping("/{location}/likes/{eventId}/{relatedEventId}")
-    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked, @PathVariable("location") String location, @PathVariable("eventId") Long eventId, @PathVariable("relatedEventId") Long relatedEventId) {
+    public String likeOrDislikeEvent(@RequestParam("liked") boolean liked,
+                                     @PathVariable("location") String location,
+                                     @PathVariable("eventId") Long eventId,
+                                     @PathVariable("relatedEventId") Long relatedEventId) {
         if (liked && relatedEventId == 0) {
             userService.dislikeEvent(eventId);
-        } else if(!liked && relatedEventId == 0) {
+        } else if (!liked && relatedEventId == 0) {
             userService.likeEvent(eventId);
-        } else if(liked){
+        } else if (liked) {
             userService.dislikeEvent(relatedEventId);
-        } else{
+        } else {
             userService.likeEvent(relatedEventId);
         }
         String targetUrl = REDIRECT_EVENTS;
@@ -117,14 +125,5 @@ public class UserController {
     @GetMapping("/profile")
     public String getProfile(Principal principal) {
         return String.format("forward:/users/detail/%d", userService.findByUsername(principal.getName()).getId());
-    }
-
-    private void addPageNumbers(EventModelList events, ModelMap modelMap, String attribute) {
-        if (events.getTotalPages() == 1) {
-            return;
-        }
-        modelMap.addAttribute(attribute, IntStream.rangeClosed(1, events.getTotalPages())
-                .boxed()
-                .collect(Collectors.toList()));
     }
 }

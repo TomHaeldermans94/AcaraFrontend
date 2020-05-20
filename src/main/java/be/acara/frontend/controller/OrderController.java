@@ -7,7 +7,7 @@ import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -40,9 +40,9 @@ public class OrderController {
         cartService.clearCart();
         return "redirect:/events";
     }
-
+    
     @GetMapping("/new/{eventId}")
-    public String displayOrderForm(@PathVariable("eventId") Long eventId, ModelMap model) {
+    public String displayOrderForm(@PathVariable("eventId") Long eventId, Model model) {
         model.addAttribute(
                 ATTRIBUTE_CREATE_ORDER_MODEL,
                 new CreateOrderModel(mapper.eventDtoToEventModel(eventService.getEvent(eventId)), 1)
