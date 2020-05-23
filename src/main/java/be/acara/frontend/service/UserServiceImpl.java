@@ -77,9 +77,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void likeEvent(Long id) {
+    public void likeEvent(Long eventId) {
         Long userId = getCurrentUser().getId();
-        LikeEventDto likeEventDto = new LikeEventDto(id);
+        LikeEventDto likeEventDto = new LikeEventDto(eventId);
         userFeignClient.likeEvent(userId, likeEventDto);
     }
 

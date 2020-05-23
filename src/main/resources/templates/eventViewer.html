@@ -26,7 +26,7 @@
              th:each="event : ${listOfEvents}">
             <div class="float-left ml-3 w-100">
                 <p th:text="'Name: ' + ${event.name}">Name</p>
-                <p th:text="'Date: ' + ${event.eventDate}">Date</p>
+                <p th:text="'Date: ' + ${event.eventDate}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">Date</p>
                 <p th:text="'Location: ' + ${event.location}">Location</p>
                 <p th:text="'Price: ' + ${event.price}">Price</p>
                 <div>
@@ -53,8 +53,10 @@
                        class="btn btn-dark float-left mr-3">
                         Detail
                     </a>
-                    <a href="/orders/new/event.id" th:href="@{|/orders/new/${event.id}|}"
+                    <a th:if="${event.eventDate.isAfter(now)}"
+                       href="/orders/new/event.id" th:href="@{|/orders/new/${event.id}|}"
                        class="btn btn-primary mr-3">Buy Ticket</a>
+                    <p th:if="${event.eventDate.isBefore(now)}" style="color: red; font-weight: bold">Archived</p>
                 </div>
             </div>
         </div>

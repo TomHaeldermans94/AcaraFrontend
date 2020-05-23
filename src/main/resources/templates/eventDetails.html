@@ -45,12 +45,12 @@
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Date:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}">event date</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event date</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Time:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}">event date</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event time</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
@@ -115,7 +115,7 @@
                  th:each="relatedEvent : ${event.relatedEvents}">
                 <div class="float-left ml-3 w-100">
                     <p th:text="'Name: ' + ${relatedEvent.name}">Name</p>
-                    <p th:text="'Date: ' + ${relatedEvent.eventDate}">Date</p>
+                    <p th:text="'Date: ' + ${relatedEvent.eventDate}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">Date</p>
                     <p th:text="'Location: ' + ${relatedEvent.location}">Location</p>
                     <p th:text="'Price: ' + ${relatedEvent.price}">Price</p>
                     <div>
