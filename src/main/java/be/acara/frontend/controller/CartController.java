@@ -32,4 +32,11 @@ public class CartController {
         model.addAttribute(cartMapper.cartToCartModel(cartService.addToCart(createOrderModel)));
         return "cart/cart";
     }
+    
+    @GetMapping("/clear")
+    public String clearCart(Model model) {
+        cartService.clearCart();
+        model.addAttribute(cartMapper.cartToCartModel(cartService.getCart()));
+        return "cart/cart";
+    }
 }
