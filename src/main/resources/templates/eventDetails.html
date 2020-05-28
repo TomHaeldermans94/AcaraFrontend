@@ -118,7 +118,7 @@
                        style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
                     <p>
                         <strong th:text="'Name: '"></strong>
-                        <span th:text="${relatedEvent.name}"></span>
+                        <strong th:text="${relatedEvent.name}"></strong>
                     </p>
                     <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
                         <strong th:text="'Date: '"></strong>

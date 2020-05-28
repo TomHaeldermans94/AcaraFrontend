@@ -27,7 +27,7 @@
             <div class="float-left ml-3 w-100">
                 <p>
                     <strong th:text="'Name: '"></strong>
-                    <span th:text="${event.name}"></span>
+                    <strong th:text="${event.name}"></strong>
                 </p>
                 <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
                     <strong th:text="'Date: '"></strong>
