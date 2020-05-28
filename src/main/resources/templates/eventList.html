@@ -93,10 +93,26 @@
                     <div class="float-left w-75">
                         <p th:if="${event.eventDate.isBefore(now)}"
                            style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
-                        <p th:text="'Name: ' + ${event.name}">Name</p>
-                        <p th:text="'Date: ' + ${event.eventDate}">Date</p>
-                        <p th:text="'Location: ' + ${event.location}">Location</p>
-                        <p th:text="'Price: ' + ${event.price}">Price</p>
+                        <p>
+                            <strong th:text="'Name: '"></strong>
+                            <span th:text="${event.name}"></span>
+                        </p>
+                        <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                            <strong th:text="'Date: '"></strong>
+                            <span th:text="${event.eventDate.toLocalDate()}"></span>
+                        </p>
+                        <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                            <strong th:text="'Time: '"></strong>
+                            <span th:text="${event.eventDate.toLocalTime()}"></span>
+                        </p>
+                        <p>
+                            <strong th:text="'Location: '"></strong>
+                            <span th:text="${event.location}"></span>
+                        </p>
+                        <p>
+                            <strong th:text="'Price: '"></strong>
+                            <span th:text="'€ ' + ${event.price}"></span>
+                        </p>
                         <div>
                             <a th:if="${event.eventDate.isAfter(now)}"
                                sec:authorize="isAnonymous()"
