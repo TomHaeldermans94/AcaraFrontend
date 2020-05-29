@@ -24,6 +24,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void create(CreateOrderModel createOrderModel) {
         orderFeignClient.create(
@@ -31,17 +34,26 @@ public class OrderServiceImpl implements OrderService {
         );
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void create(Cart cart) {
         Set<CreateOrderDto> createOrderDtos = cart.getItems().stream().map(cartItem -> new CreateOrderDto(cartItem.getEventId(), cartItem.getAmount())).collect(Collectors.toSet());
         orderFeignClient.create(new CreateOrderList(createOrderDtos));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void edit(Long id, CreateOrderDto createOrderDto) {
         orderFeignClient.edit(id, createOrderDto);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void remove(Long id) {
         orderFeignClient.remove(id);
