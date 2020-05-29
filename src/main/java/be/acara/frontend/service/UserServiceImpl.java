@@ -47,6 +47,9 @@ public class UserServiceImpl implements UserService {
         this.jwtTokenService = jwtTokenService;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -58,16 +61,25 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", id)));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void editUser(UserModel user) {
         editBackEndUser(user);
@@ -76,6 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void likeEvent(Long eventId) {
         Long userId = getCurrentUser().getId();
@@ -83,12 +98,19 @@ public class UserServiceImpl implements UserService {
         userFeignClient.likeEvent(userId, likeEventDto);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void dislikeEvent(Long eventId) {
         Long userId = getCurrentUser().getId();
         userFeignClient.dislikeEvent(userId, eventId);
     }
 
+    /**
+     * Edits the user on the backend
+     * @param user the new body of the user to edit
+     */
     private void editBackEndUser(UserModel user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         UserDto userDto = userMapper.userModelToUserDto(user);
@@ -97,7 +119,11 @@ public class UserServiceImpl implements UserService {
             throw new SomethingWentWrongException();
         }
     }
-    
+
+    /**
+     * Edits the user on the frontend
+     * @param user the new body of the user to edit
+     */
     private void editFrontEndUser(UserModel user) {
         User userFromDb = userRepository.findById(user.getId()).orElseThrow(() -> new UserNotFoundException(String.format("User with ID %d not found", user.getId())));
         if (!userFromDb.getId().equals(user.getId())) {
@@ -115,6 +141,9 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAndFlush(userFromDb);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User getCurrentUser() {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -124,6 +153,9 @@ public class UserServiceImpl implements UserService {
         return findByUsername(userName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
