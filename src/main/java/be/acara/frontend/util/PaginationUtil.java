@@ -11,7 +11,7 @@ public interface PaginationUtil {
      * An utility method to add page numbers to a model
      * @param events an eventmodellist, containing the events
      * @param model the model of the request to add the numbers to
-     * @param attribute the attribute to reference to the page numbers
+     * @param attribute the attribute to reference to get the page numbers
      */
     static void addPageNumbers(EventModelList events, Model model, String attribute) {
         if (events.getTotalPages() == 1) {

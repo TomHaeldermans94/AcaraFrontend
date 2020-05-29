@@ -15,7 +15,11 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     
     public static final Logger logger = LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
-    
+
+    /**
+     * Redirects users (anonymous and logged in) to /forbidden if they access a protected resource without proper
+     * clearance
+     */
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
