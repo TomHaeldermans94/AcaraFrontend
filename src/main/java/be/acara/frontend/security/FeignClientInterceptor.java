@@ -16,7 +16,13 @@ import java.util.Date;
 public class FeignClientInterceptor implements RequestInterceptor {
     @Autowired
     private JwtTokenService tokenService;
-    
+
+    /**
+     * Adds an authorization header to all FeignClient requests if the user is logged in.
+     * If the user is not logged in, it won't modify the request in any way.
+     *
+     * @throws TokenExpiredException if the token is past it's expiration date
+     */
     @Override
     public void apply(RequestTemplate requestTemplate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

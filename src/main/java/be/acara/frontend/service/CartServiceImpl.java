@@ -22,7 +22,10 @@ public class CartServiceImpl implements CartService {
         this.userService = userService;
         this.eventService = eventService;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cart getCart() {
         User user = userService.getCurrentUser();
@@ -30,6 +33,9 @@ public class CartServiceImpl implements CartService {
                 .orElse(new Cart(user));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Cart addToCart(CreateOrderModel createOrderModel) {
         Cart cart = getCart();
@@ -49,6 +55,9 @@ public class CartServiceImpl implements CartService {
         return cart;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clearCart() {
         Cart cart = getCart();
