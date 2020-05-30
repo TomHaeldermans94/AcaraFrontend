@@ -114,10 +114,28 @@
             <div class="list-group-item border-dark rounded mb-1 ml-1 col "
                  th:each="relatedEvent : ${event.relatedEvents}">
                 <div class="float-left ml-3 w-100">
-                    <p th:text="'Name: ' + ${relatedEvent.name}">Name</p>
-                    <p th:text="'Date: ' + ${relatedEvent.eventDate}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">Date</p>
-                    <p th:text="'Location: ' + ${relatedEvent.location}">Location</p>
-                    <p th:text="'Price: ' + ${relatedEvent.price}">Price</p>
+                    <p th:if="${relatedEvent.eventDate.isBefore(now)}"
+                       style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
+                    <p>
+                        <strong th:text="'Name: '"></strong>
+                        <strong th:text="${relatedEvent.name}"></strong>
+                    </p>
+                    <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                        <strong th:text="'Date: '"></strong>
+                        <span th:text="${relatedEvent.eventDate.toLocalDate()}"></span>
+                    </p>
+                    <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                        <strong th:text="'Time: '"></strong>
+                        <span th:text="${relatedEvent.eventDate.toLocalTime()}"></span>
+                    </p>
+                    <p>
+                        <strong th:text="'Location: '"></strong>
+                        <span th:text="${relatedEvent.location}"></span>
+                    </p>
+                    <p>
+                        <strong th:text="'Price: '"></strong>
+                        <span th:text="'€ ' + ${relatedEvent.price}"></span>
+                    </p>
                     <div>
                         <a th:if="${relatedEvent.eventDate.isAfter(now)}"
                            sec:authorize="isAnonymous()"
