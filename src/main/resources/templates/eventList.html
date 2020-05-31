@@ -89,7 +89,7 @@
 
             <div class="list-group">
                 <h1>Events</h1>
-                <div class="list-group-item border-dark rounded mb-1" th:each="event,image : ${events}">
+                <div class="list-group-item border-dark rounded mb-1" th:each="event : ${events}">
                     <div class="float-left w-75">
                         <p th:if="${event.eventDate.isBefore(now)}"
                            style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
@@ -146,7 +146,9 @@
 
                     </div>
                     <div class="float-left">
-                        <img style="max-height: 25vw; max-width: 15vw"
+                        <img id="eventImg" style="max-height: 20vw; max-width: 15vw; cursor: pointer"
+                             th:onclick="'javascript:openImageModal(\'' + ${event.id} + '\');'"
+                             data-toggle="modal" data-target="#imageModal"
                              th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
                     </div>
                 </div>
@@ -215,6 +217,45 @@
 <!-- Modal -->
 <div id="likeModal" class="modal fade" role="dialog" th:insert="likeModal">
 </div>
+
+<div id="imageModal" class="modal fade" role="dialog" th:insert="imageModal">
+</div>
+
+<!--<script>-->
+<!--    let img = document.getElementById("eventImg");-->
+<!--    let modalImg = document.getElementById("modalImg");-->
+<!--    let header = document.getElementById("ImageModalHeaderText");-->
+<!--    let name = document.getElementById("name");-->
+
+<!--    img.onclick = function () {-->
+<!--        header.textContent = "lalalala";-->
+<!--        modalImg.src = img.src;-->
+<!--    }-->
+<!--</script>-->
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const events = [[${events}]];
+    console.log(events.content)
+
+    function openImageModal(imageId) {
+        let modalImg = document.getElementById("modalImg");
+        let header = document.getElementById("ImageModalHeaderText");
+        let img = "";
+        let name = "";
+        for (let i = 0; i < events.content.length; i++) {
+            if (events.content[i].id == imageId) {
+                img = events.content[i].image;
+                name = events.content[i].name;
+            }
+        }
+        header.textContent = name;
+        modalImg.src = be.acara.frontend.util.ImageUtil.convertToBase64(img);
+    }
+
+    /*]]>*/
+</script>
 
 </body>
 </html>
