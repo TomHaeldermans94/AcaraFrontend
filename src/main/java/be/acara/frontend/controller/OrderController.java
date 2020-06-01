@@ -6,10 +6,13 @@ import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
@@ -53,7 +56,9 @@ public class OrderController {
     }
 
     @GetMapping(value = "/ticket/{eventId}", produces = MediaType.APPLICATION_PDF_VALUE)
-    public @ResponseBody byte[] downloadEventTicket(@PathVariable("eventId") Long eventId) {
-        return orderService.getEventTicket(eventId).getTicket();
+    @ResponseBody
+    public HttpEntity<byte[]> downloadEventTicket(@PathVariable("eventId") Long eventId, HttpServletResponse response) {
+        response.setHeader("Content-Disposition", "attachment; filename=acara_events_ticket.pdf");
+        return new HttpEntity(orderService.getEventTicket(eventId).getTicket());
     }
 }
