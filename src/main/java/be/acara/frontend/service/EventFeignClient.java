@@ -3,6 +3,7 @@ package be.acara.frontend.service;
 import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.controller.dto.TicketDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +33,6 @@ public interface EventFeignClient {
     @GetMapping("/userevents/{id}")
     EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 
-    @GetMapping("likedevents/{id}")
+    @GetMapping("/likedevents/{id}")
     EventDtoList getAllEventsThatUserLiked(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 }

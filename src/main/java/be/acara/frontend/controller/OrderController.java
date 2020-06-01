@@ -6,9 +6,12 @@ import be.acara.frontend.service.EventService;
 import be.acara.frontend.service.OrderService;
 import be.acara.frontend.service.mapper.EventMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/orders")
@@ -48,5 +51,10 @@ public class OrderController {
                 new CreateOrderModel(mapper.eventDtoToEventModel(eventService.getEvent(eventId)), 1)
         );
         return "buyOrder";
+    }
+
+    @GetMapping(value = "/ticket/{eventId}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody byte[] downloadEventTicket(@PathVariable("eventId") Long eventId) throws IOException {
+        return orderService.getEventTicket(eventId).getTicket();
     }
 }

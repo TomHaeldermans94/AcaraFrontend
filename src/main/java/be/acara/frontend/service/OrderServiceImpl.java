@@ -2,6 +2,7 @@ package be.acara.frontend.service;
 
 import be.acara.frontend.controller.dto.CreateOrderDto;
 import be.acara.frontend.controller.dto.CreateOrderList;
+import be.acara.frontend.controller.dto.TicketDto;
 import be.acara.frontend.domain.Cart;
 import be.acara.frontend.model.CreateOrderModel;
 import be.acara.frontend.service.mapper.OrderMapper;
@@ -57,6 +58,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void remove(Long id) {
         orderFeignClient.remove(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TicketDto getEventTicket(Long eventId) {
+        return orderFeignClient.getEventTicket(eventId);
     }
 
 }
