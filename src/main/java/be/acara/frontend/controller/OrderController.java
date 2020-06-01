@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 
 @Controller
 @RequestMapping("/orders")
@@ -54,7 +53,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/ticket/{eventId}", produces = MediaType.APPLICATION_PDF_VALUE)
-    public @ResponseBody byte[] downloadEventTicket(@PathVariable("eventId") Long eventId) throws IOException {
+    public @ResponseBody byte[] downloadEventTicket(@PathVariable("eventId") Long eventId) {
         return orderService.getEventTicket(eventId).getTicket();
     }
 }

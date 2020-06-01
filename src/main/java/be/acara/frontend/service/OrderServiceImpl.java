@@ -67,5 +67,4 @@ public class OrderServiceImpl implements OrderService {
     public TicketDto getEventTicket(Long eventId) {
         return orderFeignClient.getEventTicket(eventId);
     }
-
 }
