@@ -62,11 +62,4 @@ public class OrderController {
                 .header("Content-Disposition", "attachment; filename=acara_events_ticket.pdf")
                 .body(orderService.getEventTicket(eventId).getTicket());
     }
-    
-    /*@GetMapping(value = "/ticket/{eventId}", produces = MediaType.APPLICATION_PDF_VALUE)
-    @ResponseBody
-    public HttpEntity<byte[]> downloadEventTicket(@PathVariable("eventId") Long eventId, HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "attachment; filename=acara_events_ticket.pdf");
-        return new HttpEntity(orderService.getEventTicket(eventId).getTicket());
-    }*/
 }

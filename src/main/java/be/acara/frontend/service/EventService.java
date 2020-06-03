@@ -3,7 +3,6 @@ package be.acara.frontend.service;
 import be.acara.frontend.controller.dto.CategoryDto;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
-import be.acara.frontend.controller.dto.TicketDto;
 
 import java.util.List;
 import java.util.Map;

@@ -3,7 +3,6 @@ package be.acara.frontend.service;
 import be.acara.frontend.controller.dto.CategoriesList;
 import be.acara.frontend.controller.dto.EventDto;
 import be.acara.frontend.controller.dto.EventDtoList;
-import be.acara.frontend.controller.dto.TicketDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
