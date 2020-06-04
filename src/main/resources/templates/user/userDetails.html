@@ -38,12 +38,17 @@
                             </li>
 
                             <li class="list-group-item bg-white d-inline-block" th:each="event : ${subscribedEvents}">
-                                    <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
-                                    <a href="/events/detail"
-                                       th:href="@{|/events/detail/${event.id}|}"
-                                       class="btn btn-dark float-right">
-                                        Detail
-                                    </a>
+                                <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                <a href="/events/detail"
+                                   th:href="@{|/events/detail/${event.id}|}"
+                                   class="btn btn-dark float-right">
+                                    Detail
+                                </a>
+                                <a href="/events/detail"
+                                   th:href="@{|/orders/ticket/${event.id}|}"
+                                   class="btn btn-primary float-right mr-3">
+                                    Ticket
+                                </a>
                             </li>
                         </ul>
 
@@ -56,7 +61,8 @@
                                         Previous
                                     </a>
                                 </li>
-                                <li class="page-item" th:each="pageNumberSubscribedEvents : ${pageNumbersSubscribedEvents}"
+                                <li class="page-item"
+                                    th:each="pageNumberSubscribedEvents : ${pageNumbersSubscribedEvents}"
                                     th:class="'page-item ' + (${pageNumberSubscribedEvents==subscribedEvents.number + 1} ? active : '')">
                                     <a class="page-link"
                                        th:href="@{/users/detail/__${user.id}__(sizeSubscribedEvents=${subscribedEvents.size}, pageSubscribedEvents=${pageNumberSubscribedEvents}, sizeLikedEvents=${likedEvents.size}, pageLikedEvents=${#httpServletRequest.getParameter('pageLikedEvents')})}"

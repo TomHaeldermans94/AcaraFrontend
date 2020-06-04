@@ -1,6 +1,7 @@
 package be.acara.frontend.service;
 
 import be.acara.frontend.controller.dto.CreateOrderDto;
+import be.acara.frontend.controller.dto.TicketDto;
 import be.acara.frontend.domain.Cart;
 import be.acara.frontend.model.CreateOrderModel;
 
@@ -29,4 +30,11 @@ public interface OrderService {
      * @param cart a cart containing one or more orders
      */
     void create(Cart cart);
+
+    /**
+     * get the event ticket based on the eventId
+     * @param eventId the id of the event
+     * @return the ticketDto containing the ticket
+     */
+    TicketDto getEventTicket(Long eventId);
 }

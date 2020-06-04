@@ -32,6 +32,6 @@ public interface EventFeignClient {
     @GetMapping("/userevents/{id}")
     EventDtoList getAllEventsFromSelectedUser(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 
-    @GetMapping("likedevents/{id}")
+    @GetMapping("/likedevents/{id}")
     EventDtoList getAllEventsThatUserLiked(@PathVariable("id") Long id, @RequestParam("page") int page, @RequestParam("size") int size);
 }
