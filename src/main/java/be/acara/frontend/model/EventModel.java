@@ -50,7 +50,7 @@ public class EventModel {
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
     
-    @Pattern(regexp = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\\.com)?/.+")
+    @Pattern(regexp = "^((?:https?:)?\\/\\/)?((?:www|m)\\.)?((?:youtube\\.com|youtu.be))(\\/(?:[\\w\\-]+\\?v=|embed\\/|v\\/)?)([\\w\\-]+)(\\S+)?$")
     private String youtubeId;
 
     @Override
