@@ -45,12 +45,14 @@
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Date:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event date</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalDate()}"
+                          th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event date</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
                     <div class="font-weight-bold col-6 text-right">Time:</div>
-                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}" th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event time</span>
+                    <span class="col-6 text-left" th:text="${event.eventDate.toLocalTime()}"
+                          th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">event time</span>
                 </div>
 
                 <div class="form-group row" style="font-size: x-large">
@@ -100,9 +102,12 @@
         </div>
 
         <div class="col-4">
-            <img class="img-fluid mt-3 mb-3 row" style="max-height: 30vh"
-                 th:src="@{'data:image/png;base64,'+${eventImage}}"/>
-            <div class="row" style="max-height: 30vh">
+            <div th:if="${eventImage != null && eventImage != ''}">
+                <img class="img-fluid mt-3 row" style="max-height: 30vh"
+                     th:src="@{'data:image/png;base64,'+${eventImage}}"/>
+            </div>
+            <div th:if="${event.youtubeId != null && event.youtubeId != ''}"
+                 class="row mt-3" style="max-height: 30vh">
                 <iframe th:src="${'https://www.youtube.com/embed/'+event.youtubeId}"></iframe>
             </div>
         </div>
