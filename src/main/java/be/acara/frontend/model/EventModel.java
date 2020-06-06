@@ -4,10 +4,7 @@ import be.acara.frontend.controller.dto.EventDto;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -52,7 +49,8 @@ public class EventModel {
     @NotNull(message = "Minimum price is 1 euro")
     @Min(value = 1, message = "Minimum price is 1 euro")
     private BigDecimal price;
-
+    
+    @Pattern(regexp = "^(http(s)?://)?((w){3}.)?youtu(be|.be)?(\\.com)?/.+")
     private String youtubeId;
 
     @Override
