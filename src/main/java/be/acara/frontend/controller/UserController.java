@@ -32,7 +32,7 @@ public class UserController {
     private static final String USER_REGISTRATION_LOCATION = "user/registration";
     private static final String USER_DETAILS_LOCATION = "user/userDetails";
     private static final String REDIRECT_EVENTS = "redirect:/events";
-    private static final String FORWARD_USER_DETAILS = "forward:/users/detail/";
+    private static final String FORWARD_USER_DETAILS = "forward:/users/detail";
     private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String ATTRIBUTE_USER = "user";
     
