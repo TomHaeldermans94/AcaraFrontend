@@ -21,16 +21,19 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
+    
     private final UserService userService;
     private final SecurityService securityService;
     private final UserMapper userMapper;
     private final EventService eventService;
     private final EventMapper eventMapper;
     
-    private static final String ATTRIBUTE_USER_FORM = "userForm";
+    private static final String EDIT_USER_LOCATION = "user/editUser";
+    private static final String USER_REGISTRATION_LOCATION = "user/registration";
+    private static final String USER_DETAILS_LOCATION = "user/userDetails";
     private static final String REDIRECT_EVENTS = "redirect:/events";
-    private static final String ATTRIBUTE_EDIT_USER_REDIRECT = "user/editUser";
+    private static final String FORWARD_USER_DETAILS = "forward:/users/detail/";
+    private static final String ATTRIBUTE_USER_FORM = "userForm";
     private static final String ATTRIBUTE_USER = "user";
     
     public UserController(UserService userService,
@@ -48,13 +51,13 @@ public class UserController {
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute(ATTRIBUTE_USER_FORM, new UserModel());
-        return "user/registration";
+        return USER_REGISTRATION_LOCATION;
     }
-
+    
     @PostMapping("/registration")
     public String registration(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel userForm, BindingResult br) {
         if (br.hasErrors()) {
-            return "user/registration";
+            return USER_REGISTRATION_LOCATION;
         }
         User user = userMapper.userModelToUser(userForm);
         userService.save(user);
@@ -79,23 +82,23 @@ public class UserController {
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
         model.addAttribute("likedEvents", likedEvents);
-        
-        return "user/userDetails";
+    
+        return USER_DETAILS_LOCATION;
     }
-
+    
     @GetMapping("/{id}")
     @PreAuthorize("@securityService.hasUserId(authentication, #id) or hasRole('admin')")
     public String displayEditUserForm(@PathVariable("id") Long id, Model model) {
         UserModel user = userMapper.userToUserModel(userService.getUser(id));
         model.addAttribute(ATTRIBUTE_USER_FORM, user);
-        return ATTRIBUTE_EDIT_USER_REDIRECT;
+        return EDIT_USER_LOCATION;
     }
-
+    
     @PostMapping("/{id}")
     @PreAuthorize("@securityService.hasUserId(authentication, #user.id) or hasRole('admin')")
     public String handleEditUserForm(@Valid @ModelAttribute(ATTRIBUTE_USER_FORM) UserModel user, BindingResult br) {
         if (br.hasErrors()) {
-            return ATTRIBUTE_EDIT_USER_REDIRECT;
+            return EDIT_USER_LOCATION;
         }
         userService.editUser(user);
         return REDIRECT_EVENTS;
@@ -121,9 +124,9 @@ public class UserController {
         }
         return targetUrl;
     }
-
+    
     @GetMapping("/profile")
     public String getProfile(Principal principal) {
-        return String.format("forward:/users/detail/%d", userService.findByUsername(principal.getName()).getId());
+        return String.format("%s/%d", FORWARD_USER_DETAILS, userService.findByUsername(principal.getName()).getId());
     }
 }
