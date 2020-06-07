@@ -33,7 +33,7 @@ public class EventController {
     private static final String EVENT_DETAILS_LOCATION = "eventDetails";
     private static final String EVENT_LIST_LOCATION = "eventList";
     private static final String ADD_EVENT_LOCATION = "addEvent";
-    private static final String EDIT_EVENT_LOCATION = "eventEdit";
+    private static final String EDIT_EVENT_LOCATION = "editEvent";
     private static final String REDIRECT_EVENTS = "redirect:/events";
     private static final String ATTRIBUTE_EVENT = "event";
     private static final String ATTRIBUTE_EVENTS = "events";
