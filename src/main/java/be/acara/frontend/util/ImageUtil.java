@@ -9,7 +9,7 @@ public interface ImageUtil {
      * @param image the given image
      * @return a Base64 equivalent String
      */
-    static String convertToBase64(byte[] image) {
+    static String convertToBase64(byte[] image){
         return !Objects.isNull(image)
                 ? Base64.getEncoder().encodeToString(image)
                 : "";

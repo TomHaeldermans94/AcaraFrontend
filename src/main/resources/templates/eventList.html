@@ -145,11 +145,11 @@
                         </div>
 
                     </div>
-                    <div class="float-left">
-                        <img id="eventImg" style="max-height: 20vw; max-width: 15vw; cursor: pointer"
-                             th:onclick="'javascript:openImageModal(\'' + ${event.id} + '\');'"
-                             data-toggle="modal" data-target="#imageModal"
-                             th:src="@{'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}}"/>
+                    <div class="float-left" th:if="${event.image.length != 0}">
+                        <img    id="eventImg" style="max-height: 20vw; max-width: 15vw; cursor: pointer"
+                                th:onclick="'javascript:openImageModal(\'' + ${event.id} + '\');'"
+                                data-toggle="modal" data-target="#imageModal"
+                                th:src="'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}"/>
                     </div>
                 </div>
             </div>
