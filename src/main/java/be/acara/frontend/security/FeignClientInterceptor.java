@@ -5,7 +5,6 @@ import be.acara.frontend.service.JwtTokenService;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,9 +13,12 @@ import java.util.Date;
 
 @Component
 public class FeignClientInterceptor implements RequestInterceptor {
-    @Autowired
-    private JwtTokenService tokenService;
-
+    private final JwtTokenService tokenService;
+    
+    public FeignClientInterceptor(JwtTokenService tokenService) {
+        this.tokenService = tokenService;
+    }
+    
     /**
      * Adds an authorization header to all FeignClient requests if the user is logged in.
      * If the user is not logged in, it won't modify the request in any way.
