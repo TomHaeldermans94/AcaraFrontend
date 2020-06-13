@@ -16,11 +16,13 @@ public class CartController {
     private final CartService cartService;
     private final CartMapper cartMapper;
     
+    private static final String CART_LOCATION = "cart/cart";
+    
     public CartController(CartService cartService, CartMapper cartMapper) {
         this.cartService = cartService;
         this.cartMapper = cartMapper;
     }
-
+    
     /**
      * Displays the cart of the currently logged in user.
      *
@@ -30,22 +32,22 @@ public class CartController {
     @GetMapping
     public String getCurrentCart(Model model) {
         model.addAttribute(cartMapper.cartToCartModel(cartService.getCart()));
-        return "cart/cart";
+        return CART_LOCATION;
     }
-
+    
     /**
      * Handles the addition of an order to the currently logged in user's cart.
      *
      * @param createOrderModel the order details
-     * @param model the model to add the cart to
+     * @param model            the model to add the cart to
      * @return a string containing the location of the html to render
      */
     @PostMapping
     public String addEvent(CreateOrderModel createOrderModel, Model model) {
         model.addAttribute(cartMapper.cartToCartModel(cartService.addToCart(createOrderModel)));
-        return "cart/cart";
+        return CART_LOCATION;
     }
-
+    
     /**
      * Clears the cart of the current logged in user
      *
@@ -56,6 +58,6 @@ public class CartController {
     public String clearCart(Model model) {
         cartService.clearCart();
         model.addAttribute(cartMapper.cartToCartModel(cartService.getCart()));
-        return "cart/cart";
+        return CART_LOCATION;
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 class FaviconController {
-
+    
     /**
      * Do nothing when favicon.ico is called
      * This is to prevent the console from being littered with 404's.
