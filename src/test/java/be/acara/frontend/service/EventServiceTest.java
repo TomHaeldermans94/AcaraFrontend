@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static be.acara.frontend.util.EventUtil.*;
 import static org.assertj.core.api.Assertions.assertThat;
