@@ -83,7 +83,7 @@ public class UserController {
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
         model.addAttribute("likedEvents", likedEvents);
-        addLocalDateTime(model);
+        model.addAttribute("now", LocalDateTime.now());
     
         return USER_DETAILS_LOCATION;
     }
@@ -130,9 +130,5 @@ public class UserController {
     @GetMapping("/profile")
     public String getProfile(Principal principal) {
         return String.format("%s/%d", FORWARD_USER_DETAILS, userService.findByUsername(principal.getName()).getId());
-    }
-
-    private void addLocalDateTime(Model model) {
-        model.addAttribute("now", LocalDateTime.now());
     }
 }
