@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/users")
@@ -82,6 +83,7 @@ public class UserController {
         model.addAttribute(ATTRIBUTE_USER, user);
         model.addAttribute("subscribedEvents", subscribedEvents);
         model.addAttribute("likedEvents", likedEvents);
+        model.addAttribute("now", LocalDateTime.now());
     
         return USER_DETAILS_LOCATION;
     }

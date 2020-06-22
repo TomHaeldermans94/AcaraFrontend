@@ -39,6 +39,7 @@
 
                             <li class="list-group-item bg-white d-inline-block" th:each="event : ${subscribedEvents}">
                                 <div th:text="${event.name}" class="float-left font-weight-bold">name</div>
+                                <div th:if="${event.eventDate.isBefore(now)}" class="float-left font-weight-bold ml-5" style="color: red">ARCHIVED</div>
                                 <a href="/events/detail"
                                    th:href="@{|/events/detail/${event.id}|}"
                                    class="btn btn-dark float-right">

@@ -70,7 +70,7 @@
             </div>
 
             <div sec:authorize="isAuthenticated()"
-                 th:if="${events.getNextAttendingEvents() != null}">
+                 th:if="${events.getNextAttendingEvents() != null && events.getNextAttendingEvents().size() != 0}">
                 <div th:insert="eventViewer :: eventViewer (
                 title = 'Next events for you',
                 listOfEvents = ${events.getNextAttendingEvents()},
