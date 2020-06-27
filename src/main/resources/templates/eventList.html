@@ -1,23 +1,248 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+            integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+    <script src="../static/js/bootstrap.js" th:src="@{/js/bootstrap.js}"></script>
     <title>Acara</title>
 </head>
+
 <body>
-<h1>List of events</h1>
-<ul>
-    <li th:each="event : ${events}">
-        <p th:text="'Name: ' + ${event.name}">Name</p>
-        <p th:text="'Date: ' + ${event.eventDate}">Date</p>
-        <p th:text="'Location: ' + ${event.location}">Location</p>
-        <p th:text="'Price: ' + ${event.price}">Price</p>
-        <a href="/events/detail"
-           th:href="@{|events/detail/${event.id}|}">
-            Detail
-        </a>
-    </li>
-</ul>
+<!--Navbar-->
+<div th:insert="navbar :: navbar"></div>
+<div class="container-fluid" style="display: table">
+    <div class="row">
+        <!--Sidebar-->
+        <div class="col p-0 bg-dark" style="display: table-cell; flex: 0 0 15vw" th:insert="sidebar :: sidebar">
+        </div>
+        <!--Events-->
+        <div class="col" style="display: table-cell">
+            <div class="row justify-content-between mt-2">
+                <div class="col">
+
+                </div>
+                <div class="col align-self-center">
+                    <div class="dropdown float-right col-4">
+                        <button class="btn btn-info dropdown-toggle btn-block " type="button" id="sortButton"
+                                data-toggle="dropdown">
+                            Sort
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'name,asc'})}">Name
+                                (ascending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'name,desc'})}">Name
+                                (descending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'eventDate,asc'})}">Date
+                                (ascending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'eventDate,desc'})}">Date
+                                (descending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,asc'})}">Price
+                                (ascending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'price,desc'})}">Price
+                                (descending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'location,asc'})}">Location
+                                (ascending)</a>
+                            <a class="dropdown-item"
+                               th:href="@{/events(size=${events.size}, page=${events.number}, sort=${'location,desc'})}">Location
+                                (descending)</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div sec:authorize="isAuthenticated()"
+                 th:if="${events.getNextAttendingEvents() != null && events.getNextAttendingEvents().size() != 0}">
+                <div th:insert="eventViewer :: eventViewer (
+                title = 'Next events for you',
+                listOfEvents = ${events.getNextAttendingEvents()},
+                viewForLikeForm = 'events')">
+                </div>
+            </div>
+
+            <div th:if="${events.getPopularEvents() != null}">
+                <div th:insert="eventViewer :: eventViewer (
+                title = 'Popular events',
+                listOfEvents = ${events.getPopularEvents()},
+                viewForLikeForm = 'events')">
+                </div>
+            </div>
+
+
+            <div class="list-group">
+                <h1>Events</h1>
+                <div class="list-group-item border-dark rounded mb-1" th:each="event : ${events}">
+                    <div class="float-left w-75">
+                        <p th:if="${event.eventDate.isBefore(now)}"
+                           style="color: red; font-size: xx-large; font-weight: bold">ARCHIVED</p>
+                        <p>
+                            <strong th:text="'Name: '"></strong>
+                            <strong th:text="${event.name}"></strong>
+                        </p>
+                        <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                            <strong th:text="'Date: '"></strong>
+                            <span th:text="${event.eventDate.toLocalDate()}"></span>
+                        </p>
+                        <p th:style="${event.eventDate.isBefore(now)} ? 'color: red' : 'color: black'">
+                            <strong th:text="'Time: '"></strong>
+                            <span th:text="${event.eventDate.toLocalTime()}"></span>
+                        </p>
+                        <p>
+                            <strong th:text="'Location: '"></strong>
+                            <span th:text="${event.location}"></span>
+                        </p>
+                        <p>
+                            <strong th:text="'Price: '"></strong>
+                            <span th:text="'€ ' + ${event.price}"></span>
+                        </p>
+                        <div>
+                            <a th:if="${event.eventDate.isAfter(now)}"
+                               sec:authorize="isAnonymous()"
+                               data-toggle="modal" data-target="#likeModal"
+                               class="btn btn-light float-left mr-3">
+                                <span th:text="${event.amountOfLikes}"></span>
+                                <i class="fas fa-thumbs-up ml-2" style="color: grey"></i>
+                            </a>
+                            <form th:if="${event.eventDate.isAfter(now)}"
+                                  sec:authorize="isAuthenticated()" method="post"
+                                  th:action="@{|/users/events/likes/${event.id}/0|}">
+                                <input type="hidden" name="liked" th:value="${event.liked}">
+                                <button type="submit"
+                                        class="btn btn-light float-left mr-3">
+                                    <span th:text="${event.amountOfLikes}"></span>
+                                    <i class="fas fa-thumbs-up ml-2"
+                                       th:style="${event.liked} ? 'color: #0275d8' : 'color: grey'"></i>
+                                </button>
+                            </form>
+                            <a href="/events/detail"
+                               th:href="@{|/events/detail/${event.id}|}"
+                               class="btn btn-dark float-left mr-3">
+                                Detail
+                            </a>
+                            <p sec:authorize="hasRole('ADMIN')" th:insert="deleteEvent :: deleteEvent"
+                               class="float-left mr-3"></p>
+                            <a th:if="${event.eventDate.isAfter(now)}" href="/orders/new/event.id"
+                               th:href="@{|/orders/new/${event.id}|}"
+                               class="btn btn-primary mr-3">Buy Ticket</a>
+                        </div>
+
+                    </div>
+                    <div class="float-left" th:if="${event.image.length != 0}">
+                        <img    id="eventImg" style="max-height: 20vw; max-width: 15vw; cursor: pointer"
+                                th:onclick="'javascript:openImageModal(\'' + ${event.id} + '\');'"
+                                data-toggle="modal" data-target="#imageModal"
+                                th:src="'data:image/png;base64,'+${T(be.acara.frontend.util.ImageUtil).convertToBase64(event.image)}"/>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation" th:if="${events.totalPages > 0}">
+                <ul class="pagination">
+                    <li th:class="page-item + ' ' + (${events.number <= 0} ? disabled)">
+                        <a th:href="@{/events(
+                                        size=${events.size},
+                                         page=${events.number},
+                                          sort=${#httpServletRequest.getParameter('sort')},
+                                           name=${searchModel.name},
+                                           location=${searchModel.location},
+                                           minPrice=${searchModel.minPrice},
+                                           maxPrice=${searchModel.maxPrice},
+                                           category=${searchModel.category},
+                                           startDate=${searchModel.startDate},
+                                           startDate=${searchModel.startDate}
+                                           )}"
+                           th:class="page-link">
+                            Previous
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                        th:class="'page-item ' + (${pageNumber==events.number + 1} ? active : '')">
+                        <a class="page-link"
+                           th:href="@{/events(
+                                        size=${events.size},
+                                         page=${pageNumber},
+                                          sort=${#httpServletRequest.getParameter('sort')},
+                                           name=${searchModel.name},
+                                           location=${searchModel.location},
+                                           minPrice=${searchModel.minPrice},
+                                           maxPrice=${searchModel.maxPrice},
+                                           category=${searchModel.category},
+                                           startDate=${searchModel.startDate},
+                                           startDate=${searchModel.startDate}
+                                           )}"
+                           th:text="${pageNumber}"
+                           th:class="page-link">
+                        </a>
+                    </li>
+                    <li th:class="page-item + ' ' + (${events.number + 1 >= events.totalPages} ? disabled)">
+                        <a th:class="page-link"
+                           th:href="@{/events(
+                                        size=${events.size},
+                                         page=${events.number+2},
+                                          sort=${#httpServletRequest.getParameter('sort')},
+                                           name=${searchModel.name},
+                                           location=${searchModel.location},
+                                           minPrice=${searchModel.minPrice},
+                                           maxPrice=${searchModel.maxPrice},
+                                           category=${searchModel.category},
+                                           startDate=${searchModel.startDate},
+                                           startDate=${searchModel.startDate}
+                                           )}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="likeModal" class="modal fade" role="dialog" th:insert="likeModal">
+</div>
+
+<div id="imageModal" class="modal fade" role="dialog" th:insert="imageModal">
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const events = [[${events}]];
+    console.log(events.content)
+
+    function openImageModal(imageId) {
+        let modalImg = document.getElementById("modalImg");
+        let header = document.getElementById("ImageModalHeaderText");
+        let img = "";
+        let name = "";
+        for (let i = 0; i < events.content.length; i++) {
+            if (events.content[i].id == imageId) {
+                img = events.content[i].image;
+                name = events.content[i].name;
+            }
+        }
+        header.textContent = name;
+        modalImg.src = 'data:image/png;base64,' + img;
+    }
+
+    /*]]>*/
+</script>
+
 </body>
 </html>

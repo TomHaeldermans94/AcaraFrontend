@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,6 +16,8 @@ import java.util.Set;
 @Builder
 public class EventDto {
     private Long id;
+    private int amountOfLikes;
+    private boolean liked;
     private LocalDateTime eventDate;
     private String name;
     private String description;
@@ -24,4 +26,6 @@ public class EventDto {
     private String category;
     private Set<UserDto> attendees;
     private BigDecimal price;
+    private String youtubeId;
+    private List<EventDto> relatedEvents;
 }

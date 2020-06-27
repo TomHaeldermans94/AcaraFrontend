@@ -2,49 +2,76 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{../resources/css/bootstrap.css}"/>
-    <link rel="stylesheet" href="css/form.css" th:href="@{../resources/css/form.css}"/>
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="css/form.css" th:href="@{~/css/form.css}"/>
     <title>Search</title>
 </head>
+<!--/*@thymesVar id="categoryList" type="be.acara.frontend.controller.dto.CategoriesList"*/-->
+<!--/*@thymesVar id="searchModel" type="be.acara.frontend.model.SearchModel"*/-->
 <body>
-<form th:method="get" th:fragment="searchForm">
+<form th:method="get" th:fragment="searchForm" th:action="@{/events}">
+    <h1 class="text-center text-white">Search</h1>
     <div>
-        <label th:for="location">Location</label>
-        <input id="location" name="location" th:type="text"/>
+        <label th:for="name" class="text-white">Name</label>
+        <input type=text id="name" name="name" placeholder="Name" class="form-control" th:value="${searchModel.name}"/>
+    </div>
+
+    <div>
+        <label th:for="location" class="text-white">Location</label>
+        <input type=text id="location" name="location" placeholder="Location" class="form-control w-100"
+               th:value="${searchModel.location}"/>
+    </div>
+
+    <div>
+        <label th:for="minPrice" class="text-white">Minimum price</label>
+        <input type=text id="minPrice" name="minPrice"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+               class="form-control w-100"
+               placeholder="0"
+               th:value="${searchModel.minPrice}"/>
+        <label th:for="maxPrice" class="text-white">Maximum price</label>
+        <input type=text id="maxPrice" name="maxPrice"
+               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+               class="form-control w-100"
+               placeholder="100"
+               th:value="${searchModel.maxPrice}"/>
     </div>
     <div>
-        <div>
-            Price
-        </div>
-        <label th:for="minPrice">Min</label>
-        <input id="minPrice" name="minPrice" type="text"
-               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
-        <label th:for="maxPrice">Max</label>
-        <input id="maxPrice" name="maxPrice" type="text"
-               oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"/>
-    </div>
-    <div>
-        <label th:for="category">Category</label>
-        <select name="category" id="eventCategory" th:type="text">
-            <option th:each="category: ${categoryList}"
-                    th:value="${category}"
-                    th:text="${category}">
+        <label th:for="eventCategory" class="text-white">Category</label>
+        <select type=text name="category" id="eventCategory" class="form-control w-100">
+            <option value=""> -- select an option --</option>
+            <option th:each="catOption: ${categoryList}"
+                    th:value="${catOption.name}"
+                    th:text="${catOption.webDisplay}"
+                    th:selected="${catOption.name} == ${searchModel.category}">
             </option>
         </select>
     </div>
     <div>
-        <div>
-            Date
-        </div>
-        <label th:for="startDate">From</label>
-        <input id="startDate" name="startDate" th:type="date" />
-        <label th:for="endDate">Until</label>
-        <input id="endDate" name="endDate" th:type="date" />
+        <label th:for="startDate" class="text-white">From</label>
+        <input type=date id="startDate" name="startDate" class="form-control w-100"
+               th:value="${searchModel.startDate}"/>
+        <label th:for="endDate" class="text-white">Until</label>
+        <input type="date" id="endDate" name="endDate" class="form-control w-100" th:value="${searchModel.endDate}"/>
     </div>
-    <div>
-        <button type="submit" value="submit">Confirm</button>
-        <button type="reset" value="submit">Reset</button>
+    <div class="mt-3">
+        <button type="submit" value="submit" class="btn btn-primary mr-3" style="width: 45%">Confirm</button>
+        <button type="button" value="reset" class="btn btn-danger" style="width: 45%" onclick="resetAll()">
+            Reset
+        </button>
     </div>
+
+    <script>
+        function resetAll() {
+            document.getElementById("name").value = "";
+            document.getElementById("location").value = "";
+            document.getElementById("minPrice").value = "";
+            document.getElementById("maxPrice").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("eventCategory").selectedIndex = 0;
+        }
+    </script>
 </form>
 </body>
 </html>

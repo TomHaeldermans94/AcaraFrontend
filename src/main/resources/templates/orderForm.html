@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/form.css" th:href="@{~/css/form.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+</head>
+
+<!--/*@thymesVar id="createOrderModel" type="be.acara.frontend.model.CreateOrderModel"*/-->
+<body>
+<form th:object="${createOrderModel}" th:fragment="orderForm" class="form-horizontal">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="my-3 lead form-group row justify-content-center" style="font-size: x-large">
+                    <span class="sr-only">Name:</span>
+                    <h1 th:text="${createOrderModel.eventModel.name}">name</h1>
+                </div>
+
+                <div class=" my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Event date:</div>
+                    <span class="col-6 text-left" th:text="${createOrderModel.eventModel.eventDate}">event date</span>
+                </div>
+
+                <div class="my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Price:</div>
+                    <span class="col-6 text-left" th:text="${createOrderModel.eventModel.price}">price</span>
+                </div>
+
+                <div class="my-3 lead form-group row" style="font-size: x-large">
+                    <div class="font-weight-bold col-6 w-25 d-inline-block text-right">Amount:</div>
+                    <input id="amount" name="amount" type="number" th:field="*{amountOfTickets}"
+                           oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                           class="form-control col-1"
+                           placeholder="1"/>
+                    <input hidden th:field="*{eventModel.id}" th:value="${createOrderModel.eventModel.id}">
+                </div>
+
+                <div class="form-group row justify-content-center text-center" >
+                    <div class="col-9 ml-3 my-2 offset-2 ">
+                        <button class="btn btn-primary mr-3" type="submit" value="submit">Buy Ticket</button>
+                        <a th:href="@{/events/}" class="btn btn-dark mr-3">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>

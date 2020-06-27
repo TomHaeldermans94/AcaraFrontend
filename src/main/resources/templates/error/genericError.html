@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css" th:href="@{~/css/bootstrap.css}"/>
+    <link rel="stylesheet" href="../static/css/custom.css" th:href="@{~/css/custom.css}"/>
+    <link rel="stylesheet" href="../static/css/font-awesome/css/all.css" th:href="@{~/css/font-awesome/css/all.css}"
+          type="text/css"/>
+    <title>Error</title>
+</head>
+<body>
+<div th:insert="navbar :: navbar"></div>
+<div th:fragment="error">
+    <h1>Error</h1>
+    <img src="https://i.imgur.com/zOYBxJr.gif" alt=""/>
+</div>
+</body>
+</html>

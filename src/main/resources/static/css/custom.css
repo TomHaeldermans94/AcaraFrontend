@@ -1,0 +1,22 @@
+body {
+    background: url('/images/bass-background.jpg');
+    background-size: auto;
+}
+
+label {
+    font-size: 150%;
+    align-content: center;
+}
+
+textarea {
+    resize: none;
+    height: 20px;
+}
+
+.img-small {
+    max-width: 800px;
+}
+
+.lighten-background {
+    background-color: rgba(255, 255, 255, 0.8);
+}

@@ -1,14 +1,12 @@
-package be.acara.frontend.model;
+package be.acara.frontend.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventList {
-    private List<Event> eventList;
+public class TicketDto {
+    private byte[] ticket;
 }

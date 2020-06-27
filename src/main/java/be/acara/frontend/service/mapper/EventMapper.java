@@ -1,59 +1,29 @@
 package be.acara.frontend.service.mapper;
 
-import be.acara.frontend.model.Event;
-import be.acara.frontend.model.EventWithoutImage;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
+import be.acara.frontend.controller.dto.EventDto;
+import be.acara.frontend.controller.dto.EventDtoList;
+import be.acara.frontend.model.EventModel;
+import be.acara.frontend.model.EventModelList;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Component
-public class EventMapper {
-    private Log logger = LogFactory.getLog(this.getClass());
+@Mapper(componentModel = "spring")
+@SuppressWarnings("java:S1214") // remove the warning for the INSTANCE variable
+public interface EventMapper {
+    
+    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
+    
+    EventDto eventModelToEventDto(EventModel eventModel);
+    EventModel eventDtoToEventModel(EventDto eventDto);
+    default EventModelList eventDtoListToEventModelList(EventDtoList eventDtoList) {
+        List<EventModel> content = eventDtoList.getContent().stream().map(this::eventDtoToEventModel).collect(Collectors.toList());
 
-    public Event map(EventWithoutImage eventWithoutImage) {
-        return Event.builder()
-                .category(eventWithoutImage.getCategory())
-                .description(eventWithoutImage.getDescription())
-                .eventDate(eventWithoutImage.getEventDate())
-                .location(eventWithoutImage.getLocation())
-                .name(eventWithoutImage.getName())
-                .price(eventWithoutImage.getPrice())
-                .id(eventWithoutImage.getId())
-                .build();
-    }
-
-    public EventWithoutImage map(Event event) {
-        return EventWithoutImage.builder()
-                .category(event.getCategory())
-                .description(event.getDescription())
-                .eventDate(event.getEventDate())
-                .location(event.getLocation())
-                .name(event.getName())
-                .price(event.getPrice())
-                .id(event.getId())
-                .build();
-    }
-
-    public Event mapEventWithoutImageToEventWithMultipartImage(EventWithoutImage eventWithoutImage, MultipartFile image) {
-        Event event = map(eventWithoutImage);
-        if (image != null) {
-            try {
-                event.setImage(image.getBytes());
-            } catch (IOException e) {
-                logger.error("Something went wrong when setting the image to the event");
-            }
-        }
-        return event;
-    }
-
-    public Event mapEventWithoutImageToEventWithUnchangedImage(EventWithoutImage eventWithoutImage, byte[] image) {
-        Event event = map(eventWithoutImage);
-        if (image != null) {
-            event.setImage(image);
-        }
-        return event;
+        EventModelList eventModels = new EventModelList(content, eventDtoList.getPageable(), eventDtoList.getTotalElements());
+        eventModels.setPopularEvents(eventDtoList.getPopularEvents());
+        eventModels.setNextAttendingEvents(eventDtoList.getNextAttendingEvents());
+        return eventModels;
     }
 }
